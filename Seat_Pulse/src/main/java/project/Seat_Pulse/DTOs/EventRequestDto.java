@@ -27,12 +27,19 @@ public class EventRequestDto {
     @Min(value = 1 ,message="Total Seats must be greater than 0")
     private int totalSeats;
 
-    public EventRequestDto(String eventName, String eventCategory, LocalDateTime eventStartTime, LocalDateTime eventEndTime, int totalSeats) {
+    private String location;
+
+    private String venue;
+
+
+    public EventRequestDto(String eventName, String eventCategory, LocalDateTime eventStartTime, LocalDateTime eventEndTime, int totalSeats, String location, String venue) {
         this.eventName = eventName;
         this.eventCategory = eventCategory;
         this.eventStartTime = eventStartTime;
         this.eventEndTime = eventEndTime;
         this.totalSeats = totalSeats;
+        this.location = location;
+        this.venue = venue;
     }
 
     public EventRequestDto(){
@@ -77,5 +84,21 @@ public class EventRequestDto {
 
     public void setTotalSeats(int totalSeats) {
         this.totalSeats = totalSeats;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getVenue() {
+        return venue;
+    }
+
+    public void setVenue(String venue) {
+        this.venue = venue;
     }
 }

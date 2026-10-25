@@ -49,7 +49,21 @@ export default function MyBookingsPage({ go }: { go: (r: Route) => void }) {
         </aside>
       </div>
       <h2 className="mb-5 mt-16 text-3xl font-bold">Keep the good plans coming.</h2>
-      <div className="grid gap-5 md:grid-cols-3">{EVENTS.slice(2, 5).map((e) => <EventCard key={e.id} ev={e} onOpen={() => go('event')} />)}</div>
+      <div className="grid gap-5 md:grid-cols-3">
+        {EVENTS.slice(2, 5).map((e) => (
+          <EventCard
+            key={e.id}
+            event={{
+              eventId: e.id,
+              eventName: e.title,
+              eventCategory: '',
+              eventStartTime: '',
+              eventEndTime: '',
+              imageUrl: e.image,
+            }}
+          />
+        ))}
+      </div>
     </div>
   );
 }

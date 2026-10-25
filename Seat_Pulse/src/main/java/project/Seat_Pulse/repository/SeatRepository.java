@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import project.Seat_Pulse.Entity.Event;
 import project.Seat_Pulse.Entity.Seat;
 import project.Seat_Pulse.enums.SeatStatus;
 
@@ -13,6 +14,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SeatRepository extends JpaRepository<Seat, Long> {
+
+    List<Seat> findByEvent_EventId(Long eventId);
 
     List<Seat> findByEventEventIdAndStatus(Long eventId, SeatStatus status);
 
@@ -33,4 +36,14 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
     );
 
     List<Seat> findByLockedBy_UserIdAndStatus(Long userId, SeatStatus status);
+
+    @Query("SELECT COUNT(s) FROM Seat s WHERE s.status = 'BOOKED'")
+    long countBookedSeats();
+
+    @Query("SELECT COALESCE(SUM(s.price), 0) FROM Seat s WHERE s.status = 'BOOKED'")
+    double sumTotalRevenue();
+
+    @Modifying
+    @Query("DELETE FROM Seat s WHERE s.event = :event")
+    void deleteByEvent(@Param("event") Event event);
 }

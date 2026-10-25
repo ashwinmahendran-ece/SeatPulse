@@ -11,7 +11,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/explore', { replace: true });
+      navigate('/', { replace: true });
     }
   }, [isAuthenticated, navigate]);
 
@@ -20,26 +20,36 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+      e.preventDefault();
 
-    if (!username.trim() || !password.trim()) {
-      toast.error('Please enter both username and password.');
-      return;
-    }
+      if (!username.trim() || !password.trim()) {
+        toast.error('Please enter both username and password.');
+        return;
+      }
 
-    setIsLoading(true);
+      setIsLoading(true);
 
-    try {
-      await api.auth.login({ username, password });
+      try {
+        const token = await api.auth.login({ username, password });
 
-      toast.success('Welcome back!');
-      navigate('/explore');
-    } catch (err: any) {
-      toast.error(err.message || 'Invalid username or password.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+        if (!token) throw new Error("No token received from backend");
+
+        const payload = JSON.parse(atob(token.split('.')[1]));
+
+        const rawRole = payload.role || (payload.roles && payload.roles[0]) || (payload.authorities && payload.authorities[0]) || 'USER';
+
+        const cleanRole = typeof rawRole === 'string' ? rawRole.replace('ROLE_', '') : 'USER';
+
+        useAuthStore.getState().login(token, { username, role: cleanRole });
+
+        toast.success('Welcome back!');
+        navigate('/');
+      } catch (err: any) {
+        toast.error(err.message || 'Invalid username or password.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#F8F6F2] px-5 py-24">
@@ -65,7 +75,7 @@ export default function LoginPage() {
               required
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="e.g. john_doe"
+              placeholder="e.g. Ashwin"
               className="w-full rounded-xl border border-[#DCD8D2] bg-[#F8F6F2] px-4 py-3 text-sm text-[#242224] outline-none transition focus:border-[#6735E8] focus:bg-white"
             />
           </div>

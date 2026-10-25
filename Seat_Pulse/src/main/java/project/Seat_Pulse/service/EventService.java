@@ -18,31 +18,34 @@ import java.time.LocalDateTime;
 public class EventService {
 
     private final EventRepository eventRepo;
-
     private final SeatService seatService;
 
     public EventService(EventRepository eventRepo, SeatService seatService){
-        this.eventRepo=eventRepo;
+        this.eventRepo = eventRepo;
         this.seatService = seatService;
     }
 
     @Transactional
-    @CacheEvict(value = "value=eventsCache",allEntries = true)
+    @CacheEvict(value = "eventsCache", allEntries = true)
     public EventResponseDto addEvent(EventRequestDto eventRequestDto){
         Event event = new Event();
         event.setEventName(eventRequestDto.getEventName());
         event.setEventCategory(eventRequestDto.getEventCategory());
         event.setEventStartTime(eventRequestDto.getEventStartTime());
         event.setEventEndTime(eventRequestDto.getEventEndTime());
+        event.setLocation(eventRequestDto.getLocation());
+        event.setVenue(eventRequestDto.getVenue());
+        event.setTotalSeats(eventRequestDto.getTotalSeats());
+
         Event savedEvent = eventRepo.save(event);
-        seatService.generateSeatsForEvent(savedEvent,eventRequestDto.getTotalSeats());
-        EventResponseDto eventResponseDto=new EventResponseDto(savedEvent.getEventId(), savedEvent.getEventName(), eventRequestDto.getTotalSeats());
-        return eventResponseDto;
+        seatService.generateSeatsForEvent(savedEvent, eventRequestDto.getTotalSeats());
+
+        return new EventResponseDto(savedEvent.getEventId(), savedEvent.getEventName(), eventRequestDto.getTotalSeats());
     }
 
-    @Cacheable("values=eventsCache")
+    @Cacheable(value="eventsCache")
     public Page<Event> searchUpcomingEvents(String category, int pageNo, int pageSize, String sortBy) {
-        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).ascending());
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
         System.out.println("[DB HIT] Executing SQL to fetch events from the database...");
 
         return eventRepo.searchUpcomingEvents(category, pageable);

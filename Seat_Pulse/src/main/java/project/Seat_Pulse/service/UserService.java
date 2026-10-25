@@ -44,10 +44,15 @@ public class UserService {
     }
 
     public String verify(User user){
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(),user.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword())
+        );
 
         if(authentication.isAuthenticated()){
-            return jwtService.generateToken(user.getUserName());
+            User dbUser = userRepo.findByUserName(user.getUserName());
+
+            String role = dbUser.getRole();
+            return jwtService.generateToken(user.getUserName(), role);
         }
         return "Authentication failed";
     }

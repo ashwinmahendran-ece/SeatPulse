@@ -15,13 +15,19 @@ public class Event implements Serializable {
     private String eventCategory;
     private LocalDateTime eventStartTime;
     private LocalDateTime eventEndTime;
+    private String location;
+    private String venue;
+    private int totalSeats;
 
-    public Event(Long eventId, String eventName, String eventCategory, LocalDateTime eventStartTime, LocalDateTime eventEndTime) {
+    public Event(Long eventId, String eventName, String eventCategory, LocalDateTime eventStartTime, LocalDateTime eventEndTime, String location, String venue, int totalSeats) {
         this.eventId = eventId;
         this.eventName = eventName;
         this.eventCategory = eventCategory;
         this.eventStartTime = eventStartTime;
         this.eventEndTime = eventEndTime;
+        this.location = location;
+        this.venue = venue;
+        this.totalSeats = totalSeats;
     }
 
     public Event(){
@@ -67,14 +73,41 @@ public class Event implements Serializable {
         this.eventEndTime = eventEndTime;
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getVenue() {
+        return venue;
+    }
+
+    public void setVenue(String venue) {
+        this.venue = venue;
+    }
+
+    public int getTotalSeats() {
+        return totalSeats;
+    }
+
+    public void setTotalSeats(int totalSeats) {
+        this.totalSeats = totalSeats;
+    }
+
     @Override
     public String toString() {
         return "Event{" +
-                "eventId='" + eventId + '\'' +
+                "eventId=" + eventId +
                 ", eventName='" + eventName + '\'' +
                 ", eventCategory='" + eventCategory + '\'' +
                 ", eventStartTime=" + eventStartTime +
                 ", eventEndTime=" + eventEndTime +
+                ", location='" + location + '\'' +
+                ", venue='" + venue + '\'' +
+                ", totalSeats=" + totalSeats +
                 '}';
     }
 }

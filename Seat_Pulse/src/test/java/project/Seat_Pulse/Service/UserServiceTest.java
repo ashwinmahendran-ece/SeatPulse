@@ -91,7 +91,7 @@ public class UserServiceTest {
         when(mockAuth.isAuthenticated()).thenReturn(true);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(mockAuth);
 
-        when(jwtService.generateToken("Ashwin")).thenReturn("mock-jwt-token");
+        when(jwtService.generateToken("Ashwin", user.getRole())).thenReturn("mock-jwt-token");
 
         String result = userService.verify(user);
 

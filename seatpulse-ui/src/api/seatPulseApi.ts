@@ -1,6 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import { useAuthStore } from '../store/useAuthStore';
-import type { LoginRequest, AuthResponse, SpringPage, Event, Seat } from '../types';
+import type { LoginRequest, SpringPage, Event, Seat, SeatPlanItem, UserBooking } from '../types';
 
 const API_BASE_URL = 'http://localhost:8080';
 
@@ -34,10 +34,10 @@ apiClient.interceptors.response.use(
 export const api = {
 
 user: {
-    getMyBookings: async (): Promise<any[]> => {
-      const response = await apiClient.get('/api/seat/me');
-      return response.data;
-    },
+    getMyBookings: async () => {
+        const response = await apiClient.get('/api/seat/me');
+        return response.data;
+      },
 
     cancelBooking: async (seatId: number): Promise<string> => {
       try {
@@ -61,7 +61,6 @@ user: {
           throw new Error("Backend did not return a valid token string.");
         }
 
-        useAuthStore.getState().login(actualToken);
         localStorage.setItem('seatpulse_jwt', actualToken);
 
         return actualToken;
@@ -84,18 +83,44 @@ user: {
     }
   },
 
+
+
+admin: {
+    getStats: async (): Promise<{ totalEvents: number; activeBookings: number; totalRevenue: number; registeredUsers: number }> => {
+      const response = await apiClient.get('/api/admin/stats');
+      return response.data;
+    }
+  },
+
   events: {
     getAll: async (category: string = ''): Promise<Event[]> => {
       try {
         const response = await apiClient.get<SpringPage<Event>>('/api/events/search', {
-          params: { category, pageNo: 0, pageSize: 20, sortBy: 'eventId' }
+          params: { category, pageNo: 0, pageSize: 100, sortBy: 'eventId' }
         });
         return response.data.content;
       } catch (err) {
         console.error('Failed to fetch events:', err);
         return [];
       }
-    }
+    },
+
+    create: async (eventData: Omit<Event, 'eventId'> & { totalSeats: number }): Promise<Event & { totalSeats?: number }> => {
+      try {
+        const response = await apiClient.post('/api/events/addEvent', eventData);
+        return response.data;
+      } catch (err: any) {
+        throw new Error(err.response?.data?.message || 'Failed to create event.');
+      }
+    },
+
+    saveSeatingPlan: async (eventId: number, seats: SeatPlanItem[]): Promise<void> => {
+      try {
+        await apiClient.post(`/api/events/${eventId}/seats`, { seats });
+      } catch (err: any) {
+        throw new Error(err.response?.data?.message || err.response?.data || 'Failed to save seating plan.');
+      }
+    },
   },
 
   seats: {

@@ -25,6 +25,8 @@ public class Seat {
     @Enumerated(EnumType.STRING)
     private SeatStatus status;
 
+    private String tier;
+
     @ManyToOne
     @JoinColumn(name="locked_by_userid")
     private User lockedBy;
@@ -111,6 +113,14 @@ public class Seat {
         this.price = price;
     }
 
+    public String getTier() {
+        return tier;
+    }
+
+    public void setTier(String tier) {
+        this.tier = tier;
+    }
+
     @Override
     public String toString() {
         return "Seat{" +
@@ -120,6 +130,7 @@ public class Seat {
                 ", lockedAt=" + lockedAt +
                 ", price=" + price +
                 ", status=" + status +
+                ", tier='" + tier + '\'' +
                 ", lockedBy=" + lockedBy +
                 ", event=" + event +
                 '}';

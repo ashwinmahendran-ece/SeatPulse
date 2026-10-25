@@ -9,14 +9,18 @@ public class BookingResponseDto {
     private Long seatNo;
     private String status;
     private Long seatId;
+    private String location;
+    private String venue;
 
-    public BookingResponseDto(Long eventId, String eventName, LocalDateTime eventStartTime, Long seatNo, String status,Long seatId) {
+    public BookingResponseDto(Long eventId, String eventName, LocalDateTime eventStartTime, Long seatNo, String status,Long seatId, String location, String venue) {
         this.eventId = eventId;
         this.eventName = eventName;
         this.eventStartTime = eventStartTime;
         this.seatNo = seatNo;
         this.status = status;
         this.seatId = seatId;
+        this.location = location;
+        this.venue = venue;
     }
 
     public Long getEventId() {
@@ -60,5 +64,21 @@ public class BookingResponseDto {
 
     public void setSeatId(Long seatId) {
         this.seatId = seatId;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getVenue() {
+        return venue;
+    }
+
+    public void setVenue(String venue) {
+        this.venue = venue;
     }
 }

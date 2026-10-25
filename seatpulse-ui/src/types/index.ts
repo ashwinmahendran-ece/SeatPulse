@@ -38,7 +38,23 @@ export interface Booking {
   eventId: number;
   seatId: number;
   seatNumber: string;
+  seatCategory?: string;
   qty: number;
   total: number;
   expiresAt: number;
+}
+
+export interface SeatPlanItem {
+  seatNumber: number;
+  tier: string;
+  price: number;
+}
+
+export interface UserBooking {
+  eventId: number;
+  eventName: string;
+  eventStartTime?: string;
+  seatNo: number;
+  status: string;
+  seatId: number;
 }

@@ -34,7 +34,7 @@ class JwtServiceTest {
         String username = "Ashwin";
         when(userDetails.getUsername()).thenReturn(username);
 
-        String token = jwtService.generateToken(username);
+        String token = jwtService.generateToken(username, user.getRole());
         String extractedUsername = jwtService.extractUsername(token);
         boolean isValid = jwtService.validateToken(token, userDetails);
 
