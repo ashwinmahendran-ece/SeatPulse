@@ -19,7 +19,7 @@ public class BookingConsumer {
         System.out.println("[Consumer] Picked up message from queue. Processing Seat ID: " + message.seatId());
 
         try {
-            seatService.bookSeat(message.seatId(), message.userId());
+            seatService.bookSeat(message.seatId(), message.userId(), message.orderId());
             System.out.println("[Consumer] Successfully booked Seat ID: " + message.seatId());
 
         } catch (Exception e) {

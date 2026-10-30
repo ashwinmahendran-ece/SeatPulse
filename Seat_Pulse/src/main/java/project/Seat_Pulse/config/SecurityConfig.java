@@ -42,6 +42,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/events/search").permitAll()
                         .requestMatchers("/api/events/event/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/seat/available").permitAll()
                         .requestMatchers(
                                 "/v3/api-docs",
                                 "/v3/api-docs/**",
@@ -51,7 +52,7 @@ public class SecurityConfig {
                                 "/webjars/**"
                         ).permitAll()
                         .requestMatchers("/api/events/**").hasRole("ADMIN")
-                        .requestMatchers("/api/seat/**", "/api/bookings/**").authenticated()
+                        .requestMatchers("/api/seat/lock", "/api/seat/book-bulk", "/api/bookings/**").authenticated()
                         .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

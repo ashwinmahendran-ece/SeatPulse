@@ -29,6 +29,9 @@ public class RabbitMQConfig {
     public static final String CANCEL_DB_QUEUE = "cancel_db_queue";
     public static final String CANCEL_EMAIL_QUEUE = "cancel_email_queue";
 
+    public static final String BULK_NOTIFICATION_QUEUE = "bulk_notification_queue";
+    public static final String BULK_NOTIFICATION_ROUTING_KEY = "bulk_notification_routing_key";
+
     @Bean
     public FanoutExchange cancelFanoutExchange() {
         return new FanoutExchange(CANCEL_FANOUT_EXCHANGE);
@@ -52,6 +55,19 @@ public class RabbitMQConfig {
     @Bean
     public Binding cancelEmailBinding() {
         return BindingBuilder.bind(cancelEmailQueue()).to(cancelFanoutExchange());
+    }
+
+    @Bean
+    public Queue bulkNotificationQueue() {
+        return new Queue(BULK_NOTIFICATION_QUEUE);
+    }
+
+    @Bean
+    public Binding bulkNotificationBinding() {
+        return BindingBuilder
+                .bind(bulkNotificationQueue())
+                .to(notificationExchange())
+                .with(BULK_NOTIFICATION_ROUTING_KEY);
     }
 
     @Bean

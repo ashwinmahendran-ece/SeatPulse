@@ -1,17 +1,23 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./index.html', './src/**/*.{ts,tsx}'],
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
   theme: {
     extend: {
       colors: {
-        page: '#F8F6F2', surface: '#FFFEFB', badge: '#F6F4EF', line: '#DCD8D2',
-        brand: '#6735E8', brandLight: '#EDE6FC', brandDeep: '#5022BE', ink: '#242224', muted: '#726E75',
+        black: '#050505',       // True Jet Black
+        amethyst: '#4B0082',    // Royal Amethyst
+        cyan: '#00FFFF',        // Electric Cyan
+        white: '#FFFFFF',
+        gray: '#1F1F1F',        // High-contrast divider line
       },
       fontFamily: {
-        display: ['"Space Grotesk"', 'sans-serif'],
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Helvetica Neue', 'Helvetica', 'Arial', 'sans-serif'], // Sharp, neutral geometric
+        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'], // Brutalist data accents
       },
     },
   },
   plugins: [],
-};
+}

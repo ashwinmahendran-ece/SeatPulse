@@ -2,7 +2,6 @@ package project.Seat_Pulse.Entity;
 
 import jakarta.persistence.*;
 import project.Seat_Pulse.enums.SeatStatus;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -35,7 +34,9 @@ public class Seat {
     @JoinColumn(name="event_id")
     private Event event;
 
-    public Seat(Long seatId, String seatCategory, Long seatNo, User lockedBy, Event event, LocalDateTime lockedAt,BigDecimal price) {
+    private String orderId;
+
+    public Seat(Long seatId, String seatCategory, Long seatNo, User lockedBy, Event event, LocalDateTime lockedAt,BigDecimal price,String orderId) {
         this.seatId = seatId;
         this.seatCategory = seatCategory;
         this.seatNo = seatNo;
@@ -43,6 +44,7 @@ public class Seat {
         this.event = event;
         this.lockedAt = lockedAt;
         this.price = price;
+        this.orderId = orderId;
     }
 
     public Seat(){
@@ -121,6 +123,14 @@ public class Seat {
         this.tier = tier;
     }
 
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
     @Override
     public String toString() {
         return "Seat{" +
@@ -133,6 +143,7 @@ public class Seat {
                 ", tier='" + tier + '\'' +
                 ", lockedBy=" + lockedBy +
                 ", event=" + event +
+                ", orderId='" + orderId + '\'' +
                 '}';
     }
 }

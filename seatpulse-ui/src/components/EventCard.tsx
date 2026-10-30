@@ -32,7 +32,6 @@ export const EventCard: React.FC<EventCardProps> = ({ event }) => {
         alt={event.eventName}
         className="w-full h-48 object-cover"
         onError={(e) => {
-          // 3. Ultimate fail-safe: if the Unsplash link breaks, load a generic placeholder
           e.currentTarget.src = 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80&w=800';
         }}
       />

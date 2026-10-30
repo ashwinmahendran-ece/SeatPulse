@@ -1,93 +1,118 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Map, Zap, Ticket, ArrowRight, Star } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 export default function LandingPage() {
-  const navigate = useNavigate();
-
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-50 selection:bg-indigo-500/30 flex flex-col relative overflow-x-hidden font-sans">
+    <div className="w-full min-h-screen bg-black text-white font-sans uppercase selection:bg-cyan selection:text-black overflow-x-hidden">
 
-      {/* Premium Deep Ambient Gradient */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-20%] left-[20%] w-[60%] h-[60%] bg-indigo-900/20 blur-[120px] rounded-full mix-blend-screen"></div>
-      </div>
+      {/* INLINE BRUTALIST STYLES */}
+      <style>{`
+        .marquee-container {
+          width: 100vw;
+          overflow: hidden;
+          white-space: nowrap;
+          border-top: 2px solid #00FFFF;
+          border-bottom: 2px solid #00FFFF;
+          background-color: #050505;
+          color: #00FFFF;
+        }
+        .marquee-content {
+          display: inline-block;
+          animation: marquee 15s linear infinite;
+          padding: 1rem 0;
+        }
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .hard-hover:hover {
+          background-color: #00FFFF;
+          color: #050505;
+          transition: none;
+        }
+      `}</style>
 
-      {/* --- HERO SECTION --- */}
-      <div className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 flex-grow flex flex-col justify-center z-10">
-        <div className="max-w-[1440px] mx-auto px-5 lg:px-16 text-center flex flex-col items-center">
+      {/* 1. HERO GRID */}
+      <section className="w-full max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-12 border-b border-gray">
 
-          {/* Trust Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900 border border-slate-800 mb-8 shadow-sm">
-            <Star className="w-4 h-4 text-indigo-400" fill="currentColor" />
-            <span className="text-sm font-semibold tracking-wide uppercase text-slate-300">The new standard for live events</span>
-          </div>
-
-          <h1 className="text-6xl md:text-8xl font-extrabold tracking-tighter mb-6 max-w-5xl mx-auto">
-            Your ticket to the <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-indigo-600">extraordinary.</span>
+        {/* Left Typography Block */}
+        <div className="md:col-span-8 border-r border-gray p-6 md:p-12 lg:p-20 flex flex-col justify-end min-h-[60vh] md:min-h-[80vh]">
+          <h1 className="text-[12vw] md:text-[8vw] font-black leading-[0.85] tracking-tighter text-white mb-6">
+            DISTRICT<br/>
+            <span className="text-amethyst">ACCESS.</span>
           </h1>
-
-          <p className="text-xl md:text-2xl text-slate-400 mb-10 max-w-2xl mx-auto">
-            Stop fighting for tickets. SeatPulse gives you interactive venue maps, instant checkouts, and zero hidden fees.
+          <p className="font-mono text-cyan text-sm md:text-lg max-w-md tracking-widest">
+            // UNFILTERED EVENT ALLOCATION. DIRECT RESERVATION PROTOCOL.
           </p>
+        </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-            <button
-              onClick={() => navigate('/explore')}
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white text-lg font-semibold rounded-full shadow-[0_0_20px_rgba(79,70,229,0.3)] hover:shadow-[0_0_30px_rgba(79,70,229,0.5)] transition-all duration-300 group"
-            >
-              Explore Events
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
-            <button
-              onClick={() => navigate('/login')}
-              className="inline-flex items-center justify-center px-8 py-4 bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-200 text-lg font-semibold rounded-full transition-colors"
-            >
-              Sign In
-            </button>
+        {/* Right Action Block */}
+        <div className="md:col-span-4 flex flex-col">
+          <div className="flex-1 p-6 md:p-12 border-b border-gray flex items-end">
+            <p className="font-bold text-xl md:text-3xl leading-tight">
+              SECURE YOUR ENTRY. NO QUEUES. NO MIDDLEMEN.
+            </p>
           </div>
+          <Link
+            to="/explore"
+            className="w-full bg-amethyst text-white font-mono font-black text-xl md:text-2xl p-8 text-center uppercase tracking-widest border-t-4 border-transparent hover:border-cyan hard-hover"
+          >
+            ENTER DIRECTORY
+          </Link>
+        </div>
+      </section>
+
+      {/* 2. TICKER TAPE */}
+      <div className="marquee-container my-12">
+        <div className="marquee-content font-mono text-xl font-bold tracking-widest">
+          SYSTEM ONLINE // ZERO FEES // SECURE ALLOCATION // SYSTEM ONLINE // ZERO FEES // SECURE ALLOCATION // SYSTEM ONLINE // ZERO FEES // SECURE ALLOCATION //
         </div>
       </div>
 
-      {/* --- FEATURES SECTION --- */}
-      <div className="max-w-[1440px] mx-auto px-5 lg:px-16 py-24 relative z-10 w-full">
-         <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+      {/* 3. ASYMMETRICAL SPECIFICATION GRID */}
+      <section className="w-full max-w-[1440px] mx-auto px-6 py-12">
+        <h2 className="font-mono text-amethyst text-2xl font-black mb-8 tracking-widest">
+          [ ARCHITECTURE ]
+        </h2>
 
-            {/* Feature 1 */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 hover:-translate-y-1 hover:border-indigo-500/50 transition-all duration-300 group shadow-lg shadow-black/50">
-              <div className="w-14 h-14 rounded-xl bg-indigo-900/30 text-indigo-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Map className="w-7 h-7" />
-              </div>
-              <h3 className="text-2xl font-bold mb-3 text-slate-100 tracking-tight">Spatial Seat Maps</h3>
-              <p className="text-slate-400 leading-relaxed">
-                Pick your exact seat with our interactive 2D venue builder. Know exactly where you'll sit before you pay.
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-0 border border-gray">
+
+          <div className="p-10 md:p-16 border-b md:border-b-0 md:border-r border-gray hover:bg-white hover:text-black transition-none group">
+            <h3 className="text-4xl md:text-6xl font-black tracking-tight mb-6">QR PROTOCOL</h3>
+            <p className="font-mono text-sm md:text-base opacity-80 group-hover:opacity-100 uppercase">
+              Encrypted digital passes generated instantly upon ledger confirmation.
+            </p>
+          </div>
+
+          <div className="grid grid-rows-2">
+            <div className="p-8 border-b border-gray hover:bg-amethyst hover:text-white transition-none group">
+              <h3 className="text-2xl md:text-4xl font-black tracking-tight mb-3">CONCURRENCY</h3>
+              <p className="font-mono text-xs md:text-sm opacity-80 group-hover:opacity-100 uppercase">
+                Pessimistic locking enforced. Zero double-bookings.
               </p>
             </div>
-
-            {/* Feature 2 */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 hover:-translate-y-1 hover:border-indigo-500/50 transition-all duration-300 group shadow-lg shadow-black/50">
-              <div className="w-14 h-14 rounded-xl bg-indigo-900/30 text-indigo-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Zap className="w-7 h-7" />
-              </div>
-              <h3 className="text-2xl font-bold mb-3 text-slate-100 tracking-tight">Instant Lock</h3>
-              <p className="text-slate-400 leading-relaxed">
-                No more "Someone beat you to it." The moment you click a seat, it's locked exclusively for you while you check out.
+            <div className="p-8 hover:bg-cyan hover:text-black transition-none group">
+              <h3 className="text-2xl md:text-4xl font-black tracking-tight mb-3">CURATION</h3>
+              <p className="font-mono text-xs md:text-sm opacity-80 group-hover:opacity-100 uppercase">
+                Exclusive grid access to verified sector venues only.
               </p>
             </div>
+          </div>
 
-            {/* Feature 3 */}
-            <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 hover:-translate-y-1 hover:border-indigo-500/50 transition-all duration-300 group shadow-lg shadow-black/50">
-              <div className="w-14 h-14 rounded-xl bg-indigo-900/30 text-indigo-400 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                <Ticket className="w-7 h-7" />
-              </div>
-              <h3 className="text-2xl font-bold mb-3 text-slate-100 tracking-tight">Zero-Friction Checkout</h3>
-              <p className="text-slate-400 leading-relaxed">
-                Powered by Razorpay for seamless, secure transactions. Your digital ticket is delivered instantly to your dashboard.
-              </p>
-            </div>
+        </div>
+      </section>
 
-         </div>
-      </div>
+      {/* 4. MASSIVE TERMINAL FOOTER CTA */}
+      <section className="w-full border-t border-gray mt-24">
+        <Link
+          to="/explore"
+          className="block w-full text-center py-32 md:py-48 bg-black hover:bg-cyan text-white hover:text-black transition-none group border-b-[16px] border-amethyst group-hover:border-black"
+        >
+          <h2 className="text-6xl md:text-9xl font-black tracking-tighter group-hover:tracking-widest transition-all duration-150">
+            INITIALIZE
+          </h2>
+        </Link>
+      </section>
+
     </div>
   );
 }

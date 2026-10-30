@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -21,7 +22,10 @@ public class PaymentController {
     private String keySecret;
 
     @PostMapping("/create-order")
-    public Map<String, String> createOrder(@RequestParam Long seatId, @RequestParam Double amount) throws Exception {
+    public Map<String, String> createOrder(
+            @RequestParam List<Long> seatIds,
+            @RequestParam Double amount
+    ) throws Exception {
         RazorpayClient razorpay = new RazorpayClient(keyId, keySecret);
 
         int amountInPaise = (int) (amount * 100);

@@ -16,6 +16,7 @@ import project.Seat_Pulse.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SeatService {
@@ -72,11 +73,11 @@ public class SeatService {
         evictSeatMapCache(seat.getEvent().getEventId());
         seatLockProducer.startLockTimer(new SeatLockDto(seatId));
 
-        return new SeatResponseDto(seat.getSeatId(), seat.getSeatNo(), seat.getSeatCategory(), seat.getStatus(), seat.getEvent().getEventId(), seat.getPrice());
+        return new SeatResponseDto(seat.getSeatId(), seat.getSeatNo(), seat.getSeatCategory(), seat.getStatus(), seat.getEvent().getEventId(), seat.getPrice(), seat.getEvent().getEventName(),seat.getOrderId());
     }
 
     @Transactional
-    public SeatResponseDto bookSeat(long seatId, long userId) {
+    public SeatResponseDto bookSeat(long seatId, long userId,String orderId) {
         Seat seat = seatRepo.findById(seatId)
                 .orElseThrow(() -> new RuntimeException("Seat not found"));
 
@@ -88,15 +89,16 @@ public class SeatService {
         }
 
         seat.setStatus(SeatStatus.BOOKED);
+        seat.setOrderId(orderId);
         seatRepo.save(seat);
         evictSeatMapCache(seat.getEvent().getEventId());
 
-        User user = seat.getLockedBy();
-        Event event = seat.getEvent();
-        NotificationMessageDto emailPayload = new NotificationMessageDto(user.getEmailId(), event.getEventName(), seat.getSeatNo());
-        notificationProducer.sendEmailTask(emailPayload);
+//        User user = seat.getLockedBy();
+//        Event event = seat.getEvent();
+//        NotificationMessageDto emailPayload = new NotificationMessageDto(user.getEmailId(), event.getEventName(), seat.getSeatNo());
+//        notificationProducer.sendEmailTask(emailPayload);
 
-        return new SeatResponseDto(seat.getSeatId(), seat.getSeatNo(), seat.getSeatCategory(), seat.getStatus(), seat.getEvent().getEventId(), seat.getPrice());
+        return new SeatResponseDto(seat.getSeatId(), seat.getSeatNo(), seat.getSeatCategory(), seat.getStatus(), seat.getEvent().getEventId(), seat.getPrice(),seat.getEvent().getEventName(),seat.getOrderId());
     }
 
     @Cacheable(value = "eventSeats", key = "#eventId")
@@ -113,7 +115,9 @@ public class SeatService {
                     seat.getSeatCategory(),
                     seat.getStatus(),
                     eventId,
-                    seat.getPrice()
+                    seat.getPrice(),
+                    seat.getEvent().getEventName(),
+                    seat.getOrderId()
             ));
         }
         return seatDtos;
@@ -188,5 +192,18 @@ public class SeatService {
 
         seatRepo.saveAll(customSeats);
         evictSeatMapCache(eventId);
+    }
+
+    public SeatResponseDto getSeatById(Long seatId) {
+        SeatResponseDto seatResponseDto = new SeatResponseDto();
+        Seat seat = seatRepo.findById(seatId).orElseThrow(() -> new RuntimeException("Seat not found"));
+        seatResponseDto.setSeatId(seat.getSeatId());
+        seatResponseDto.setSeatNo(seat.getSeatNo());
+        seatResponseDto.setSeatCategory(seat.getSeatCategory());
+        seatResponseDto.setSeatStatus(seat.getStatus());
+        seatResponseDto.setEventId(seat.getEvent().getEventId());
+        seatResponseDto.setPrice(seat.getPrice());
+        seatResponseDto.setEventName(seat.getEvent().getEventName());
+        return seatResponseDto;
     }
 }

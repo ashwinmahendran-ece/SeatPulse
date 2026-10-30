@@ -59,9 +59,7 @@ export default function AdminLayout() {
         </div>
       </aside>
 
-      {/* Main Content Area */}
       <main className="flex-1 overflow-y-auto">
-        {/* This Outlet renders your Dashboard, Event Form, or Seating Builder */}
         <Outlet />
       </main>
     </div>

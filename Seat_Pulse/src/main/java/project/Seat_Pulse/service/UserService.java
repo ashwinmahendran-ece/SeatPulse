@@ -52,7 +52,7 @@ public class UserService {
             User dbUser = userRepo.findByUserName(user.getUserName());
 
             String role = dbUser.getRole();
-            return jwtService.generateToken(user.getUserName(), role);
+            return jwtService.generateToken(user.getUserName(), role, dbUser.getEmailId());
         }
         return "Authentication failed";
     }

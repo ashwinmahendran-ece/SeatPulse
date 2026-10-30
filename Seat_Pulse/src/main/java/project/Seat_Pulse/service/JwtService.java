@@ -8,7 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
-import java.sql.Date;
+
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -19,9 +20,10 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    public String generateToken(String userName, String role) {
+    public String generateToken(String userName, String role, String emailId) {
         Map<String,Object> claims = new HashMap<>();
         claims.put("role", role);
+        claims.put("emailId", emailId);
 
         return Jwts.builder()
                 .claims()
@@ -62,10 +64,10 @@ public class JwtService {
     }
 
     private boolean isTokenExpired(String token){
-        return extractExpiration(token).before(new java.util.Date());
+        return extractExpiration(token).before(new Date());
     }
 
-    private java.util.Date extractExpiration(String token){
+    private Date extractExpiration(String token){
         return extractClaim(token,Claims::getExpiration);
     }
 }
