@@ -2,18 +2,14 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-// Layout Components
 import Footer from './components/Footer';
 
-// Public Page Components
 import LandingPage from './pages/LandingPage';
 import ExplorePage from './pages/ExplorePage';
 import EventDetailsPage from './pages/EventDetailsPage';
 import CheckoutPage from './pages/CheckoutPage';
 import MyBookingsPage from './pages/MyBookingsPage';
 import AuthPage from './pages/AuthPage';
-
-// Admin Page Components
 import DashboardPage from './pages/DashboardPage';
 import EventFormPage from './pages/EventFormPage';
 import SeatingBuilderPage from './pages/SeatingBuilderPage';

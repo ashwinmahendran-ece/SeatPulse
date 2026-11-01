@@ -6,8 +6,8 @@ import java.math.BigDecimal;
 
 public class SeatDto {
 
-    @JsonProperty("seatNumber")
-    private Long seatNo;
+    @JsonProperty("seatNo")
+    private String seatNo;
 
     private String tier;
 
@@ -15,10 +15,10 @@ public class SeatDto {
 
     private String category;
 
-    public Long getSeatNo() {
+    public String getSeatNo() {
         return seatNo;
     }
-    public void setSeatNumber(Long seatNo) {
+    public void setSeatNumber(String seatNo) {
         this.seatNo = seatNo;
     }
     public String getTier() {

@@ -1,18 +1,21 @@
 package project.Seat_Pulse.DTOs;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 public class BookingResponseDto {
     private Long eventId;
     private String eventName;
     private LocalDateTime eventStartTime;
-    private Long seatNo;
+    private String seatNo;
     private String status;
     private Long seatId;
     private String location;
     private String venue;
+    private String orderId;
+    private BigDecimal price;
 
-    public BookingResponseDto(Long eventId, String eventName, LocalDateTime eventStartTime, Long seatNo, String status,Long seatId, String location, String venue) {
+    public BookingResponseDto(Long eventId, String eventName, LocalDateTime eventStartTime, String seatNo, String status, Long seatId, String location, String venue, String orderId, BigDecimal price) {
         this.eventId = eventId;
         this.eventName = eventName;
         this.eventStartTime = eventStartTime;
@@ -21,6 +24,8 @@ public class BookingResponseDto {
         this.seatId = seatId;
         this.location = location;
         this.venue = venue;
+        this.orderId = orderId;
+        this.price = price;
     }
 
     public Long getEventId() {
@@ -44,10 +49,10 @@ public class BookingResponseDto {
         this.eventStartTime = eventStartTime;
     }
 
-    public Long getSeatNo() {
+    public String getSeatNo() {
         return seatNo;
     }
-    public void setSeatNo(Long seatNo) {
+    public void setSeatNo(String seatNo) {
         this.seatNo = seatNo;
     }
 
@@ -80,5 +85,21 @@ public class BookingResponseDto {
 
     public void setVenue(String venue) {
         this.venue = venue;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 }

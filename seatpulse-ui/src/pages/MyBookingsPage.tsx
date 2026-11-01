@@ -49,18 +49,19 @@ export default function MyBookingsPage() {
   const { data: rawBookings = [], isLoading } = useQuery({ queryKey: ['my-bookings'], queryFn: () => api.user.getMyBookings() });
   const bookings = Array.isArray(rawBookings) ? rawBookings : (rawBookings?.data || []);
 
-  const getGroupIdForSeat = (seatId: number) => {
-    const groups = JSON.parse(localStorage.getItem('seatpulse_order_groups') || '{}');
-    for (const [orderId, seatIdsArray] of Object.entries(groups)) {
-      if (Array.isArray(seatIdsArray) && seatIdsArray.includes(seatId)) return orderId;
-    }
-    return null;
-  };
-
+  // PRODUCTION GROUPING: Strictly uses Backend orderId, no localStorage hacks.
   const groupedBookings = bookings.reduce((acc: any, ticket: any) => {
-    let orderKey = getGroupIdForSeat(ticket.seatId) || `SPX-SINGLE-${ticket.seatId}`;
+    // If orderId is missing (e.g. legacy data), gracefully fallback to eventId so it doesn't crash
+    const orderKey = ticket.orderId || `LEGACY-${ticket.eventId}-${ticket.seatId}`;
+
     if (!acc[orderKey]) {
-      acc[orderKey] = { ...ticket, displayOrderId: orderKey, seatIds: [ticket.seatId], seatNumbers: [ticket.seatNo], totalPrice: ticket.price || 0 };
+      acc[orderKey] = {
+        ...ticket,
+        displayOrderId: orderKey,
+        seatIds: [ticket.seatId],
+        seatNumbers: [ticket.seatNo],
+        totalPrice: ticket.price || 0
+      };
     } else {
       acc[orderKey].seatIds.push(ticket.seatId);
       acc[orderKey].seatNumbers.push(ticket.seatNo);
@@ -68,6 +69,7 @@ export default function MyBookingsPage() {
     }
     return acc;
   }, {});
+
   const orderCards = Object.values(groupedBookings).reverse();
 
   const cancelMutation = useMutation({

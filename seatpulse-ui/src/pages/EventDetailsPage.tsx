@@ -34,6 +34,17 @@ const getUserSeatColor = (isSelected: boolean, isAvailable: boolean) => {
   return 'bg-transparent border border-slate-500 text-slate-300 hover:border-[#E8D5B5] hover:text-[#E8D5B5] transition-colors';
 };
 
+// DYNAMIC COLUMN CALCULATOR
+const calculateCols = (seatsMap: any[]) => {
+  if (!seatsMap || seatsMap.length === 0) return 15;
+  const bRowIndex = seatsMap.findIndex(s => typeof s.seatNo === 'string' && s.seatNo.replace(/[0-9]/g, '').toUpperCase() === 'B');
+  if (bRowIndex > 0) return bRowIndex;
+  const cRowIndex = seatsMap.findIndex(s => typeof s.seatNo === 'string' && s.seatNo.replace(/[0-9]/g, '').toUpperCase() === 'C');
+  if (cRowIndex > 0) return Math.floor(cRowIndex / 2);
+  if (seatsMap.length < 15) return seatsMap.length;
+  return 15;
+};
+
 export default function EventDetailsPage() {
   const { id: paramId } = useParams();
   const navigate = useNavigate();
@@ -44,8 +55,6 @@ export default function EventDetailsPage() {
 
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
   const [isLocking, setIsLocking] = useState(false);
-
-  const COLS = 15; // Match Admin Builder Default
 
   const { data: rawSeats = [], isLoading, refetch } = useQuery({
     queryKey: ['seats', eventId],
@@ -59,6 +68,9 @@ export default function EventDetailsPage() {
   });
 
   const seats = Array.isArray(rawSeats) ? rawSeats : (rawSeats?.data || []);
+
+  // FIX: Dynamically calculate columns based on actual mapped seats
+  const COLS = calculateCols(seats);
 
   const handleToggleSeat = (seat: Seat) => {
     setSelectedSeats((prev) => {

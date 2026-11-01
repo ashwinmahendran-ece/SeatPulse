@@ -13,4 +13,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query("SELECT e FROM Event e WHERE (:category = '' OR e.eventCategory = :category) AND e.eventStartTime > CURRENT_TIMESTAMP")
     Page<Event> searchUpcomingEvents(@Param("category") String category, Pageable pageable);
+
+    @Query("SELECT COUNT(DISTINCT s.orderId) FROM Seat s WHERE s.status = 'BOOKED' AND s.orderId IS NOT NULL")
+    long countActiveOrders();
 }

@@ -37,10 +37,10 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
 
     List<Seat> findByLockedBy_UserIdAndStatus(Long userId, SeatStatus status);
 
-    @Query("SELECT COUNT(s) FROM Seat s WHERE s.status = 'BOOKED'")
+    @Query("SELECT COUNT(DISTINCT s.orderId) FROM Seat s WHERE s.status = 'BOOKED' AND s.orderId IS NOT NULL")
     long countBookedSeats();
 
-    @Query("SELECT COALESCE(SUM(s.price), 0) FROM Seat s WHERE s.status = 'BOOKED'")
+    @Query("SELECT COALESCE(SUM(s.price), 0.0) FROM Seat s WHERE s.status = 'BOOKED'")
     double sumTotalRevenue();
 
     @Modifying

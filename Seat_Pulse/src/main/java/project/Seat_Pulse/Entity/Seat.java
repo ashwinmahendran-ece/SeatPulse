@@ -15,7 +15,8 @@ public class Seat {
 
     private String seatCategory;
 
-    private Long seatNo;
+    @Column(name = "seat_no")
+    private String seatNo;
 
     private LocalDateTime lockedAt;
 
@@ -36,7 +37,7 @@ public class Seat {
 
     private String orderId;
 
-    public Seat(Long seatId, String seatCategory, Long seatNo, User lockedBy, Event event, LocalDateTime lockedAt,BigDecimal price,String orderId) {
+    public Seat(Long seatId, String seatCategory, String seatNo, User lockedBy, Event event, LocalDateTime lockedAt,BigDecimal price,String orderId) {
         this.seatId = seatId;
         this.seatCategory = seatCategory;
         this.seatNo = seatNo;
@@ -67,11 +68,11 @@ public class Seat {
         this.seatCategory = seatCategory;
     }
 
-    public Long getSeatNo() {
+    public String getSeatNo() {
         return seatNo;
     }
 
-    public void setSeatNo(Long seatNo) {
+    public void setSeatNo(String seatNo) {
         this.seatNo = seatNo;
     }
 

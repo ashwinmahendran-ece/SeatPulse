@@ -33,14 +33,23 @@ const getRowLabel = (index: number) => {
   return label;
 };
 
+// DYNAMIC COLUMN CALCULATOR
+const calculateCols = (seatsMap: any[]) => {
+  if (!seatsMap || seatsMap.length === 0) return 15;
+  const bRowIndex = seatsMap.findIndex(s => typeof s.seatNo === 'string' && s.seatNo.replace(/[0-9]/g, '').toUpperCase() === 'B');
+  if (bRowIndex > 0) return bRowIndex;
+  const cRowIndex = seatsMap.findIndex(s => typeof s.seatNo === 'string' && s.seatNo.replace(/[0-9]/g, '').toUpperCase() === 'C');
+  if (cRowIndex > 0) return Math.floor(cRowIndex / 2);
+  if (seatsMap.length < 15) return seatsMap.length;
+  return 15;
+};
+
 export default function DashboardPage() {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
   const user = useAuthStore((state) => state.user);
 
   const [previewEventId, setPreviewEventId] = useState<number | null>(null);
-
-  const COLS = 15; // Match the builder's default column count
 
   // Fetch Admin Stats
   const { data: stats, isLoading: isLoadingStats } = useQuery({
@@ -67,6 +76,9 @@ export default function DashboardPage() {
 
   const previewSeats = Array.isArray(rawSeats) ? rawSeats : (rawSeats?.data || []);
 
+  // FIX: Dynamically calculate columns based on actual mapped seats
+  const COLS = calculateCols(previewSeats);
+
   // Group rows for BookMyShow style preview
   const groupedRows: { category: string, price: number, rows: any[] }[] = [];
   if (previewSeats.length > 0) {
@@ -80,9 +92,18 @@ export default function DashboardPage() {
       const rowCat = firstValidSeat?.seatCategory || firstValidSeat?.category || (currentGroup ? currentGroup.category : 'REGULAR');
       const rowPrice = firstValidSeat?.price || (currentGroup ? currentGroup.price : 0);
 
+      const rowLabel = getRowLabel(r);
+      let seatNumCounter = 1;
+
+      // FIX: Dynamically inject the A1, A2 labels onto the seat objects for display in the admin view
+      rowSeats.forEach((s: any) => {
+        const isBlocked = (s.seatCategory || s.category) === 'BLOCKED';
+        s.displaySeatNo = isBlocked ? '' : `${rowLabel}${seatNumCounter++}`;
+      });
+
       const rowDataObj = {
         rowIndex: r,
-        rowLabel: getRowLabel(r),
+        rowLabel: rowLabel,
         seats: rowSeats,
       };
 
@@ -127,7 +148,6 @@ export default function DashboardPage() {
             <span className="text-sm font-semibold text-slate-400 hidden sm:block">
               Welcome, <span className="text-white">{user?.username || 'Admin'}</span>
             </span>
-            {/* FIX: Call handleLogout instead of raw logout */}
             <button onClick={handleLogout} className="rounded-lg border border-white/10 bg-[#1A1C1E] px-4 py-2 text-xs font-bold text-slate-300 hover:bg-white hover:text-[#1A1C1E] transition-all">
               Log Out
             </button>
@@ -335,7 +355,7 @@ export default function DashboardPage() {
                                           ${isBlocked ? 'border border-dashed border-slate-700/50 bg-transparent cursor-default pointer-events-none' : getPreviewSeatColor(category, status)}
                                         `}
                                       >
-                                        {!isBlocked && String(seat.seatNo || '').replace(/[^0-9A-Za-z]/g, '')}
+                                        {!isBlocked && (seat.displaySeatNo || seat.seatNo)}
                                       </div>
                                     );
                                   })}

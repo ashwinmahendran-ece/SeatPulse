@@ -17,6 +17,17 @@ const getRowLabel = (index: number) => {
   return label;
 };
 
+// DYNAMIC COLUMN CALCULATOR
+const calculateCols = (seatsMap: any[]) => {
+  if (!seatsMap || seatsMap.length === 0) return 15;
+  const bRowIndex = seatsMap.findIndex(s => typeof s.seatNo === 'string' && s.seatNo.replace(/[0-9]/g, '').toUpperCase() === 'B');
+  if (bRowIndex > 0) return bRowIndex;
+  const cRowIndex = seatsMap.findIndex(s => typeof s.seatNo === 'string' && s.seatNo.replace(/[0-9]/g, '').toUpperCase() === 'C');
+  if (cRowIndex > 0) return Math.floor(cRowIndex / 2);
+  if (seatsMap.length < 15) return seatsMap.length;
+  return 15;
+};
+
 export default function SeatingBuilderPage() {
   const { eventId } = useParams<{ eventId: string }>();
   const navigate = useNavigate();
@@ -63,7 +74,8 @@ export default function SeatingBuilderPage() {
       const isCustomLayout = existingSeats.length > 0 && hasSavedPathways;
 
       if (isCustomLayout) {
-        const loadedCols = cols || 15;
+        // FIX: Dynamically restore actual columns instead of defaulting to 15
+        const loadedCols = calculateCols(existingSeats);
         const loadedRows = Math.ceil(existingSeats.length / loadedCols) || 10;
         setCols(loadedCols);
         setRows(loadedRows);
@@ -91,7 +103,7 @@ export default function SeatingBuilderPage() {
       }
       setHasInitialized(true);
     }
-  }, [hasInitialized, isExistingLoaded, existingSeats, cols]);
+  }, [hasInitialized, isExistingLoaded, existingSeats]);
 
   const handleGridResize = (newRows: number, newCols: number) => {
     setRows(newRows);
@@ -316,7 +328,7 @@ export default function SeatingBuilderPage() {
 
             <div className="space-y-4">
               <h3 className="text-sm font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2">
-                <LayoutGrid className="w-4 h-4 text-indigo-400" /> 1. Grid Dimensions
+                <LayoutGrid className="w-4 h-4 text-indigo-400" />1. Grid Dimensions
               </h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>

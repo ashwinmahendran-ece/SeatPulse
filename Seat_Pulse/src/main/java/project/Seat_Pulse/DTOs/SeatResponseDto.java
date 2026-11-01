@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 public class SeatResponseDto implements Serializable {
     private long seatId;
-    private long seatNo;
+    private String seatNo;
     private String seatCategory;
     private SeatStatus seatStatus;
     private long eventId;
@@ -16,7 +16,7 @@ public class SeatResponseDto implements Serializable {
     private String orderId;
 
 
-    public SeatResponseDto(long seatId, long seatNo, String seatCategory, SeatStatus seatStatus, long eventId, BigDecimal price, String eventName, String orderId) {
+    public SeatResponseDto(long seatId, String seatNo, String seatCategory, SeatStatus seatStatus, long eventId, BigDecimal price, String eventName, String orderId) {
         this.seatId = seatId;
         this.seatNo = seatNo;
         this.seatCategory = seatCategory;
@@ -31,11 +31,11 @@ public class SeatResponseDto implements Serializable {
 
     }
 
-    public long getSeatNo() {
+    public String getSeatNo() {
         return seatNo;
     }
 
-    public void setSeatNo(long seatNo) {
+    public void setSeatNo(String seatNo) {
         this.seatNo = seatNo;
     }
 

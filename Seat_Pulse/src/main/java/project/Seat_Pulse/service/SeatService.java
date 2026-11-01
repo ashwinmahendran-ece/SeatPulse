@@ -45,7 +45,7 @@ public class SeatService {
 
         for (int i = 1; i <= totalSeats; i++) {
             Seat seat = new Seat();
-            seat.setSeatNo((long) i);
+            seat.setSeatNo(String.valueOf((long) i));
             seat.setSeatCategory(i <= 10 ? "VIP" : "REGULAR");
             seat.setStatus(SeatStatus.AVAILABLE);
             seat.setEvent(event);
@@ -107,7 +107,7 @@ public class SeatService {
         List<Seat> getSeatsfromRepo = seatRepo.findByEvent_EventId(eventId);
         List<SeatResponseDto> seatDtos = new ArrayList<>();
         for(Seat seat : getSeatsfromRepo){
-            Long seatNoVal = seat.getSeatNo() != null ? seat.getSeatNo() : 0L;
+            String seatNoVal = seat.getSeatNo() != null ? seat.getSeatNo() : String.valueOf(0L);
 
             seatDtos.add(new SeatResponseDto(
                     seat.getSeatId(),
@@ -139,7 +139,8 @@ public class SeatService {
         return userSeats.stream().map(seat -> new BookingResponseDto(
                 seat.getEvent().getEventId(), seat.getEvent().getEventName(),
                 seat.getEvent().getEventStartTime(), seat.getSeatNo(),
-                seat.getStatus().name(), seat.getSeatId(),seat.getEvent().getLocation(),seat.getEvent().getVenue()
+                seat.getStatus().name(), seat.getSeatId(),seat.getEvent().getLocation(),seat.getEvent().getVenue(),
+                seat.getOrderId(),seat.getPrice()
         )).toList();
     }
 
@@ -182,9 +183,9 @@ public class SeatService {
             if ("BLOCKED".equalsIgnoreCase(dto.getCategory())) {
                 seat.setSeatNo(null);
             } else {
-                long seatNum = (dto.getSeatNo() != null && dto.getSeatNo() > 0)
+                String seatNum = (dto.getSeatNo() != null)
                         ? dto.getSeatNo()
-                        : activeSeatCounter++;
+                        : String.valueOf(activeSeatCounter++);
                 seat.setSeatNo(seatNum);
             }
             customSeats.add(seat);
