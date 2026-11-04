@@ -22,7 +22,7 @@ const formatTicketDate = (dateVal: string | number[] | undefined) => {
 
 const getEmailFromToken = () => {
   try {
-    const token = localStorage.getItem('seatpulse_jwt');
+    const token = sessionStorage.getItem('seatpulse_jwt');
     if (!token) return null;
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -49,9 +49,7 @@ export default function MyBookingsPage() {
   const { data: rawBookings = [], isLoading } = useQuery({ queryKey: ['my-bookings'], queryFn: () => api.user.getMyBookings() });
   const bookings = Array.isArray(rawBookings) ? rawBookings : (rawBookings?.data || []);
 
-  // PRODUCTION GROUPING: Strictly uses Backend orderId, no localStorage hacks.
   const groupedBookings = bookings.reduce((acc: any, ticket: any) => {
-    // If orderId is missing (e.g. legacy data), gracefully fallback to eventId so it doesn't crash
     const orderKey = ticket.orderId || `LEGACY-${ticket.eventId}-${ticket.seatId}`;
 
     if (!acc[orderKey]) {
@@ -107,7 +105,6 @@ export default function MyBookingsPage() {
         }
       `}</style>
 
-      {/* HEADER */}
       <header className="sticky top-0 z-40 border-b border-white/10 bg-[#07090E]/90 backdrop-blur-md shadow-none px-5 lg:px-16">
         <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between relative">
           <button onClick={() => navigate('/explore')} className="flex items-center gap-2 text-sm font-bold text-slate-400 transition-colors hover:text-[#E8D5B5] z-20">
@@ -123,7 +120,6 @@ export default function MyBookingsPage() {
 
       <main className="mx-auto w-full max-w-[1000px] px-5 pt-10 lg:px-16 relative z-10 animate-fade-in">
 
-        {/* USER PROFILE PANEL */}
         <section className="mb-10 flex flex-col sm:flex-row items-center justify-between gap-6 rounded-3xl border border-white/10 bg-[#11131A] p-6 sm:p-8 shadow-2xl">
           <div className="flex items-center gap-5">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#E8D5B5]/10 text-[#E8D5B5] shadow-inner ring-1 ring-[#E8D5B5]/20">
@@ -134,12 +130,24 @@ export default function MyBookingsPage() {
               <p className="text-sm font-bold text-slate-400">{displayEmail}</p>
             </div>
           </div>
-          <button onClick={() => { logout(); navigate('/login'); }} className="rounded-xl border border-white/20 bg-transparent px-6 py-2.5 text-sm font-bold text-white transition hover:bg-[#E8D5B5] hover:text-[#07090E] hover:border-[#E8D5B5]">
-            Log Out
-          </button>
+          <button
+                      onClick={async () => {
+                        try {
+                          await api.auth.logout();
+                        } catch (err) {
+                          console.error('Logout API failed');
+                        } finally {
+                          logout();
+                          sessionStorage.removeItem('seatpulse_jwt');
+                          window.location.href = '/';
+                        }
+                      }}
+                      className="rounded-xl border border-white/20 bg-transparent px-6 py-2.5 text-sm font-bold text-white transition hover:bg-[#E8D5B5] hover:text-[#07090E] hover:border-[#E8D5B5]"
+                    >
+                      Log Out
+                    </button>
         </section>
 
-        {/* BOOKINGS SECTION */}
         <section>
           <div className="mb-8 flex items-center justify-between">
             <h2 className="font-display text-3xl font-black text-white">My Orders</h2>

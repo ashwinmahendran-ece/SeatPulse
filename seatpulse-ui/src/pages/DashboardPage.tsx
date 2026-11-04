@@ -121,11 +121,18 @@ export default function DashboardPage() {
     return 'bg-transparent border border-slate-400 text-slate-300';
   };
 
-  // FIX: Properly handle logout AND redirection
-  const handleLogout = () => {
-    logout();
-    localStorage.removeItem('seatpulse_jwt'); // Extra safety measure
-    navigate('/login');
+const handleLogout = async () => {
+    try {
+      await api.auth.logout();
+    } catch (err) {
+      console.error('Logout API failed');
+    } finally {
+      // 1. Destroy local state and token immediately
+      logout();
+      sessionStorage.removeItem('seatpulse_jwt');
+
+      window.location.href = '/';
+    }
   };
 
   return (

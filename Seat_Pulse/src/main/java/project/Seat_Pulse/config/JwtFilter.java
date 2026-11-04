@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 import project.Seat_Pulse.service.JwtService;
+import project.Seat_Pulse.service.TokenBlacklistService;
 import org.springframework.stereotype.Component;
 import project.Seat_Pulse.service.MyUserDetailsService;
 import java.io.IOException;
@@ -20,10 +21,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private final ApplicationContext context;
     private final JwtService jwtService;
+    private final TokenBlacklistService tokenBlacklistService;
 
-    public JwtFilter(JwtService jwtService, ApplicationContext applicationContext){
+    public JwtFilter(JwtService jwtService, ApplicationContext applicationContext, TokenBlacklistService tokenBlacklistService){
         this.jwtService = jwtService;
         this.context = applicationContext;
+        this.tokenBlacklistService = tokenBlacklistService;
     }
 
     @Override
@@ -36,6 +39,13 @@ public class JwtFilter extends OncePerRequestFilter {
 
             if (authheader != null && authheader.startsWith("Bearer ")) {
                 token = authheader.substring(7);
+
+                if (tokenBlacklistService.isTokenBlacklisted(token)) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write("Token has been revoked. Please log in again.");
+                    return;
+                }
+
                 username = jwtService.extractUsername(token);
             }
 

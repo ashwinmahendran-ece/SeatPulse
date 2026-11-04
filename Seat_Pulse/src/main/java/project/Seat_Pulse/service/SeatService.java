@@ -207,4 +207,42 @@ public class SeatService {
         seatResponseDto.setEventName(seat.getEvent().getEventName());
         return seatResponseDto;
     }
+
+    @Transactional
+    public void confirmOrder(String orderId, long userId) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        List<Seat> lockedSeats = seatRepo.findByLockedBy_UserIdAndStatus(userId, SeatStatus.LOCKED);
+
+        if (lockedSeats.isEmpty()) {
+            throw new RuntimeException("No locked seats found for this user to confirm.");
+        }
+
+        List<String> seatNumbers = new ArrayList<>();
+        String eventName = "SeatPulse Event";
+
+        for (Seat seat : lockedSeats) {
+            seat.setStatus(SeatStatus.BOOKED);
+            seat.setOrderId(orderId);
+            seatNumbers.add(String.valueOf(seat.getSeatNo()));
+            eventName = seat.getEvent().getEventName();
+        }
+
+        seatRepo.saveAll(lockedSeats);
+
+        lockedSeats.stream()
+                .map(seat -> seat.getEvent().getEventId())
+                .distinct()
+                .forEach(this::evictSeatMapCache);
+
+        BulkNotificationMessageDto bulkEmailMsg = new BulkNotificationMessageDto(
+                user.getEmailId(),
+                user.getUserName(),
+                eventName,
+                seatNumbers,
+                orderId
+        );
+        notificationProducer.sendBulkEmailTask(bulkEmailMsg);
+    }
 }

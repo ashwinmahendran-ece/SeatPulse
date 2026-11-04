@@ -10,7 +10,7 @@ export const apiClient = axios.create({
 });
 
 apiClient.interceptors.request.use((config) => {
-  const token = useAuthStore.getState().token || localStorage.getItem('seatpulse_jwt');
+  const token = useAuthStore.getState().token || sessionStorage.getItem('seatpulse_jwt');
   if (token && token !== 'undefined' && token !== 'null') {
     config.headers.set('Authorization', `Bearer ${token}`);
   }
@@ -23,7 +23,7 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401) {
       console.error("401 Unauthorized. The backend rejected the token or blocked the request.");
       useAuthStore.getState().logout();
-      localStorage.removeItem('seatpulse_jwt');
+      sessionStorage.removeItem('seatpulse_jwt');
     }
     return Promise.reject(error);
   }
@@ -45,27 +45,48 @@ export const api = {
     }
   },
 
-  auth: {
-    login: async (credentials: LoginRequest): Promise<string> => {
+auth: {
+    login: async (credentials: { emailId?: string; username?: string; password: string }): Promise<string> => {
       try {
-        const payload = { userName: credentials.username, password: credentials.password };
+        const identifier = credentials.emailId || credentials.username;
+
+        const payload = {
+          userName: identifier,
+          emailId: identifier,
+          password: credentials.password
+        };
+
         const response = await apiClient.post('/api/auth/login', payload);
         const actualToken = response.data?.token || response.data;
+
         if (!actualToken || typeof actualToken !== 'string') {
           throw new Error("Backend did not return a valid token string.");
         }
-        localStorage.setItem('seatpulse_jwt', actualToken);
+
+        sessionStorage.setItem('seatpulse_jwt', actualToken);
         return actualToken;
       } catch (err) {
-        throw new Error('Invalid username or password.');
+        throw new Error('Invalid email or password.');
       }
     },
-    register: async (credentials: { username: string; emailId: string; password: string }): Promise<void> => {
+    register: async (credentials: { username: string; emailId: string; password: string; mobileNumber: string }): Promise<void> => {
+          try {
+            const payload = {
+              userName: credentials.username,
+              emailId: credentials.emailId,
+              password: credentials.password,
+              mobileNumber: credentials.mobileNumber // <-- ADD THIS
+            };
+            await apiClient.post('/api/auth/register', payload);
+          } catch (err: any) {
+            throw new Error(err.response?.data?.message || 'Registration failed.');
+          }
+        },
+    logout: async (): Promise<void> => {
       try {
-        const payload = { userName: credentials.username, emailId: credentials.emailId, password: credentials.password };
-        await apiClient.post('/api/auth/register', payload);
+        await apiClient.post('/api/auth/logout');
       } catch (err) {
-        throw new Error('Registration failed. Username or email might already be taken.');
+        console.error('Server logout failed or token already expired', err);
       }
     }
   },
@@ -78,7 +99,6 @@ export const api = {
   },
 
   events: {
-    // FIX: Set default pageSize to 100 so all your 16-20 events are fetched at once
     getAll: async (category: string = '', pageNo: number = 0, pageSize: number = 100): Promise<SpringPage<Event> | null> => {
       try {
         const response = await apiClient.get<SpringPage<Event>>('/api/events/search', {
@@ -104,16 +124,15 @@ export const api = {
       }
     },
     saveSeatingPlan: async (eventId: number, seats: any[]): Promise<void> => {
-          try {
-            await apiClient.post(`/api/events/${eventId}/seats`, { seats });
-          } catch (err: any) {
-            console.error("Backend Error Details:", err.response?.data);
-            throw new Error(err.response?.data?.message || err.response?.data || 'Failed to save seating plan.');
-          }
-        },
+      try {
+        await apiClient.post(`/api/events/${eventId}/seats`, { seats });
+      } catch (err: any) {
+        throw new Error(err.response?.data?.message || err.response?.data || 'Failed to save seating plan.');
+      }
+    },
   },
 
-seats: {
+  seats: {
     getForEvent: async (eventId: number): Promise<Seat[]> => {
       const response = await apiClient.get<Seat[]>('/api/seat/available', { params: { eventId } });
       return response.data;
@@ -123,11 +142,9 @@ seats: {
         const response = await apiClient.post<Seat>('/api/seat/lock', null, { params: { seatId } });
         return response.data;
       } catch (err) {
-        // ... error handling
         throw new Error('Failed to lock seat. It may have just been taken.');
       }
     },
-
     bookBulk: async (seatIds: number[], orderId: string): Promise<void> => {
       try {
         await apiClient.post('/api/seat/book-bulk', null, {
@@ -142,7 +159,7 @@ seats: {
     }
   },
 
-  payment: {
+payment: {
     createOrder: async (seatIds: number[], amount: number): Promise<string> => {
       try {
         const response = await apiClient.post<{ orderId: string }>('/api/payment/create-order', null, {
@@ -151,6 +168,14 @@ seats: {
         return response.data.orderId;
       } catch (err) {
         throw new Error('Failed to initialize payment gateway.');
+      }
+    },
+
+    verifyPayment: async (paymentData: { razorpayOrderId: string; razorpayPaymentId: string; razorpaySignature: string }): Promise<void> => {
+      try {
+        await apiClient.post('/api/payment/verify', paymentData);
+      } catch (err: any) {
+        throw new Error(err.response?.data || 'Payment verification failed on server.');
       }
     }
   }

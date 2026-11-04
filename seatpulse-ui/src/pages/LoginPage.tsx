@@ -1,114 +1,174 @@
-import { useState, useEffect } from 'react'; // Add useEffect here
+import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Lock, Loader2, ArrowRight } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { Loader2 } from 'lucide-react';
 import { api } from '../api/seatPulseApi';
 import { useAuthStore } from '../store/useAuthStore';
 
+// Custom Soundwave SVG matching your mockup
+const SoundwaveLogo = () => (
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="text-[#e8d5b5]">
+    <path d="M12 3v18M8 7v10M16 6v12M4 10v4M20 9v6M2 11v2M22 11v2" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
 export default function LoginPage() {
   const navigate = useNavigate();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate('/', { replace: true });
-    }
-  }, [isAuthenticated, navigate]);
+  const { login } = useAuthStore();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleLogin = async (e: React.FormEvent) => {
-      e.preventDefault();
+    e.preventDefault();
+    if (!username || !password) {
+      setError('Please fill in both fields.');
+      return;
+    }
 
-      if (!username.trim() || !password.trim()) {
-        toast.error('Please enter both username and password.');
-        return;
+    setError('');
+    setIsLoading(true);
+
+    try {
+      // The backend uses 'username', even though the UI label asks for Email
+      const token = await api.auth.login({ username, password });
+      login(token);
+
+      // Determine redirect based on role stored in token
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const role = payload.role || payload.roles || payload.authorities || 'USER';
+
+      if (role === 'ADMIN') {
+        navigate('/admin');
+      } else {
+        navigate('/explore');
       }
-
-      setIsLoading(true);
-
-      try {
-        const token = await api.auth.login({ username, password });
-
-        if (!token) throw new Error("No token received from backend");
-
-        const payload = JSON.parse(atob(token.split('.')[1]));
-
-        const rawRole = payload.role || (payload.roles && payload.roles[0]) || (payload.authorities && payload.authorities[0]) || 'USER';
-
-        const cleanRole = typeof rawRole === 'string' ? rawRole.replace('ROLE_', '') : 'USER';
-
-        useAuthStore.getState().login(token, { username, role: cleanRole });
-
-        toast.success('Welcome back!');
-        navigate('/');
-      } catch (err: any) {
-        toast.error(err.message || 'Invalid username or password.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    } catch (err: any) {
+      setError(err.message || 'Invalid username or password.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#F8F6F2] px-5 py-24">
-      <div className="w-full max-w-md rounded-3xl border border-[#DCD8D2] bg-white p-8 shadow-sm sm:p-10">
+    <div className="flex min-h-screen w-full bg-[#07090e] font-sans text-[#f4f2ee] selection:bg-[#E8D5B5]/30 selection:text-white">
 
-        <div className="mb-8 flex flex-col items-center text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#6735E8]/10 text-[#6735E8] mb-4">
-            <Lock className="h-6 w-6" />
-          </div>
-          <h1 className="font-display text-3xl font-bold text-[#242224]">
-            Log in to <span className="text-[#6735E8]">SeatPulse</span>
-          </h1>
-          <p className="mt-2 text-sm text-[#726E75]">
-            Enter your details to access your account and book tickets.
-          </p>
+      <style>{`
+        @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+        @keyframes slide-up { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
+
+        .animate-fade-in { animation: fade-in 1s ease-out forwards; }
+        .animate-slide-up { animation: slide-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+
+        /* Thin grid background for the right panel */
+        .grid-glow {
+          background-image: linear-gradient(rgba(232,213,181,0.02) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(232,213,181,0.02) 1px, transparent 1px);
+          background-size: 40px 40px;
+        }
+      `}</style>
+
+      {/* LEFT SIDE: HERO BANNER (Hidden on mobile/tablet) */}
+      <div className="relative hidden lg:flex w-1/2 flex-col justify-end p-16 overflow-hidden bg-[#11131a]">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://images.unsplash.com/photo-1540039155733-d7696d4eb98b?auto=format&fit=crop&q=80&w=1920"
+            alt="Live Concert Crowd"
+            className="h-full w-full object-cover object-center opacity-70"
+          />
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-5">
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-[#242224]">Username</label>
-            <input
-              type="text"
-              required
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="e.g. Ashwin"
-              className="w-full rounded-xl border border-[#DCD8D2] bg-[#F8F6F2] px-4 py-3 text-sm text-[#242224] outline-none transition focus:border-[#6735E8] focus:bg-white"
-            />
+        {/* Gradients to blend the image into the dark UI */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-t from-[#07090e] via-[#07090e]/40 to-transparent"></div>
+        <div className="absolute inset-0 z-0 bg-gradient-to-r from-transparent to-[#07090e]"></div>
+
+        {/* Content over image */}
+        <div className="relative z-10 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+          <h1 className="font-display text-[64px] font-extrabold tracking-tight text-white mb-4 leading-none">
+            Access, Elevated.
+          </h1>
+          <div className="flex items-center gap-3 opacity-80">
+            <SoundwaveLogo />
           </div>
-
-          <div className="space-y-1.5">
-            <label className="text-sm font-semibold text-[#242224]">Password</label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full rounded-xl border border-[#DCD8D2] bg-[#F8F6F2] px-4 py-3 text-sm text-[#242224] outline-none transition focus:border-[#6735E8] focus:bg-white"
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-[#242224] px-6 py-3.5 text-sm font-semibold text-white transition hover:bg-[#111011] disabled:cursor-not-allowed disabled:opacity-70"
-          >
-            {isLoading ? (
-              <><Loader2 className="h-4 w-4 animate-spin" /> Authenticating...</>
-            ) : (
-              <>Sign In <ArrowRight className="h-4 w-4" /></>
-            )}
-          </button>
-        </form>
-
-        <div className="mt-6 text-center text-sm text-[#726E75]">
-         <p>Don't have an account? <Link to="/register" className="font-semibold text-[#6735E8] hover:underline">Sign up</Link></p>
         </div>
       </div>
+
+      {/* RIGHT SIDE: LOGIN FORM */}
+      <div className="flex w-full lg:w-1/2 flex-col justify-center items-center p-6 sm:p-12 lg:p-20 relative grid-glow">
+
+        <div className="w-full max-w-[420px] animate-fade-in relative z-10">
+
+          {/* Logo & Brand Name */}
+          <div className="flex items-center gap-3 mb-10 cursor-pointer" onClick={() => navigate('/')}>
+            <SoundwaveLogo />
+            <span className="font-display text-xl font-bold tracking-tight text-[#f4f2ee]">
+              Seat<span className="text-[#e8d5b5]">Pulse</span>
+            </span>
+          </div>
+
+          <h2 className="font-display text-4xl font-extrabold tracking-tight text-white mb-10">
+            Welcome Back
+          </h2>
+
+          <form onSubmit={handleLogin} className="space-y-6">
+
+            {/* Error Message Display */}
+            {error && (
+              <div className="animate-fade-in rounded-lg bg-red-500/10 border border-red-500/20 p-4 text-sm font-medium text-red-400">
+                {error}
+              </div>
+            )}
+
+            {/* Email Field */}
+            <div className="space-y-2 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+              <label className="text-xs font-medium text-[#e8d5b5]">Email</label>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                className="w-full rounded-xl border border-[#e8d5b5]/30 bg-transparent px-4 py-3.5 text-base text-[#f4f2ee] placeholder-white/20 outline-none transition-colors focus:border-[#e8d5b5] focus:bg-white/5"
+                placeholder="Enter your email or username"
+              />
+            </div>
+
+            {/* Password Field */}
+            <div className="space-y-2 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+              <label className="text-xs font-medium text-[#e8d5b5]">Password</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full rounded-xl border border-[#e8d5b5]/30 bg-transparent px-4 py-3.5 text-base text-[#f4f2ee] placeholder-white/20 outline-none transition-colors focus:border-[#e8d5b5] focus:bg-white/5"
+                placeholder="••••••••"
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="pt-6 space-y-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="flex w-full items-center justify-center rounded-full bg-[#e8d5b5] py-4 text-sm font-bold text-[#07090e] transition-all hover:bg-white hover:shadow-[0_0_30px_rgba(232,213,181,0.3)] disabled:opacity-70"
+              >
+                {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Sign In'}
+              </button>
+
+              <Link
+                to="/register"
+                className="flex w-full items-center justify-center rounded-full border border-[#e8d5b5]/40 bg-transparent py-4 text-sm font-bold text-[#e8d5b5] transition-colors hover:bg-[#e8d5b5]/10"
+              >
+                Create an Account
+              </Link>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
     </div>
   );
 }

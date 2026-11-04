@@ -70,4 +70,10 @@ public class JwtService {
     private Date extractExpiration(String token){
         return extractClaim(token,Claims::getExpiration);
     }
+
+    public long getRemainingExpirationTime(String token) {
+        Date expirationDate = extractExpiration(token);
+        long ttl = expirationDate.getTime() - System.currentTimeMillis();
+        return Math.max(0, ttl);
+    }
 }

@@ -1,184 +1,170 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import { useAuthStore } from '../store/useAuthStore';
+import { useNavigate, Link } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
 import { api } from '../api/seatPulseApi';
+import { useAuthStore } from '../store/useAuthStore';
+
+const SoundwaveLogo = () => (
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="text-[#e8d5b5]">
+    <path d="M12 3v18M8 7v10M16 6v12M4 10v4M20 9v6M2 11v2M22 11v2" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
 
 export default function AuthPage() {
-  const [isLogin, setIsLogin] = useState(true);
-  const [username, setUsername] = useState('');
-  const [emailId, setEmailId] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-
   const navigate = useNavigate();
   const { login } = useAuthStore();
 
-  const handleOAuthSubmit = () => {
-    toast('Google Sign-In integration pending', { icon: 'ℹ️' });
-  };
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email || !password) {
+      setError('Please fill in both fields.');
+      return;
+    }
+
+    setError('');
     setIsLoading(true);
 
     try {
-      if (isLogin) {
-        // Execute real backend login
-        const actualToken = await api.auth.login({ username, password });
+      const token = await api.auth.login({ emailId: email, password });
 
-        // Decode the token to get the ACTUAL role
-        let realRole = "USER";
-        try {
-          const payload = JSON.parse(atob(actualToken.split('.')[1]));
-          // Spring Boot typically uses 'role', 'roles', or 'authorities'
-          realRole = payload.role || payload.roles || payload.authorities || "USER";
-        } catch (e) {
-          console.error("Could not parse token payload for role", e);
-        }
+      login(token);
 
-        // Update Zustand store with the dynamic role
-        login(actualToken, { username: username, role: realRole });
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const role = payload.role || payload.roles || payload.authorities || 'USER';
 
-        toast.success('Welcome back!', {
-          style: { background: '#0F172A', color: '#FFFFFF', borderRadius: '4px', fontWeight: 'bold' }
-        });
-        navigate('/explore');
+      if (role === 'ADMIN') {
+        navigate('/admin');
       } else {
-        // Execute real backend registration
-        await api.auth.register({ username, emailId, password });
-
-        toast.success('Account created! Please log in.', {
-          style: { background: '#0055FF', color: '#FFFFFF', borderRadius: '4px', fontWeight: 'bold' }
-        });
-        setIsLogin(true);
+        navigate('/explore');
       }
-    } catch (error: any) {
-      console.error("Auth Error Details:", error);
-      toast.error(error.message || 'Authentication failed. Please check your credentials.', {
-        style: { background: '#DC2626', color: '#FFFFFF', borderRadius: '4px', fontWeight: 'bold' }
-      });
+    } catch (err: any) {
+      setError(err.message || 'Invalid email or password.');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-[#F8F9FA] text-[#0F172A]" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif' }}>
+    <div className="flex min-h-screen w-full bg-[#07090e] font-sans text-[#f4f2ee] selection:bg-[#E8D5B5]/30 selection:text-white">
 
-      {/* LEFT PANEL - Branding */}
-      <div className="w-full md:w-1/2 bg-[#0055FF] p-8 md:p-16 lg:p-24 flex flex-col justify-between min-h-[40vh] md:min-h-screen">
-        <div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight tracking-tight mb-6">
-            Make room for<br />a good night.
-          </h1>
-          <p className="text-lg text-white/90 font-medium max-w-md">
-            Live music, late nights, front-row moments. Your next great plan starts with a seat.
-          </p>
+      <style>{`
+        @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+        @keyframes slide-up { 0% { opacity: 0; transform: translateY(30px); } 100% { opacity: 1; transform: translateY(0); } }
+
+        .animate-fade-in { animation: fade-in 1s ease-out forwards; }
+        .animate-slide-up { animation: slide-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+
+        /* Thin grid background for the right panel */
+        .grid-glow {
+          background-image: linear-gradient(rgba(232,213,181,0.02) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(232,213,181,0.02) 1px, transparent 1px);
+          background-size: 40px 40px;
+        }
+      `}</style>
+
+      {/* LEFT SIDE: HERO BANNER (Hidden on mobile/tablet) */}
+      <div className="relative hidden lg:flex w-1/2 flex-col justify-end p-16 overflow-hidden bg-[#11131a]">
+
+        {/* Background Image - KNOWN WORKING URL */}
+        <div className="absolute inset-0 z-0 bg-[#07090e]">
+          <img
+            src="https://images6.alphacoders.com/478/thumb-1920-478918.jpg"
+            alt="Live Concert Crowd"
+            className="h-full w-full object-cover object-center opacity-60 mix-blend-screen"
+          />
         </div>
 
-        <div className="mt-12">
-          <p className="font-bold text-white text-sm">SeatPulse Ticketing</p>
+        {/* Gradients to blend the image into the dark UI */}
+        <div className="absolute inset-0 z-0 bg-gradient-to-t from-[#07090e] via-[#07090e]/60 to-transparent"></div>
+        <div className="absolute inset-0 z-0 bg-gradient-to-r from-transparent via-transparent to-[#07090e]"></div>
+
+        {/* Content over image */}
+        <div className="relative z-10 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+          <h1 className="font-display text-[64px] font-extrabold tracking-tight text-white mb-4 leading-none shadow-black drop-shadow-2xl">
+            Access, Elevated.
+          </h1>
+          <div className="flex items-center gap-3 opacity-80">
+            <SoundwaveLogo />
+          </div>
         </div>
       </div>
 
-      {/* RIGHT PANEL - Form */}
-      <div className="w-full md:w-1/2 p-8 md:p-16 lg:p-24 flex flex-col justify-center bg-white border-l border-[#E2E8F0]">
-        <div className="max-w-md w-full mx-auto">
+      {/* RIGHT SIDE: LOGIN FORM */}
+      <div className="flex w-full lg:w-1/2 flex-col justify-center items-center p-6 sm:p-12 lg:p-20 relative grid-glow">
 
-          <div className="mb-10">
-            <h2 className="text-3xl font-black tracking-tight mb-2">
-              {isLogin ? 'Welcome back' : 'Create an account'}
-            </h2>
-            <p className="font-medium text-[#64748B] text-sm">
-              {isLogin ? 'Log in to find your tickets and your next plan.' : 'Join to secure your seats instantly.'}
-            </p>
+        <div className="w-full max-w-[420px] animate-fade-in relative z-10">
+
+          {/* Logo & Brand Name */}
+          <div className="flex items-center gap-3 mb-10 cursor-pointer" onClick={() => navigate('/')}>
+            <SoundwaveLogo />
+            <span className="font-display text-xl font-bold tracking-tight text-[#f4f2ee]">
+              Seat<span className="text-[#e8d5b5]">Pulse</span>
+            </span>
           </div>
 
-          <button
-            type="button"
-            onClick={handleOAuthSubmit}
-            className="w-full border-[2px] border-[#E2E8F0] py-3.5 font-bold text-sm text-[#0F172A] rounded-[4px] hover:border-[#0F172A] transition-none mb-8 flex justify-center items-center gap-3"
-          >
-            Continue with Google
-          </button>
+          <h2 className="font-display text-4xl font-extrabold tracking-tight text-white mb-10">
+            Welcome Back
+          </h2>
 
-          <div className="flex items-center gap-4 mb-8">
-            <div className="h-[1px] flex-1 bg-[#E2E8F0]"></div>
-            <span className="text-xs font-bold text-[#94A3B8] uppercase tracking-wide">or use email</span>
-            <div className="h-[1px] flex-1 bg-[#E2E8F0]"></div>
-          </div>
+          <form onSubmit={handleLogin} className="space-y-6">
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-
-            <div className="space-y-1.5">
-              <label className="block font-bold text-sm text-[#0F172A]">
-                Username
-              </label>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full bg-white text-[#0F172A] px-4 py-3 border-[2px] border-[#E2E8F0] focus:border-[#0055FF] focus:outline-none transition-none font-medium rounded-[4px]"
-                placeholder="Enter username"
-                required
-              />
-            </div>
-
-            {!isLogin && (
-              <div className="space-y-1.5">
-                <label className="block font-bold text-sm text-[#0F172A]">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  value={emailId}
-                  onChange={(e) => setEmailId(e.target.value)}
-                  className="w-full bg-white text-[#0F172A] px-4 py-3 border-[2px] border-[#E2E8F0] focus:border-[#0055FF] focus:outline-none transition-none font-medium rounded-[4px]"
-                  placeholder="name@example.com"
-                  required
-                />
+            {/* Error Message Display */}
+            {error && (
+              <div className="animate-fade-in rounded-lg bg-red-500/10 border border-red-500/20 p-4 text-sm font-medium text-red-400">
+                {error}
               </div>
             )}
 
-            <div className="space-y-1.5">
-              <label className="block font-bold text-sm text-[#0F172A]">
-                Password
-              </label>
+            {/* Email Field */}
+            <div className="space-y-2 animate-slide-up" style={{ animationDelay: '0.1s' }}>
+              <label className="text-xs font-medium text-[#e8d5b5]">Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full rounded-xl border border-[#e8d5b5]/30 bg-[#11131a]/50 px-4 py-3.5 text-base text-[#f4f2ee] placeholder-white/20 outline-none transition-colors focus:border-[#e8d5b5] focus:bg-[#11131a]"
+                placeholder="Enter your email"
+              />
+            </div>
+
+            {/* Password Field */}
+            <div className="space-y-2 animate-slide-up" style={{ animationDelay: '0.2s' }}>
+              <label className="text-xs font-medium text-[#e8d5b5]">Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-white text-[#0F172A] px-4 py-3 border-[2px] border-[#E2E8F0] focus:border-[#0055FF] focus:outline-none transition-none font-medium rounded-[4px]"
-                placeholder="••••••••"
                 required
+                className="w-full rounded-xl border border-[#e8d5b5]/30 bg-[#11131a]/50 px-4 py-3.5 text-base text-[#f4f2ee] placeholder-white/20 outline-none transition-colors focus:border-[#e8d5b5] focus:bg-[#11131a]"
+                placeholder="••••••••"
               />
             </div>
 
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-[#0055FF] text-white py-3.5 font-bold text-base rounded-[4px] hover:bg-[#0F172A] transition-none disabled:opacity-50 mt-2"
-            >
-              {isLoading ? 'Processing...' : (isLogin ? 'Log in' : 'Sign up')}
-            </button>
+            {/* Action Buttons */}
+            <div className="pt-6 space-y-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="flex w-full items-center justify-center rounded-full bg-[#e8d5b5] py-4 text-sm font-bold text-[#07090e] transition-all hover:bg-white hover:shadow-[0_0_30px_rgba(232,213,181,0.3)] disabled:opacity-70"
+              >
+                {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Sign In'}
+              </button>
+
+              <Link
+                to="/register"
+                className="flex w-full items-center justify-center rounded-full border border-[#e8d5b5]/40 bg-transparent py-4 text-sm font-bold text-[#e8d5b5] transition-colors hover:bg-[#e8d5b5]/10"
+              >
+                Create an Account
+              </Link>
+            </div>
 
           </form>
-
-          <div className="mt-8 text-center pt-6">
-            <button
-              onClick={() => {
-                setIsLogin(!isLogin);
-                setUsername('');
-                setPassword('');
-                setEmailId('');
-              }}
-              className="text-sm font-bold text-[#0055FF] hover:text-[#0F172A] transition-none"
-            >
-              {isLogin ? "New here? Create an account" : "Already have an account? Log in"}
-            </button>
-          </div>
-
         </div>
       </div>
     </div>

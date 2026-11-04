@@ -66,6 +66,7 @@ export default function CheckoutPage() {
       const res = await loadRazorpayScript();
       if (!res) throw new Error('Razorpay SDK failed to load.');
 
+      // 1. Create the Razorpay Order on the Backend
       const orderId = await api.payment.createOrder(booking.seatIds, booking.total);
 
       const options = {
@@ -77,21 +78,27 @@ export default function CheckoutPage() {
         order_id: orderId,
         handler: async function (response: any) {
           try {
-            await api.seats.bookBulk(booking.seatIds, orderId);
-            const existingGroups = JSON.parse(localStorage.getItem('seatpulse_order_groups') || '{}');
-            existingGroups[orderId] = booking.seatIds;
-            localStorage.setItem('seatpulse_order_groups', JSON.stringify(existingGroups));
+            toast.loading('Verifying payment securely...', { id: 'verify' });
 
+            // 2. NEW: Send success tokens to your Spring Boot /verify endpoint
+            await api.payment.verifyPayment({
+              razorpayOrderId: response.razorpay_order_id,
+              razorpayPaymentId: response.razorpay_payment_id,
+              razorpaySignature: response.razorpay_signature,
+            });
+
+            toast.success('Payment successful! Welcome to the District.', { id: 'verify' });
             setIsSuccess(true);
-            toast.success('Payment successful! Welcome to the District.');
           } catch (err: any) {
+            // Payment succeeded at Razorpay, but database update failed
             setCompletedOrderId(orderId);
             setSyncError(true);
             setIsProcessing(false);
+            toast.error(err.message || 'Payment verification failed!', { id: 'verify' });
           }
         },
         prefill: { name: 'SeatPulse VIP', email: 'vip@seatpulse.com' },
-        theme: { color: '#631D2E' } // Matches Burgundy
+        theme: { color: '#631D2E' }
       };
 
       const rzp = new window.Razorpay(options);

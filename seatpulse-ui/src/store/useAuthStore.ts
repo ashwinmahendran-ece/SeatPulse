@@ -1,40 +1,23 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-
-export interface AuthUser {
-  username: string;
-  role: string;
-}
 
 interface AuthState {
   token: string | null;
-  user: AuthUser | null;
   isAuthenticated: boolean;
-  login: (token: string, user: AuthUser) => void;
+  login: (token: string) => void;
   logout: () => void;
 }
 
-export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      token: null,
-      user: null,
-      isAuthenticated: false,
+export const useAuthStore = create<AuthState>((set) => ({
+  token: sessionStorage.getItem('seatpulse_jwt'),
+  isAuthenticated: !!sessionStorage.getItem('seatpulse_jwt'),
 
-      login: (token: string, user: AuthUser) => set({
-        token,
-        user,
-        isAuthenticated: true
-      }),
+  login: (token: string) => {
+    sessionStorage.setItem('seatpulse_jwt', token);
+    set({ token, isAuthenticated: true });
+  },
 
-      logout: () => set({
-        token: null,
-        user: null,
-        isAuthenticated: false
-      }),
-    }),
-    {
-      name: 'seatpulse-auth',
-    }
-  )
-);
+  logout: () => {
+    sessionStorage.removeItem('seatpulse_jwt');
+    set({ token: null, isAuthenticated: false });
+  },
+}));

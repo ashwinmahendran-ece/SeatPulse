@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import project.Seat_Pulse.repository.UserRepository;
 import project.Seat_Pulse.Entity.User;
 
-
 @Service
 public class MyUserDetailsService implements UserDetailsService{
 
@@ -18,10 +17,10 @@ public class MyUserDetailsService implements UserDetailsService{
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUserName(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmailId(email);
         if(user == null){
-            throw new RuntimeException("User not found");
+            throw new UsernameNotFoundException("User not found with email: " + email);
         }
         return new UserPrincipal(user);
     }

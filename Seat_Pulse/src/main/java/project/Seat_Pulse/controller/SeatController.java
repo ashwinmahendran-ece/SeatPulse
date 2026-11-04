@@ -9,7 +9,6 @@ import project.Seat_Pulse.DTOs.BulkNotificationMessageDto;
 import project.Seat_Pulse.DTOs.SeatResponseDto;
 import project.Seat_Pulse.Entity.User;
 import project.Seat_Pulse.service.*;
-
 import java.util.List;
 
 @RestController
@@ -51,21 +50,21 @@ public class SeatController {
     }
 
     private long currentUserId(Authentication authentication){
-        User user = userService.getUserByUserName(authentication.getName());
+        User user = userService.getUserByEmailId(authentication.getName());
         return user.getUserId();
     }
 
     @GetMapping("/me")
     public ResponseEntity<List<BookingResponseDto>> getMyBookings(Authentication authentication) {
-        String username = authentication.getName();
-        List<BookingResponseDto> myBookings = seatService.getUserBookings(username);
+        User user = userService.getUserByEmailId(authentication.getName());
+        List<BookingResponseDto> myBookings = seatService.getUserBookings(user.getUserName());
         return ResponseEntity.ok(myBookings);
     }
 
     @PostMapping("/cancel")
     public ResponseEntity<String> cancelTicket(@RequestParam Long seatId, Authentication  authentication){
-        String username = authentication.getName();
-        String response = seatService.cancelBooking(seatId,username);
+        User user = userService.getUserByEmailId(authentication.getName());
+        String response = seatService.cancelBooking(seatId,user.getUserName());
         return ResponseEntity.ok(response);
     }
 
@@ -76,7 +75,7 @@ public class SeatController {
             @RequestParam(required = false, defaultValue = "SPX-BULK-ORDER") String orderId) {
 
         long userId = currentUserId(authentication);
-        User user = userService.getUserByUserName(authentication.getName());
+        User user = userService.getUserByEmailId(authentication.getName());
 
         List<String> seatNumbers = new java.util.ArrayList<>();
         String eventName = "SeatPulse Event";

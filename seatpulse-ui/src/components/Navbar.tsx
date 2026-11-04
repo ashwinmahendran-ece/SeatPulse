@@ -7,10 +7,15 @@ export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
+  const handleLogout = async () => {
+      try {
+        await api.auth.logout();
+      } finally {
+        logout();
+        sessionStorage.removeItem('seatpulse_jwt');
+        navigate('/');
+      }
+    };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-sage-light/30 bg-cream/90 backdrop-blur-md transition-all duration-300">

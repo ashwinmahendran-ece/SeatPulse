@@ -1,5 +1,4 @@
 package project.Seat_Pulse.service;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -45,15 +44,19 @@ public class UserService {
 
     public String verify(User user){
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword())
+                new UsernamePasswordAuthenticationToken(user.getEmailId(), user.getPassword())
         );
 
         if(authentication.isAuthenticated()){
-            User dbUser = userRepo.findByUserName(user.getUserName());
+            User dbUser = userRepo.findByEmailId(user.getEmailId());
 
             String role = dbUser.getRole();
-            return jwtService.generateToken(user.getUserName(), role, dbUser.getEmailId());
+            return jwtService.generateToken(dbUser.getEmailId(), role, dbUser.getEmailId());
         }
         return "Authentication failed";
+    }
+
+    public User getUserByEmailId(String emailId) {
+        return userRepo.findByEmailId(emailId);
     }
 }

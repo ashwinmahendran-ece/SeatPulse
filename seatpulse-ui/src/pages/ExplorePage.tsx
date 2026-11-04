@@ -96,13 +96,29 @@ export default function ExplorePage() {
     setTimeout(() => setIsLocationMenuOpen(false), 400);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('seatpulse_location');
-    logout();
-    navigate('/login');
-  };
+  const getRoleFromToken = () => {
+      try {
+        // CHANGED: Use sessionStorage
+        const token = sessionStorage.getItem('seatpulse_jwt');
+        if (!token) return null;
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload.role || payload.roles || payload.authorities || null;
+      } catch (e) { return null; }
+    };
 
-  // ROBUST ADMIN CHECK
+    const handleLogout = async () => {
+        try {
+          await api.auth.logout();
+        } catch (err) {
+          console.error('Logout API failed');
+        } finally {
+          logout();
+          sessionStorage.removeItem('seatpulse_jwt');
+
+          window.location.href = '/';
+        }
+      };
+
   const tokenRole = getRoleFromToken();
   const isAdmin = String(user?.role).includes('ADMIN') ||
                   String(user?.roles).includes('ADMIN') ||
