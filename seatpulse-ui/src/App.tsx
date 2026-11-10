@@ -3,27 +3,28 @@ import { Toaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import RegisterPage from './pages/RegisterPage';
 import AdminLoginPage from './pages/AdminLoginPage';
+import HostEventPage from './pages/HostEventPage';
+import AdminScannerPage from './pages/AdminScannerPage';
 
-import Footer from './components/Footer';
-
-// Public Pages
 import LandingPage from './pages/LandingPage';
 import ExplorePage from './pages/ExplorePage';
 import EventDetailsPage from './pages/EventDetailsPage';
 import CheckoutPage from './pages/CheckoutPage';
 import AuthPage from './pages/AuthPage';
 
-// Protected Pages
 import MyBookingsPage from './pages/MyBookingsPage';
 
-// Admin Pages
 import DashboardPage from './pages/DashboardPage';
 import EventFormPage from './pages/EventFormPage';
 import SeatingBuilderPage from './pages/SeatingBuilderPage';
 
-// Security Wrappers
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
+
+import TermsPage from './pages/TermsPage';
+import PrivacyPage from './pages/PrivacyPage';
+import RefundsPage from './pages/RefundsPage';
+import ContactPage from './pages/ContactPage';
 
 const queryClient = new QueryClient();
 
@@ -42,23 +43,26 @@ export default function App() {
               <Route path="/login" element={<AuthPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/admin/login" element={<AdminLoginPage />} />
-              <Route path="/admin/login" element={<AdminLoginPage />} />
-              <Route path="/admin/dashboard" element={<DashboardPage />} />
 
-              {/* Protected User Routes (Requires Login) */}
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/refunds" element={<RefundsPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/host" element={<HostEventPage />} />
+
               <Route element={<PrivateRoute />}>
                 <Route path="/checkout" element={<CheckoutPage />} />
                 <Route path="/profile" element={<MyBookingsPage />} />
               </Route>
 
-              {/* Protected Admin Routes (Requires Login AND Admin Role) */}
               <Route element={<AdminRoute />}>
                 <Route path="/admin" element={<DashboardPage />} />
+                <Route path="/admin/dashboard" element={<DashboardPage />} />
                 <Route path="/admin/events/new" element={<EventFormPage />} />
                 <Route path="/admin/events/:eventId/seating" element={<SeatingBuilderPage />} />
+                <Route path="/admin/scanner" element={<AdminScannerPage />} />
               </Route>
 
-              {/* Catch-all for bad URLs */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>

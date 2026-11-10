@@ -46,4 +46,13 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
     @Modifying
     @Query("DELETE FROM Seat s WHERE s.event = :event")
     void deleteByEvent(@Param("event") Event event);
+
+    @Query("SELECT COUNT(s) FROM Seat s WHERE s.status = 'BOOKED' AND s.event.organizer.userId = :organizerId")
+    long countBookingsByOrganizer(@Param("organizerId") Long organizerId);
+
+    @Query("SELECT SUM(s.price) FROM Seat s WHERE s.status = 'BOOKED' AND s.event.organizer.userId = :organizerId")
+    Double sumRevenueByOrganizer(@Param("organizerId") Long organizerId);
+
+    @Query("SELECT COUNT(DISTINCT s.lockedBy.userId) FROM Seat s WHERE s.status = 'BOOKED' AND s.event.organizer.userId = :organizerId")
+    long countUniqueCustomersByOrganizer(@Param("organizerId") Long organizerId);
 }

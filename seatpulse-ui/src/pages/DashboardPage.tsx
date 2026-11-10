@@ -3,12 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
   LayoutDashboard, Users, Ticket, IndianRupee, Plus,
-  MapPin, Calendar, ArrowRight, Activity, Eye, X, RefreshCw, BarChart3, Loader2
+  MapPin, Calendar, ArrowRight, Activity, Eye, X, RefreshCw, BarChart3, Loader2, Globe, ScanLine
 } from 'lucide-react';
 import { api } from '../api/seatPulseApi';
 import { useAuthStore } from '../store/useAuthStore';
 
-// Helper to format dates cleanly
 const formatAdminDate = (dateVal: string | number[] | undefined) => {
   if (!dateVal) return 'TBA';
   let d: Date;
@@ -22,7 +21,6 @@ const formatAdminDate = (dateVal: string | number[] | undefined) => {
   return d.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
 };
 
-// Helper to convert row index to alphabet (0 = A, 1 = B)
 const getRowLabel = (index: number) => {
   let label = '';
   let i = index;
@@ -33,7 +31,6 @@ const getRowLabel = (index: number) => {
   return label;
 };
 
-// DYNAMIC COLUMN CALCULATOR
 const calculateCols = (seatsMap: any[]) => {
   if (!seatsMap || seatsMap.length === 0) return 15;
   const bRowIndex = seatsMap.findIndex(s => typeof s.seatNo === 'string' && s.seatNo.replace(/[0-9]/g, '').toUpperCase() === 'B');
@@ -51,19 +48,17 @@ export default function DashboardPage() {
 
   const [previewEventId, setPreviewEventId] = useState<number | null>(null);
 
-  // Fetch Admin Stats
   const { data: stats, isLoading: isLoadingStats } = useQuery({
     queryKey: ['admin-stats'],
     queryFn: () => api.admin.getStats(),
   });
 
-  // Fetch Events
   const { data: eventData, isLoading: isLoadingEvents } = useQuery({
     queryKey: ['admin-events'],
-    queryFn: () => api.events.getAll('', 0, 100),
+    queryFn: () => api.admin.getMyEvents(),
   });
 
-  const safeEvents = eventData?.content || [];
+  const safeEvents = Array.isArray(eventData) ? eventData : [];
 
   const { data: rawSeats = [], isLoading: isSeatsLoading, refetch: refetchSeats } = useQuery({
     queryKey: ['event-seats', previewEventId],
@@ -76,10 +71,8 @@ export default function DashboardPage() {
 
   const previewSeats = Array.isArray(rawSeats) ? rawSeats : (rawSeats?.data || []);
 
-  // FIX: Dynamically calculate columns based on actual mapped seats
   const COLS = calculateCols(previewSeats);
 
-  // Group rows for BookMyShow style preview
   const groupedRows: { category: string, price: number, rows: any[] }[] = [];
   if (previewSeats.length > 0) {
     let currentGroup: any = null;
@@ -95,7 +88,6 @@ export default function DashboardPage() {
       const rowLabel = getRowLabel(r);
       let seatNumCounter = 1;
 
-      // FIX: Dynamically inject the A1, A2 labels onto the seat objects for display in the admin view
       rowSeats.forEach((s: any) => {
         const isBlocked = (s.seatCategory || s.category) === 'BLOCKED';
         s.displaySeatNo = isBlocked ? '' : `${rowLabel}${seatNumCounter++}`;
@@ -115,7 +107,6 @@ export default function DashboardPage() {
     });
   }
 
-  // Minimal empty box styling
   const getPreviewSeatColor = (category: string, status: string) => {
     if (status === 'BOOKED') return 'bg-transparent border border-slate-700 text-slate-600 opacity-50';
     return 'bg-transparent border border-slate-400 text-slate-300';
@@ -127,7 +118,6 @@ const handleLogout = async () => {
     } catch (err) {
       console.error('Logout API failed');
     } finally {
-      // 1. Destroy local state and token immediately
       logout();
       sessionStorage.removeItem('seatpulse_jwt');
 
@@ -138,7 +128,7 @@ const handleLogout = async () => {
   return (
     <div className="min-h-screen bg-[#1A1C1E] text-slate-100 font-sans pb-24 selection:bg-indigo-500/30">
 
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#1F2124]/90 backdrop-blur-md">
+<header className="sticky top-0 z-50 border-b border-white/10 bg-[#1F2124]/90 backdrop-blur-md">
         <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between px-5 lg:px-16">
           <div className="flex items-center gap-4">
             <button onClick={() => navigate('/')} className="flex items-center font-display text-xl font-black tracking-[-0.03em] whitespace-nowrap transition-transform hover:scale-[1.02]">
@@ -151,13 +141,26 @@ const handleLogout = async () => {
             </span>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             <span className="text-sm font-semibold text-slate-400 hidden sm:block">
               Welcome, <span className="text-white">{user?.username || 'Admin'}</span>
             </span>
-            <button onClick={handleLogout} className="rounded-lg border border-white/10 bg-[#1A1C1E] px-4 py-2 text-xs font-bold text-slate-300 hover:bg-white hover:text-[#1A1C1E] transition-all">
-              Log Out
-            </button>
+
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => navigate('/explore')}
+                className="flex items-center gap-2 text-xs font-bold text-indigo-400 hover:text-indigo-300 transition-colors"
+              >
+                <Globe className="w-4 h-4" />
+                <span className="hidden sm:inline">Explore Events</span>
+              </button>
+
+              <div className="w-px h-4 bg-white/10 hidden sm:block"></div>
+
+              <button onClick={handleLogout} className="rounded-lg border border-white/10 bg-[#1A1C1E] px-4 py-2 text-xs font-bold text-slate-300 hover:bg-white hover:text-[#1A1C1E] transition-all">
+                Log Out
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -172,7 +175,7 @@ const handleLogout = async () => {
 
             {[
               { label: 'Total Events', value: stats?.totalEvents || 0, icon: Ticket, color: 'text-indigo-400', bg: 'bg-indigo-400/10' },
-              { label: 'Active Bookings', value: stats?.activeBookings || 0, icon: Activity, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
+              { label: 'Tickets Sold', value: stats?.activeBookings || 0, icon: Activity, color: 'text-emerald-400', bg: 'bg-emerald-400/10' },
               { label: 'Total Revenue', value: `₹${stats?.totalRevenue?.toLocaleString() || 0}`, icon: IndianRupee, color: 'text-amber-400', bg: 'bg-amber-400/10' },
               { label: 'Registered Users', value: stats?.registeredUsers || 0, icon: Users, color: 'text-[#05d5ff]', bg: 'bg-[#05d5ff]/10' },
             ].map((stat, idx) => (
@@ -192,16 +195,25 @@ const handleLogout = async () => {
 
         <div>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <h2 className="font-display text-2xl font-bold text-white flex items-center gap-2">
-              <Calendar className="w-6 h-6 text-indigo-400" /> Event Management
-            </h2>
-            <button
-              onClick={() => navigate('/admin/events/new')}
-              className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl text-sm font-bold shadow-[0_0_20px_rgba(79,70,229,0.3)] transition-all hover:scale-[1.02] active:scale-95"
-            >
-              <Plus className="w-4 h-4" /> Create New Event
-            </button>
-          </div>
+                      <h2 className="font-display text-2xl font-bold text-white flex items-center gap-2">
+                        <Calendar className="w-6 h-6 text-indigo-400" /> Event Management
+                      </h2>
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => navigate('/admin/scanner')}
+                          className="flex items-center justify-center gap-2 bg-[#1A1C1E] border border-white/10 hover:border-indigo-500 hover:text-indigo-400 text-slate-300 px-5 py-3 rounded-xl text-sm font-bold transition-all"
+                        >
+                          <ScanLine className="w-4 h-4" /> Scan Tickets
+                        </button>
+
+                        <button
+                          onClick={() => navigate('/admin/events/new')}
+                          className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl text-sm font-bold shadow-[0_0_20px_rgba(79,70,229,0.3)] transition-all hover:scale-[1.02] active:scale-95"
+                        >
+                          <Plus className="w-4 h-4" /> Create New Event
+                        </button>
+                      </div>
+                    </div>
 
           <div className="bg-[#1F2124] border border-white/10 rounded-[2rem] overflow-hidden shadow-xl backdrop-blur-sm">
             <div className="hidden lg:grid grid-cols-12 gap-4 p-6 border-b border-white/10 bg-[#1A1C1E]/50 text-[10px] font-bold text-slate-400 uppercase tracking-widest">

@@ -11,36 +11,60 @@ import org.springframework.stereotype.Service;
 import project.Seat_Pulse.DTOs.EventRequestDto;
 import project.Seat_Pulse.DTOs.EventResponseDto;
 import project.Seat_Pulse.Entity.Event;
+import project.Seat_Pulse.Entity.User;
 import project.Seat_Pulse.repository.EventRepository;
+import project.Seat_Pulse.repository.UserRepository;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class EventService {
 
     private final EventRepository eventRepo;
     private final SeatService seatService;
+    private final UserRepository userRepo;
 
-    public EventService(EventRepository eventRepo, SeatService seatService){
+    public EventService(EventRepository eventRepo, SeatService seatService,UserRepository userRepo){
         this.eventRepo = eventRepo;
         this.seatService = seatService;
+        this.userRepo = userRepo;
     }
 
     @Transactional
     @CacheEvict(value = "eventsCache", allEntries = true)
-    public EventResponseDto addEvent(EventRequestDto eventRequestDto){
+    public EventResponseDto addEvent(EventRequestDto eventRequestDto, String username) {
+
+        User organizer = userRepo.findByEmailId(username);
+        if (organizer == null) {
+            throw new RuntimeException("Organizer not found");
+        }
+
         Event event = new Event();
         event.setEventName(eventRequestDto.getEventName());
         event.setEventCategory(eventRequestDto.getEventCategory());
-        event.setEventStartTime(eventRequestDto.getEventStartTime());
-        event.setEventEndTime(eventRequestDto.getEventEndTime());
         event.setLocation(eventRequestDto.getLocation());
         event.setVenue(eventRequestDto.getVenue());
+        event.setEventStartTime(eventRequestDto.getEventStartTime());
+        event.setEventEndTime(eventRequestDto.getEventEndTime());
         event.setTotalSeats(eventRequestDto.getTotalSeats());
 
-        Event savedEvent = eventRepo.save(event);
-        seatService.generateSeatsForEvent(savedEvent, eventRequestDto.getTotalSeats());
+        event.setOrganizer(organizer);
 
-        return new EventResponseDto(savedEvent.getEventId(), savedEvent.getEventName(), eventRequestDto.getTotalSeats());
+        Event savedEvent = eventRepo.save(event);
+
+        seatService.generateSeatsForEvent(savedEvent, savedEvent.getTotalSeats());
+
+        EventResponseDto responseDto = new EventResponseDto();
+        responseDto.setEventId(savedEvent.getEventId());
+        responseDto.setEventName(savedEvent.getEventName());
+        responseDto.setEventCategory(savedEvent.getEventCategory());
+        responseDto.setLocation(savedEvent.getLocation());
+        responseDto.setVenue(savedEvent.getVenue());
+        responseDto.setEventStartTime(savedEvent.getEventStartTime());
+        responseDto.setTotalSeats(savedEvent.getTotalSeats());
+
+        return responseDto;
     }
 
     @Cacheable(value="eventsCache")
@@ -49,5 +73,14 @@ public class EventService {
         System.out.println("[DB HIT] Executing SQL to fetch events from the database...");
 
         return eventRepo.searchUpcomingEvents(category, pageable);
+    }
+
+    public List<Event> getEventsByOrganizer(String username) {
+        User organizer = userRepo.findByEmailId(username);
+        if (organizer == null) {
+            throw new RuntimeException("Organizer not found");
+        }
+
+        return eventRepo.findByOrganizer_UserIdOrderByEventStartTimeDesc(organizer.getUserId());
     }
 }

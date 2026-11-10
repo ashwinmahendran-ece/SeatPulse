@@ -1,26 +1,38 @@
 package project.Seat_Pulse.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import project.Seat_Pulse.DTOs.AdminStatsDto;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 import project.Seat_Pulse.service.AdminService;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
 
-    private AdminService adminService;
+    private final AdminService adminService;
 
     public AdminController(AdminService adminService) {
         this.adminService = adminService;
     }
 
     @GetMapping("/stats")
-    public ResponseEntity<AdminStatsDto> getDashboardStats() {
-        AdminStatsDto stats = adminService.getDashboardStats();
-        return ResponseEntity.ok(stats);
+    public ResponseEntity<?> getAdminStats(Authentication authentication) {
+        return ResponseEntity.ok(adminService.getAdminStats(authentication.getName()));
+    }
+
+    @PostMapping("/scan-ticket")
+    public ResponseEntity<?> scanTicket(@RequestParam("seatId") Long seatId, Authentication authentication) {
+        try {
+            Map<String, String> response = adminService.scanTicket(seatId, authentication.getName());
+            return ResponseEntity.ok(response);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        } catch (SecurityException e) {
+            return ResponseEntity.status(403).body(Map.of("error", e.getMessage()));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.status(409).body(Map.of("error", e.getMessage()));
+        }
     }
 }

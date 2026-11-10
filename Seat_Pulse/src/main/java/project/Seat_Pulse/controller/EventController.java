@@ -3,6 +3,7 @@ package project.Seat_Pulse.controller;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import project.Seat_Pulse.DTOs.*;
 import project.Seat_Pulse.Entity.Event;
@@ -21,23 +22,34 @@ public class EventController {
     private final SeatService seatService;
 
     public EventController(EventService eventService, CancellationProducer cancellationProducer, SeatService seatService){
-        this.eventService=eventService;
+        this.eventService = eventService;
         this.cancellationProducer = cancellationProducer;
         this.seatService = seatService;
     }
 
     @PostMapping("/addEvent")
-    public EventResponseDto addEvent(@Valid @RequestBody EventRequestDto eventRequestDto){
-        return eventService.addEvent(eventRequestDto);
+    public EventResponseDto addEvent(@Valid @RequestBody EventRequestDto eventRequestDto, Authentication authentication){
+        return eventService.addEvent(eventRequestDto, authentication.getName());
+    }
+
+    @GetMapping("/admin/my-events")
+    public ResponseEntity<List<Event>> getMyEvents(Authentication authentication) {
+        List<Event> myEvents = eventService.getEventsByOrganizer(authentication.getName());
+        return ResponseEntity.ok(myEvents);
     }
 
     @GetMapping("/search")
     public ResponseEntity<Page<Event>> searchEvents(
-            @RequestParam("category") String category,
+            @RequestParam(value = "category", required = false) String category,
             @RequestParam(value = "pageNo", defaultValue = "0") int pageNo,
             @RequestParam(value = "pageSize", defaultValue = "100") int pageSize,
             @RequestParam(value = "sortBy", defaultValue = "eventStartTime") String sortBy
     ) {
+
+        if (category == null) {
+            category = "";
+        }
+
         Page<Event> paginatedEvents = eventService.searchUpcomingEvents(category, pageNo, pageSize, sortBy);
         return ResponseEntity.ok(paginatedEvents);
     }
@@ -45,9 +57,7 @@ public class EventController {
     @PostMapping("/{eventId}/cancel")
     public ResponseEntity<String> cancelEvent(@PathVariable("eventId") Long eventId) {
         EventCancellationDto payload = new EventCancellationDto(eventId, "Test Concert");
-
         cancellationProducer.broadcastCancellation(payload);
-
         return ResponseEntity.accepted().body("Event cancellation process initiated successfully.");
     }
 

@@ -83,13 +83,7 @@ export default function AdminLoginPage() {
 
       <div className="absolute inset-0 z-0 pointer-events-none bg-cinematic"></div>
 
-      {/* 1. TOP BANNER (New Organizer Verification) */}
-      <div className="relative z-10 w-full bg-[#e8d5b5]/10 border-b border-[#e8d5b5]/20 py-2.5 px-4 flex items-center justify-center gap-3">
-        <PhoneCall className="h-4 w-4 text-[#e8d5b5]" />
-        <p className="text-sm font-medium text-[#e8d5b5]">
-          New Organizer? Call <span className="font-bold tracking-wider">+91 98765 43210</span> for partner verification and portal access.
-        </p>
-      </div>
+
 
       {/* 2. HEADER */}
       <header className="relative z-10 w-full px-6 sm:px-10 lg:px-16 py-7 flex justify-between items-center">

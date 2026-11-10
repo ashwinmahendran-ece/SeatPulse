@@ -21,4 +21,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query("SELECT e FROM Event e WHERE e.eventStartTime > CURRENT_TIMESTAMP ORDER BY (SELECT COUNT(s) FROM Seat s WHERE s.event = e AND s.status = 'BOOKED') DESC")
     List<Event> findTopTrendingUpcomingEvents(Pageable pageable);
+
+    List<Event> findByOrganizer_UserIdOrderByEventStartTimeDesc(Long userId);
+
+    long countByOrganizer_UserId(Long userId);
 }

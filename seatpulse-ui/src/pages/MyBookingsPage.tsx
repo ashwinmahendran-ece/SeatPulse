@@ -250,7 +250,7 @@ export default function MyBookingsPage() {
 
                 <div className="flex flex-col items-center justify-center p-4 bg-white rounded-2xl shadow-inner border border-white/20">
                   <img
-                    src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(`SEATPULSE-ORDER-${viewTicketDialog.order.displayOrderId}`)}&color=000000&bgcolor=ffffff`}
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${viewTicketDialog.order.seatIds[0]}&color=000000&bgcolor=ffffff`}
                     alt="QR" className="w-40 h-40 mb-3 rounded-lg"
                   />
                   <p className="font-mono text-xs font-bold tracking-widest text-slate-800">ORDER #{viewTicketDialog.order.displayOrderId}</p>

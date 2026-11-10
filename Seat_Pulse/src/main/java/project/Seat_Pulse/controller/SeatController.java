@@ -93,10 +93,11 @@ public class SeatController {
         }
 
         BulkNotificationMessageDto bulkEmailMsg = new BulkNotificationMessageDto(
-                user.getEmailId(),
                 user.getUserName(),
+                user.getEmailId(),
                 eventName,
                 seatNumbers,
+                seatIds,
                 orderId
         );
         notificationProducer.sendBulkEmailTask(bulkEmailMsg);

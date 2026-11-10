@@ -220,12 +220,16 @@ public class SeatService {
         }
 
         List<String> seatNumbers = new ArrayList<>();
+        List<Long> seatIds = new ArrayList<>();
         String eventName = "SeatPulse Event";
 
         for (Seat seat : lockedSeats) {
             seat.setStatus(SeatStatus.BOOKED);
             seat.setOrderId(orderId);
+
             seatNumbers.add(String.valueOf(seat.getSeatNo()));
+            seatIds.add(seat.getSeatId());
+
             eventName = seat.getEvent().getEventName();
         }
 
@@ -237,12 +241,14 @@ public class SeatService {
                 .forEach(this::evictSeatMapCache);
 
         BulkNotificationMessageDto bulkEmailMsg = new BulkNotificationMessageDto(
-                user.getEmailId(),
                 user.getUserName(),
+                user.getEmailId(),
                 eventName,
                 seatNumbers,
+                seatIds,
                 orderId
         );
+
         notificationProducer.sendBulkEmailTask(bulkEmailMsg);
     }
 }

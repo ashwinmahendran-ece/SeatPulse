@@ -16,7 +16,6 @@ const CATEGORY_IMAGES: Record<string, string> = {
 };
 const getEventImage = (category?: string) => (category && CATEGORY_IMAGES[category]) || CATEGORY_IMAGES.Default;
 
-// Helper to convert row index to alphabet (0 = A, 1 = B)
 const getRowLabel = (index: number) => {
   let label = '';
   let i = index;
@@ -27,14 +26,12 @@ const getRowLabel = (index: number) => {
   return label;
 };
 
-// MINIMAL EMPTY BOXES & FILLED SELECTION
 const getUserSeatColor = (isSelected: boolean, isAvailable: boolean) => {
   if (!isAvailable) return 'bg-slate-800/60 border border-slate-700/50 text-slate-500 cursor-not-allowed';
   if (isSelected) return 'bg-[#E8D5B5] border-[#E8D5B5] text-[#07090E] font-black scale-110 z-20 shadow-[0_0_10px_rgba(232,213,181,0.4)] ring-1 ring-white/20';
   return 'bg-transparent border border-slate-500 text-slate-300 hover:border-[#E8D5B5] hover:text-[#E8D5B5] transition-colors';
 };
 
-// DYNAMIC COLUMN CALCULATOR
 const calculateCols = (seatsMap: any[]) => {
   if (!seatsMap || seatsMap.length === 0) return 15;
   const bRowIndex = seatsMap.findIndex(s => typeof s.seatNo === 'string' && s.seatNo.replace(/[0-9]/g, '').toUpperCase() === 'B');
@@ -53,6 +50,9 @@ export default function EventDetailsPage() {
   const eventId = paramId ? parseInt(paramId, 10) : NaN;
   const event = location.state?.event as Event | undefined;
 
+  // Moved eventDate up so we can use it in the routing payload
+  const eventDate = event?.eventStartTime ? new Date(event.eventStartTime) : null;
+
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
   const [isLocking, setIsLocking] = useState(false);
 
@@ -68,8 +68,6 @@ export default function EventDetailsPage() {
   });
 
   const seats = Array.isArray(rawSeats) ? rawSeats : (rawSeats?.data || []);
-
-  // FIX: Dynamically calculate columns based on actual mapped seats
   const COLS = calculateCols(seats);
 
   const handleToggleSeat = (seat: Seat) => {
@@ -99,9 +97,27 @@ export default function EventDetailsPage() {
     try {
       await Promise.all(selectedSeats.map(seat => api.seats.lock(seat.seatId)));
       toast.success(`${selectedSeats.length} seats secured!`, { style: { background: '#E8D5B5', color: '#07090E', fontWeight: 'bold' } });
+
+      // Formatted date and venue strings to pass exactly what CheckoutPage expects
+      const formattedDate = eventDate
+        ? `${eventDate.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })} • ${eventDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`
+        : 'Date & Time TBA';
+
+      const fullVenue = event?.venue ? `${event.venue}${event.location ? `, ${event.location}` : ''}` : 'Location TBA';
+
       navigate('/checkout', {
         state: {
-          booking: { eventId, seatIds: selectedSeats.map(s => s.seatId), seatNumbers: seatNumbersList, qty: selectedSeats.length, total: totalAmount, expiresAt: Date.now() + (5 * 60 * 1000) }
+          booking: {
+            eventId,
+            eventName: event?.eventName || `Event #${eventId}`,
+            eventDate: formattedDate,
+            venue: fullVenue,
+            seatIds: selectedSeats.map(s => s.seatId),
+            seatNumbers: seatNumbersList,
+            qty: selectedSeats.length,
+            total: totalAmount,
+            expiresAt: Date.now() + (5 * 60 * 1000)
+          }
         }
       });
     } catch (err: any) {
@@ -114,7 +130,6 @@ export default function EventDetailsPage() {
   };
 
   if (Number.isNaN(eventId)) return <div className="p-10 text-center font-bold text-red-400 bg-[#07090E] min-h-screen pt-32">Invalid Event ID.</div>;
-  const eventDate = event?.eventStartTime ? new Date(event.eventStartTime) : null;
 
   // BOOKMYSHOW STYLE EXACT GRID GROUPING LOGIC
   const groupedRows: { category: string, price: number, rows: any[] }[] = [];
@@ -205,7 +220,6 @@ export default function EventDetailsPage() {
                 {groupedRows.map((group, gIdx) => (
                   <div key={gIdx} className="w-full mb-6 relative">
 
-                    {/* Natural Scrolling Category Divider */}
                     <div className="w-full py-2 mb-3 flex justify-center items-center">
                       <h3 className="font-display text-[11px] sm:text-xs font-bold text-slate-400 uppercase tracking-[0.1em]">
                         {group.category} : ₹{group.price}

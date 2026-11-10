@@ -45,7 +45,7 @@ export const api = {
     }
   },
 
-auth: {
+  auth: {
     login: async (credentials: { emailId?: string; username?: string; password: string }): Promise<string> => {
       try {
         const identifier = credentials.emailId || credentials.username;
@@ -70,23 +70,47 @@ auth: {
       }
     },
     register: async (credentials: { username: string; emailId: string; password: string; mobileNumber: string }): Promise<void> => {
-          try {
-            const payload = {
-              userName: credentials.username,
-              emailId: credentials.emailId,
-              password: credentials.password,
-              mobileNumber: credentials.mobileNumber // <-- ADD THIS
-            };
-            await apiClient.post('/api/auth/register', payload);
-          } catch (err: any) {
-            throw new Error(err.response?.data?.message || 'Registration failed.');
-          }
-        },
+      try {
+        const payload = {
+          userName: credentials.username,
+          emailId: credentials.emailId,
+          password: credentials.password,
+          mobileNumber: credentials.mobileNumber
+        };
+        await apiClient.post('/api/auth/register', payload);
+      } catch (err: any) {
+        throw new Error(err.response?.data?.message || 'Registration failed.');
+      }
+    },
     logout: async (): Promise<void> => {
       try {
         await apiClient.post('/api/auth/logout');
       } catch (err) {
         console.error('Server logout failed or token already expired', err);
+      }
+    },
+    sendForgotPasswordOtp: async (email: string): Promise<{ message: string }> => {
+      try {
+        const response = await apiClient.post('/api/auth/forgot-password/send-otp', { email });
+        return response.data;
+      } catch (err: any) {
+        throw new Error(err.response?.data?.message || 'Failed to send OTP.');
+      }
+    },
+    verifyOtp: async (email: string, otp: string): Promise<{ message: string }> => {
+      try {
+        const response = await apiClient.post('/api/auth/forgot-password/verify-otp', { email, otp });
+        return response.data;
+      } catch (err: any) {
+        throw new Error(err.response?.data?.message || 'Invalid or expired OTP.');
+      }
+    },
+    resetPassword: async (email: string, newPassword: string): Promise<{ message: string }> => {
+      try {
+        const response = await apiClient.post('/api/auth/forgot-password/reset', { email, newPassword });
+        return response.data;
+      } catch (err: any) {
+        throw new Error(err.response?.data?.message || 'Failed to reset password.');
       }
     }
   },
@@ -95,6 +119,22 @@ auth: {
     getStats: async (): Promise<{ totalEvents: number; activeBookings: number; totalRevenue: number; registeredUsers: number }> => {
       const response = await apiClient.get('/api/admin/stats');
       return response.data;
+    },
+
+    getMyEvents: async (): Promise<Event[]> => {
+      const response = await apiClient.get('/api/events/admin/my-events');
+      return response.data;
+    },
+
+    scanTicket: async (seatId: string): Promise<{ success?: string; error?: string }> => {
+      try {
+        const response = await apiClient.post('/api/admin/scan-ticket', null, {
+          params: { seatId }
+        });
+        return response.data;
+      } catch (err: any) {
+        return err.response?.data || { error: 'Failed to communicate with server.' };
+      }
     }
   },
 
@@ -103,9 +143,9 @@ auth: {
       try {
         const response = await apiClient.get<SpringPage<Event>>('/api/events/search', {
           params: {
-            category: category === 'All' ? '' : category,
-            pageNo,
-            pageSize,
+            category: category === 'All' ? '' : (category || ''),
+            pageNo: pageNo || 0,
+            pageSize: pageSize || 100,
             sortBy: 'eventStartTime'
           }
         });
@@ -159,7 +199,7 @@ auth: {
     }
   },
 
-payment: {
+  payment: {
     createOrder: async (seatIds: number[], amount: number): Promise<string> => {
       try {
         const response = await apiClient.post<{ orderId: string }>('/api/payment/create-order', null, {

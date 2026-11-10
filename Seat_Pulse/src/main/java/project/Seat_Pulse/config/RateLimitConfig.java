@@ -16,7 +16,7 @@ public class RateLimitConfig {
     @Bean
     public ProxyManager<byte[]> proxyManager(RedisConnectionFactory redisConnectionFactory) {
         LettuceConnectionFactory lettuceFactory = (LettuceConnectionFactory) redisConnectionFactory;
-        RedisClient redisClient = (RedisClient) lettuceFactory.getNativeClient();
+        RedisClient redisClient = RedisClient.create("redis://seatpulse-redis:6379");
 
         return LettuceBasedProxyManager.builderFor(redisClient)
 

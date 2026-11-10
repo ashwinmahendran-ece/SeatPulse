@@ -4,5 +4,6 @@ public enum SeatStatus {
     BOOKED,
     LOCKED,
     AVAILABLE,
-    CANCELLED
+    CANCELLED,
+    CHECKED_IN
 }

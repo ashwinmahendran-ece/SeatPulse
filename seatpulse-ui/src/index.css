@@ -9,7 +9,6 @@
   }
 }
 
-/* Minimal utility scrollbar for overflowing content */
 .custom-scrollbar::-webkit-scrollbar {
   height: 6px;
   width: 6px;

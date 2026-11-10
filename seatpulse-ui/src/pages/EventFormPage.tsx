@@ -72,7 +72,7 @@ export default function EventFormPage() {
       await queryClient.invalidateQueries({ queryKey: ['admin-events'] });
 
       toast.success('Event created successfully!');
-      navigate(`/admin/events/${newEvent.eventId}/seating`);
+     navigate(`/admin/events/${newEvent.eventId || newEvent.id}/seating`);
     } catch (error: any) {
       toast.error(error.message);
     } finally {

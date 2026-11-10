@@ -1,4 +1,5 @@
 package project.Seat_Pulse.Entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -19,7 +20,12 @@ public class Event implements Serializable {
     private String venue;
     private int totalSeats;
 
-    public Event(Long eventId, String eventName, String eventCategory, LocalDateTime eventStartTime, LocalDateTime eventEndTime, String location, String venue, int totalSeats) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "organizer_id")
+    @JsonIgnore
+    private User organizer;
+
+    public Event(Long eventId, String eventName, String eventCategory, LocalDateTime eventStartTime, LocalDateTime eventEndTime, String location, String venue, int totalSeats,User organizer) {
         this.eventId = eventId;
         this.eventName = eventName;
         this.eventCategory = eventCategory;
@@ -28,6 +34,7 @@ public class Event implements Serializable {
         this.location = location;
         this.venue = venue;
         this.totalSeats = totalSeats;
+        this.organizer = organizer;
     }
 
     public Event(){
@@ -97,6 +104,14 @@ public class Event implements Serializable {
         this.totalSeats = totalSeats;
     }
 
+    public User getOrganizer() {
+        return organizer;
+    }
+
+    public void setOrganizer(User organizer) {
+        this.organizer = organizer;
+    }
+
     @Override
     public String toString() {
         return "Event{" +
@@ -108,6 +123,7 @@ public class Event implements Serializable {
                 ", location='" + location + '\'' +
                 ", venue='" + venue + '\'' +
                 ", totalSeats=" + totalSeats +
+                ", organizer=" + organizer +
                 '}';
     }
 }

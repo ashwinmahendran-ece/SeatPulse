@@ -43,7 +43,6 @@ const getMonth = (d: Date) => d.toLocaleString('en-US', { month: 'short' }).toUp
 const getDay = (d: Date) => d.toLocaleString('en-US', { day: '2-digit' });
 const getDetails = (d: Date) => d.toLocaleString('en-US', { weekday: 'short', hour: 'numeric', minute: '2-digit' });
 
-// Helper to decode role securely on page refresh
 const getRoleFromToken = () => {
   try {
     const token = localStorage.getItem('seatpulse_jwt');

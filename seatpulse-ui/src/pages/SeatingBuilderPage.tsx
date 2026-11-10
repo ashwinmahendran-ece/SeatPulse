@@ -33,11 +33,11 @@ export default function SeatingBuilderPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  // FIX: Properly extract the array if the backend returns a paginated object (e.g., .content or .data)
-  const { data: rawEventsData } = useQuery({
-    queryKey: ['admin-events'],
-    queryFn: () => api.events.getAll(),
-  });
+ const { data: rawEventsData } = useQuery({
+     queryKey: ['admin-events'],
+     queryFn: () => api.admin.getMyEvents(),
+   });
+
   const eventsList = Array.isArray(rawEventsData) ? rawEventsData : (rawEventsData?.content || rawEventsData?.data || []);
   const currentEvent = eventsList.find((e: any) => e.eventId === Number(eventId));
   const formSeatCount = currentEvent?.totalSeats || 0;

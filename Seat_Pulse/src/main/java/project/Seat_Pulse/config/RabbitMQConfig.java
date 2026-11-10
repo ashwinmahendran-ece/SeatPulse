@@ -32,6 +32,30 @@ public class RabbitMQConfig {
     public static final String BULK_NOTIFICATION_QUEUE = "bulk_notification_queue";
     public static final String BULK_NOTIFICATION_ROUTING_KEY = "bulk_notification_routing_key";
 
+    public static final String OTP_QUEUE = "otp_email_queue";
+    public static final String OTP_EXCHANGE = "otp_exchange";
+    public static final String OTP_ROUTING_KEY = "otp_routing_key";
+
+    @Bean
+    public Queue otpQueue() {
+        return new Queue(OTP_QUEUE, true);
+    }
+
+    @Bean
+    public TopicExchange otpExchange() {
+        return new TopicExchange(OTP_EXCHANGE);
+    }
+
+    @Bean
+    public Binding otpBinding(Queue otpQueue, TopicExchange otpExchange) {
+        return BindingBuilder.bind(otpQueue).to(otpExchange).with(OTP_ROUTING_KEY);
+    }
+
+    @Bean
+    public MessageConverter messageConverter() {
+        return new Jackson2JsonMessageConverter();
+    }
+
     @Bean
     public FanoutExchange cancelFanoutExchange() {
         return new FanoutExchange(CANCEL_FANOUT_EXCHANGE);
