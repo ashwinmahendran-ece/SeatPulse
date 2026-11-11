@@ -1,8 +1,8 @@
-# SeatPulse 🎟️⚡
+# SeatPulse 
 
 A production-grade, high-concurrency event ticketing platform engineered to handle flash sales and race conditions at scale. SeatPulse ensures a seamless booking experience through distributed caching, asynchronous message brokering, and robust database locking mechanisms.
 
-## 🚀 System Architecture & Core Engineering
+##  System Architecture & Core Engineering
 
 ### 1. High-Concurrency Race Condition Prevention
 Handling thousands of simultaneous checkout attempts on the same seat requires strict database-level safeguards:
