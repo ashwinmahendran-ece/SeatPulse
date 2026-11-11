@@ -2,7 +2,7 @@ import axios, { AxiosError } from 'axios';
 import { useAuthStore } from '../store/useAuthStore';
 import type { LoginRequest, SpringPage, Event, Seat, SeatPlanItem, UserBooking } from '../types';
 
-const API_BASE_URL = 'http://localhost:8080';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://seatpulse.onrender.com';
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
