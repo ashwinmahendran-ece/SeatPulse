@@ -19,10 +19,6 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
 
     List<Seat> findByEventEventIdAndStatus(Long eventId, SeatStatus status);
 
-    @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("SELECT s FROM Seat s WHERE s.seatId = :seatId")
-    Optional<Seat> findByIdForUpdate(@Param("seatId") Long seatId);
-
     @Modifying
     @Query("UPDATE Seat s SET s.status = :status, s.lockedBy = null, s.lockedAt = null WHERE s.event.eventId = :eventId")
     void cancelAllSeatsForEvent(@Param("eventId") Long eventId, @Param("status") SeatStatus status);

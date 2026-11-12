@@ -26,6 +26,8 @@ import PrivacyPage from './pages/PrivacyPage';
 import RefundsPage from './pages/RefundsPage';
 import ContactPage from './pages/ContactPage';
 
+import NotFound from './pages/NotFoundPage';
+
 const queryClient = new QueryClient();
 
 export default function App() {
@@ -49,6 +51,7 @@ export default function App() {
               <Route path="/refunds" element={<RefundsPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/host" element={<HostEventPage />} />
+              <Route path="*" element={<NotFound />} />
 
               <Route element={<PrivateRoute />}>
                 <Route path="/checkout" element={<CheckoutPage />} />

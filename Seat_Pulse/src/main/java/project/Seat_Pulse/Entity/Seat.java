@@ -37,6 +37,10 @@ public class Seat {
 
     private String orderId;
 
+    @Version
+    @Column(name = "version")
+    private Long version;
+
     public Seat(Long seatId, String seatCategory, String seatNo, User lockedBy, Event event, LocalDateTime lockedAt,BigDecimal price,String orderId) {
         this.seatId = seatId;
         this.seatCategory = seatCategory;

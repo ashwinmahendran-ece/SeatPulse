@@ -20,7 +20,6 @@ import project.Seat_Pulse.service.OtpService;
 import project.Seat_Pulse.config.RabbitMQConfig;
 import project.Seat_Pulse.DTOs.OtpEmailEvent;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @RestController

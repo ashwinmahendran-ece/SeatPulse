@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,6 +35,11 @@ public class GlobalExceptionHandler {
             });
 
            return new ResponseEntity<>(errors,HttpStatus.BAD_REQUEST);
+        }
+
+        @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
+        public ResponseEntity<String> handleOptimisticLockingFailure(ObjectOptimisticLockingFailureException ex) {
+            return ResponseEntity.status(409).body("This seat was just booked by another user. Please select a different seat.");
         }
 
 }

@@ -56,7 +56,7 @@ public class SeatService {
 
     @Transactional
     public SeatResponseDto lockedSeat(long seatId, long userId) {
-        Seat seat = seatRepo.findByIdForUpdate(seatId)
+        Seat seat = seatRepo.findById(seatId)
                 .orElseThrow(() -> new RuntimeException("Seat not found"));
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));

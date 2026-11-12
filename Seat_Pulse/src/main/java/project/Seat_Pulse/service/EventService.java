@@ -14,8 +14,6 @@ import project.Seat_Pulse.Entity.Event;
 import project.Seat_Pulse.Entity.User;
 import project.Seat_Pulse.repository.EventRepository;
 import project.Seat_Pulse.repository.UserRepository;
-
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
