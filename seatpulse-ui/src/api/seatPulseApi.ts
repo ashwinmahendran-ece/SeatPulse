@@ -2,7 +2,7 @@ import axios, { AxiosError } from 'axios';
 import { useAuthStore } from '../store/useAuthStore';
 import type { LoginRequest, SpringPage, Event, Seat, SeatPlanItem, UserBooking } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://seatpulse.onrender.com';
+const API_BASE_URL = 'http://localhost:8080';
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -163,11 +163,19 @@ export const api = {
         throw new Error(err.response?.data?.message || 'Failed to create event.');
       }
     },
-    saveSeatingPlan: async (eventId: number, seats: any[]): Promise<void> => {
+saveSeatingPlan: async (eventId: number, seats: any[]): Promise<void> => {
       try {
         await apiClient.post(`/api/events/${eventId}/seats`, { seats });
       } catch (err: any) {
         throw new Error(err.response?.data?.message || err.response?.data || 'Failed to save seating plan.');
+      }
+    },
+    cancelEvent: async (eventId: number): Promise<string> => {
+      try {
+        const response = await apiClient.post(`/api/events/${eventId}/cancel`);
+        return response.data;
+      } catch (err: any) {
+        throw new Error(err.response?.data || 'Failed to cancel the event.');
       }
     },
   },
@@ -185,7 +193,7 @@ export const api = {
         throw new Error('Failed to lock seat. It may have just been taken.');
       }
     },
-    bookBulk: async (seatIds: number[], orderId: string): Promise<void> => {
+bookBulk: async (seatIds: number[], orderId: string): Promise<void> => {
       try {
         await apiClient.post('/api/seat/book-bulk', null, {
           params: {
@@ -195,6 +203,18 @@ export const api = {
         });
       } catch (err) {
         throw new Error('Failed to finalize bulk booking. Seats may have expired.');
+      }
+    },
+    confirmOrder: async (data: { orderId: string; paymentId: string; userId: number }): Promise<void> => {
+      try {
+        await apiClient.post('/api/seat/confirm-order', null, {
+          params: {
+            orderId: data.orderId,
+            paymentId: data.paymentId
+          }
+        });
+      } catch (err: any) {
+        throw new Error(err.response?.data || 'Failed to confirm order and save payment ID.');
       }
     }
   },

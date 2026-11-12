@@ -1,5 +1,9 @@
 package project.Seat_Pulse.service;
 
+import com.razorpay.RazorpayClient;
+import com.razorpay.Refund;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.CacheManager;
 import jakarta.transaction.Transactional;
@@ -14,12 +18,19 @@ import project.Seat_Pulse.repository.SeatRepository;
 import project.Seat_Pulse.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class SeatService {
+
+    @Value("${razorpay.key.id}")
+    private String razorpayKeyId;
+
+    @Value("${razorpay.key.secret}")
+    private String razorpayKeySecret;
 
     private final SeatRepository seatRepo;
     private final UserRepository userRepo;
@@ -153,13 +164,32 @@ public class SeatService {
             throw new RuntimeException("Only confirmed bookings can be cancelled.");
         }
 
+        long hoursUntilEvent = ChronoUnit.HOURS.between(LocalDateTime.now(), seat.getEvent().getEventStartTime());
+
+        if (hoursUntilEvent >= 48) {
+            try {
+                RazorpayClient razorpay = new RazorpayClient(razorpayKeyId, razorpayKeySecret);
+                JSONObject refundRequest = new JSONObject();
+                int refundAmountInPaise = seat.getPrice().intValue()*100;
+                refundRequest.put("amount",refundAmountInPaise);
+                Refund refund = razorpay.payments.refund(seat.getPaymentId(), refundRequest);
+                System.out.println("Refund successful for Seat ID " + seatId + ". Refund ID: " + refund.get("id"));
+            } catch (Exception e) {
+                throw new RuntimeException("Failed to process Razorpay refund: " + e.getMessage());
+            }
+        } else {
+            throw new RuntimeException("Cancellations are not permitted within 48 hours of the event start time.");
+        }
+
         seat.setStatus(SeatStatus.AVAILABLE);
         seat.setLockedBy(null);
         seat.setLockedAt(null);
+        seat.setOrderId(null);
+        seat.setPaymentId(null);
         seatRepo.save(seat);
         evictSeatMapCache(seat.getEvent().getEventId());
 
-        return "Ticket cancelled successfully";
+        return "Ticket cancelled and refund initiated successfully";
     }
 
     @Transactional
@@ -209,15 +239,12 @@ public class SeatService {
     }
 
     @Transactional
-    public void confirmOrder(String orderId, long userId) {
+    public void confirmOrder(String orderId, String paymentId, long userId) {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         List<Seat> lockedSeats = seatRepo.findByLockedBy_UserIdAndStatus(userId, SeatStatus.LOCKED);
-
-        if (lockedSeats.isEmpty()) {
-            throw new RuntimeException("No locked seats found for this user to confirm.");
-        }
+        if (lockedSeats.isEmpty()) throw new RuntimeException("No locked seats found.");
 
         List<String> seatNumbers = new ArrayList<>();
         List<Long> seatIds = new ArrayList<>();
@@ -226,29 +253,19 @@ public class SeatService {
         for (Seat seat : lockedSeats) {
             seat.setStatus(SeatStatus.BOOKED);
             seat.setOrderId(orderId);
+            seat.setPaymentId(paymentId);
 
             seatNumbers.add(String.valueOf(seat.getSeatNo()));
             seatIds.add(seat.getSeatId());
-
             eventName = seat.getEvent().getEventName();
         }
 
         seatRepo.saveAll(lockedSeats);
-
-        lockedSeats.stream()
-                .map(seat -> seat.getEvent().getEventId())
-                .distinct()
-                .forEach(this::evictSeatMapCache);
+        lockedSeats.stream().map(seat -> seat.getEvent().getEventId()).distinct().forEach(this::evictSeatMapCache);
 
         BulkNotificationMessageDto bulkEmailMsg = new BulkNotificationMessageDto(
-                user.getUserName(),
-                user.getEmailId(),
-                eventName,
-                seatNumbers,
-                seatIds,
-                orderId
+                user.getUserName(), user.getEmailId(), eventName, seatNumbers, seatIds, orderId
         );
-
         notificationProducer.sendBulkEmailTask(bulkEmailMsg);
     }
 }

@@ -76,7 +76,7 @@ public class PaymentController {
 
             User user = userService.getUserByEmailId(authentication.getName());
 
-            seatService.confirmOrder(dto.getRazorpayOrderId(), user.getUserId());
+            seatService.confirmOrder(dto.getRazorpayOrderId(),dto.getRazorpayPaymentId(), user.getUserId());
 
             return ResponseEntity.ok("Payment verified and seats booked successfully.");
 

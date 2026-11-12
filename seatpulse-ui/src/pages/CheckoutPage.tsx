@@ -3,6 +3,7 @@ import { useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { Check, Clock, Loader2, ArrowRight, AlertTriangle, User, Calendar, MapPin } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { api } from '../api/seatPulseApi';
+import { useAuthStore } from '../store/useAuthStore';
 
 declare global { interface Window { Razorpay: any; } }
 
@@ -40,12 +41,12 @@ export default function CheckoutPage() {
   const navigate = useNavigate();
   const booking = location.state?.booking as BookingState | undefined;
 
+  const { user } = useAuthStore();
   const [timeLeft, setTimeLeft] = useState(booking ? Math.max(0, Math.ceil((booking.expiresAt - Date.now()) / 1000)) : 0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
 
-  // Idempotency Fallback States
   const [syncError, setSyncError] = useState<boolean>(false);
   const [completedOrderId, setCompletedOrderId] = useState<string | null>(null);
 
@@ -57,7 +58,7 @@ export default function CheckoutPage() {
       if (remaining === 0) {
         clearInterval(timer);
         toast.error('Seat reservation expired. Please select your seats again.');
-        navigate(-1); // Smoothly go back instead of pushing a new route
+        navigate(-1);
       }
     }, 1000);
     return () => clearInterval(timer);
@@ -73,7 +74,6 @@ export default function CheckoutPage() {
       const res = await loadRazorpayScript();
       if (!res) throw new Error('Razorpay SDK failed to load.');
 
-      // Create the Razorpay Order on the Backend
       const orderId = await api.payment.createOrder(booking.seatIds, booking.total);
 
       const options = {
@@ -83,25 +83,26 @@ export default function CheckoutPage() {
         name: 'SeatPulse',
         description: `Premium Seats: ${booking.seatNumbers}`,
         order_id: orderId,
-        handler: async function (response: any) {
-          try {
-            toast.loading('Verifying payment securely...', { id: 'verify' });
+handler: async function (response: any) {
+      try {
+        toast.loading('Confirming seats securely...', { id: 'verify' });
 
-            await api.payment.verifyPayment({
-              razorpayOrderId: response.razorpay_order_id,
-              razorpayPaymentId: response.razorpay_payment_id,
-              razorpaySignature: response.razorpay_signature,
-            });
+        // NEW: Send the exact parameters your updated Spring Boot backend expects
+        await api.seats.confirmOrder({
+          orderId: response.razorpay_order_id,
+          paymentId: response.razorpay_payment_id,
+          userId: user?.userId || user?.id // Pass the extracted user ID
+        });
 
-            toast.success('Payment successful! Welcome to SeatPulse.', { id: 'verify' });
-            setIsSuccess(true);
-          } catch (err: any) {
-            setCompletedOrderId(orderId);
-            setSyncError(true);
-            setIsProcessing(false);
-            toast.error(err.message || 'Payment verification failed!', { id: 'verify' });
-          }
-        },
+        toast.success('Payment successful! Welcome to SeatPulse.', { id: 'verify' });
+        setIsSuccess(true);
+      } catch (err: any) {
+        setCompletedOrderId(orderId);
+        setSyncError(true);
+        setIsProcessing(false);
+        toast.error(err.message || 'Payment verification failed!', { id: 'verify' });
+      }
+    },
         prefill: { name: 'SeatPulse VIP', email: 'vip@seatpulse.com' },
         theme: { color: '#0D0D0E' }
       };

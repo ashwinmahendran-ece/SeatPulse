@@ -20,6 +20,6 @@ public class CancellationProducer {
                 "",
                 dto
         );
-        System.out.println("[Broadcaster] Event Cancelled! Fired message to Fanout Exchange for Event: " + dto.eventName());
+        System.out.println("[Broadcaster] Event Cancelled! Fired message to Fanout Exchange for Event: " + dto.getEventName());
     }
 }

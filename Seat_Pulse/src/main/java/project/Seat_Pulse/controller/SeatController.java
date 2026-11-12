@@ -103,4 +103,16 @@ public class SeatController {
         notificationProducer.sendBulkEmailTask(bulkEmailMsg);
         return ResponseEntity.accepted().body("Bulk booking requests and grouped email queued successfully!");
     }
+
+    @PostMapping("/confirm-order")
+    public ResponseEntity<String> confirmOrder(
+            @RequestParam String orderId,
+            @RequestParam String paymentId,
+            Authentication authentication) {
+
+        long userId = currentUserId(authentication);
+        seatService.confirmOrder(orderId, paymentId, userId);
+
+        return ResponseEntity.ok("Order confirmed and payment ID saved successfully.");
+    }
 }

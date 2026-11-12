@@ -283,7 +283,6 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* Large QR Code for Scanning */}
               <div className="flex flex-col items-center justify-center p-6 bg-white rounded-3xl mx-auto w-48 shadow-lg">
                 <img src={selectedTicket.qrCodeUrl} alt="Scan to Enter" className="w-full h-auto object-contain" />
               </div>

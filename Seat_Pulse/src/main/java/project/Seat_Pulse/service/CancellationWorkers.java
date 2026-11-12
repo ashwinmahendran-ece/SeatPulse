@@ -29,31 +29,31 @@ public class CancellationWorkers {
     @Transactional
     @RabbitListener(queues = RabbitMQConfig.CANCEL_DB_QUEUE)
     public void processDatabaseUpdates(EventCancellationDto payload) {
-        System.out.println("🗄️ [DB Worker] Picked up cancellation for Event ID: " + payload.eventId());
+        System.out.println("[DB Worker] Picked up cancellation for Event ID: " + payload.getEventId());
 
-        seatRepo.cancelAllSeatsForEvent(payload.eventId(), SeatStatus.CANCELLED);
+        seatRepo.cancelAllSeatsForEvent(payload.getEventId(), SeatStatus.CANCELLED);
 
         var cache = cacheManager.getCache("eventSeats");
         if (cache != null) {
-            cache.evict(payload.eventId());
-            System.out.println("🧹 [Redis] Cleared cache for Event ID: " + payload.eventId() + " (Event Cancelled)");
+            cache.evict(payload.getEventId());
+            System.out.println("[Redis] Cleared cache for Event ID: " + payload.getEventId() + " (Event Cancelled)");
         }
 
-        System.out.println("🗄️ [DB Worker] Successfully marked all seats as CANCELLED for: " + payload.eventName());
+        System.out.println("🗄️ [DB Worker] Successfully marked all seats as CANCELLED for: " + payload.getEventName());
     }
 
     @RabbitListener(queues = RabbitMQConfig.CANCEL_EMAIL_QUEUE)
     public void processCancellationEmails(EventCancellationDto payload) {
-        System.out.println("📧 [Cancellation Mailer] Preparing apology emails for Event ID: " + payload.eventId());
+        System.out.println("📧 [Cancellation Mailer] Preparing apology emails for Event ID: " + payload.getEventId());
 
-        List<Seat> bookedSeats = seatRepo.findByEventEventIdAndStatus(payload.eventId(), SeatStatus.BOOKED);
+        List<Seat> bookedSeats = seatRepo.findByEventEventIdAndStatus(payload.getEventId(), SeatStatus.BOOKED);
         int emailCount = 0;
 
         for (Seat seat : bookedSeats) {
             if (seat.getLockedBy() != null && seat.getLockedBy().getEmailId() != null) {
                 NotificationMessageDto apologyEmail = new NotificationMessageDto(
                         seat.getLockedBy().getEmailId(),
-                        "CANCELED: " + payload.eventName(),
+                        "CANCELED: " + payload.getEventName(),
                         seat.getSeatNo()
                 );
                 notificationProducer.sendEmailTask(apologyEmail);

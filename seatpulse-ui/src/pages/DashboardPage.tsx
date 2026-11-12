@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   LayoutDashboard, Users, Ticket, IndianRupee, Plus,
-  MapPin, Calendar, ArrowRight, Activity, Eye, X, RefreshCw, BarChart3, Loader2, Globe, ScanLine
+  MapPin, Calendar, ArrowRight, Activity, Eye, X, RefreshCw, BarChart3, Loader2, Globe, ScanLine, Trash2
 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { api } from '../api/seatPulseApi';
 import { useAuthStore } from '../store/useAuthStore';
 
@@ -45,6 +46,31 @@ export default function DashboardPage() {
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout);
   const user = useAuthStore((state) => state.user);
+  const queryClient = useQueryClient();
+
+  const cancelEventMutation = useMutation({
+    mutationFn: (eventId: number) => api.events.cancelEvent(eventId),
+    onSuccess: () => {
+      toast.success('Event cancelled successfully. Full refunds have been initiated.');
+      queryClient.invalidateQueries({ queryKey: ['admin-events'] });
+    },
+    onError: (error: any) => {
+      toast.error(error.message || 'Failed to cancel the event. Please try again.');
+    }
+  });
+
+  const handleCancelEvent = (eventId: number, eventName: string) => {
+    const isConfirmed = window.confirm(
+      `URGENT: Are you absolutely sure you want to cancel "${eventName}"?\n\nThis will instantly delete all tickets, wipe the seating map, and issue full Razorpay refunds to all attendees. This CANNOT be undone.`
+    );
+
+    if (isConfirmed) {
+      toast.loading('Processing event cancellation and bulk refunds...', { id: 'cancel-toast' });
+      cancelEventMutation.mutate(eventId, {
+        onSettled: () => toast.dismiss('cancel-toast')
+      });
+    }
+  };
 
   const [previewEventId, setPreviewEventId] = useState<number | null>(null);
 
@@ -268,7 +294,16 @@ const handleLogout = async () => {
                       <p className="text-sm font-medium text-slate-300">{formatAdminDate(event.eventStartTime)}</p>
                     </div>
 
-                    <div className="col-span-1 lg:col-span-2 flex justify-start lg:justify-end mt-6 lg:mt-0 gap-3">
+<div className="col-span-1 lg:col-span-2 flex justify-start lg:justify-end mt-6 lg:mt-0 gap-3">
+                      <button
+                        onClick={() => handleCancelEvent(event.eventId, event.eventName)}
+                        disabled={cancelEventMutation.isPending}
+                        className="flex items-center justify-center h-10 w-10 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 hover:text-red-400 transition-colors border border-red-500/20 disabled:pointer-events-none disabled:opacity-50"
+                        title="Cancel Event"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+
                       <button
                         onClick={() => setPreviewEventId(event.eventId)}
                         className="flex items-center justify-center h-10 w-10 rounded-xl bg-[#1A1C1E] hover:bg-white/10 text-slate-400 hover:text-white transition-colors border border-white/10"

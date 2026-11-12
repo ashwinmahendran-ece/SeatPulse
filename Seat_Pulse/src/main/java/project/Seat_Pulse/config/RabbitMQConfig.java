@@ -37,6 +37,23 @@ public class RabbitMQConfig {
     public static final String OTP_ROUTING_KEY = "otp_routing_key";
 
     @Bean
+    public DirectExchange cancellationExchange(){
+        return new DirectExchange("cancellation_exchange");
+    }
+
+    @Bean
+    public Queue cancellationQueue(){
+        return new Queue("event_cancellation_queue");
+    }
+
+    @Bean
+    public Binding cancellationBinding(){
+        return BindingBuilder.bind(cancellationQueue())
+                .to(cancellationExchange())
+                .with("routing.cancellation");
+    }
+
+    @Bean
     public Queue otpQueue() {
         return new Queue(OTP_QUEUE, true);
     }

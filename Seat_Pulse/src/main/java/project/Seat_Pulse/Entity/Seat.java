@@ -41,7 +41,9 @@ public class Seat {
     @Column(name = "version")
     private Long version;
 
-    public Seat(Long seatId, String seatCategory, String seatNo, User lockedBy, Event event, LocalDateTime lockedAt,BigDecimal price,String orderId) {
+    private String paymentId;
+
+    public Seat(Long seatId, String seatCategory, String seatNo, User lockedBy, Event event, LocalDateTime lockedAt,BigDecimal price,String orderId,String paymentId) {
         this.seatId = seatId;
         this.seatCategory = seatCategory;
         this.seatNo = seatNo;
@@ -50,6 +52,7 @@ public class Seat {
         this.lockedAt = lockedAt;
         this.price = price;
         this.orderId = orderId;
+        this.paymentId = paymentId;
     }
 
     public Seat(){
@@ -136,12 +139,21 @@ public class Seat {
         this.orderId = orderId;
     }
 
+    public String getPaymentId() {
+        return paymentId;
+    }
+
+    public void setPaymentId(String paymentId) {
+        this.paymentId = paymentId;
+    }
+
     @Override
     public String toString() {
         return "Seat{" +
-                "seatId=" + seatId +
+                "version=" + version +
+                ", seatId=" + seatId +
                 ", seatCategory='" + seatCategory + '\'' +
-                ", seatNo=" + seatNo +
+                ", seatNo='" + seatNo + '\'' +
                 ", lockedAt=" + lockedAt +
                 ", price=" + price +
                 ", status=" + status +
@@ -149,6 +161,7 @@ public class Seat {
                 ", lockedBy=" + lockedBy +
                 ", event=" + event +
                 ", orderId='" + orderId + '\'' +
+                ", paymentId='" + paymentId + '\'' +
                 '}';
     }
 }

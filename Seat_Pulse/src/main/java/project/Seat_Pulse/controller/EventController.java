@@ -56,9 +56,8 @@ public class EventController {
 
     @PostMapping("/{eventId}/cancel")
     public ResponseEntity<String> cancelEvent(@PathVariable("eventId") Long eventId) {
-        EventCancellationDto payload = new EventCancellationDto(eventId, "Test Concert");
-        cancellationProducer.broadcastCancellation(payload);
-        return ResponseEntity.accepted().body("Event cancellation process initiated successfully.");
+        eventService.cancelEntireEvent(eventId);
+        return ResponseEntity.ok("Event cancelled. Refunds processed and emails dispatched.");
     }
 
     @GetMapping("/event/{eventId}")

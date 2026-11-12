@@ -1,6 +1,7 @@
 package project.Seat_Pulse.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import project.Seat_Pulse.enums.EventStatus;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -19,6 +20,9 @@ public class Event implements Serializable {
     private String location;
     private String venue;
     private int totalSeats;
+
+    @Enumerated(EnumType.STRING)
+    private EventStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organizer_id")
@@ -110,6 +114,14 @@ public class Event implements Serializable {
 
     public void setOrganizer(User organizer) {
         this.organizer = organizer;
+    }
+
+    public EventStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(EventStatus status) {
+        this.status = status;
     }
 
     @Override
