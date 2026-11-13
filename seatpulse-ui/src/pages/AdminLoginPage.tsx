@@ -33,18 +33,16 @@ export default function AdminLoginPage() {
 
     try {
       const token = await api.auth.login({ emailId: email, password });
-
-      // Decode the JWT to verify ADMIN role
       const payload = JSON.parse(atob(token.split('.')[1]));
       const role = payload.role || payload.roles || payload.authorities || 'USER';
 
       if (role !== 'ADMIN') {
-        logout(); // Destroy the token immediately if they are just a USER
+        logout();
         throw new Error('Unauthorized: This portal is restricted to verified Organizers.');
       }
 
       login(token);
-      navigate('/admin/dashboard'); // Route to the actual dashboard
+      navigate('/admin/dashboard');
     } catch (err: any) {
       setError(err.message || 'Invalid credentials.');
     } finally {
@@ -83,9 +81,6 @@ export default function AdminLoginPage() {
 
       <div className="absolute inset-0 z-0 pointer-events-none bg-cinematic"></div>
 
-
-
-      {/* 2. HEADER */}
       <header className="relative z-10 w-full px-6 sm:px-10 lg:px-16 py-7 flex justify-between items-center">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate('/')}>
           <div className="soundwave scale-50 -mx-3" aria-hidden="true">
@@ -98,7 +93,6 @@ export default function AdminLoginPage() {
         </span>
       </header>
 
-      {/* 3. MAIN CONTENT (Login Form) */}
       <main className="relative z-10 flex-1 flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-[420px] text-center">
 
@@ -155,7 +149,6 @@ export default function AdminLoginPage() {
         </div>
       </main>
 
-      {/* 4. FOOTER */}
       <footer className="relative z-10 px-6 pb-9">
         <div className="h-[1px] max-w-6xl mx-auto bg-gradient-to-r from-transparent via-[#e8d5b5]/60 to-transparent"></div>
         <p className="text-center mt-6 text-[#a6a3a0] text-xs">

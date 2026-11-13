@@ -21,7 +21,6 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-sage-light/30 bg-cream/90 backdrop-blur-md transition-all duration-300">
       <div className="mx-auto flex h-20 max-w-[1440px] items-center justify-between px-6 lg:px-12">
 
-        {/* Logo */}
         <Link
           to="/"
           className="flex items-center font-display text-3xl font-black tracking-tight text-burgundy transition-transform hover:scale-[1.02]"
@@ -29,7 +28,6 @@ export default function Navbar() {
           Seat<span className="italic text-sage-dark ml-1">Pulse</span>
         </Link>
 
-        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-8 font-medium text-sage-dark">
           <Link
             to="/explore"
@@ -67,7 +65,6 @@ export default function Navbar() {
           )}
         </nav>
 
-        {/* Mobile Menu Icon (Simplified for now) */}
         <div className="md:hidden flex items-center">
           {isAuthenticated ? (
             <Link to="/profile" className="text-burgundy p-2"><User size={24} /></Link>

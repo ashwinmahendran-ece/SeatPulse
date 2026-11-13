@@ -50,7 +50,6 @@ export default function EventDetailsPage() {
   const eventId = paramId ? parseInt(paramId, 10) : NaN;
   const event = location.state?.event as Event | undefined;
 
-  // Moved eventDate up so we can use it in the routing payload
   const eventDate = event?.eventStartTime ? new Date(event.eventStartTime) : null;
 
   const [selectedSeats, setSelectedSeats] = useState<Seat[]>([]);
@@ -98,7 +97,6 @@ export default function EventDetailsPage() {
       await Promise.all(selectedSeats.map(seat => api.seats.lock(seat.seatId)));
       toast.success(`${selectedSeats.length} seats secured!`, { style: { background: '#E8D5B5', color: '#07090E', fontWeight: 'bold' } });
 
-      // Formatted date and venue strings to pass exactly what CheckoutPage expects
       const formattedDate = eventDate
         ? `${eventDate.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })} • ${eventDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`
         : 'Date & Time TBA';
@@ -131,7 +129,6 @@ export default function EventDetailsPage() {
 
   if (Number.isNaN(eventId)) return <div className="p-10 text-center font-bold text-red-400 bg-[#07090E] min-h-screen pt-32">Invalid Event ID.</div>;
 
-  // BOOKMYSHOW STYLE EXACT GRID GROUPING LOGIC
   const groupedRows: { category: string, price: number, rows: any[] }[] = [];
   let currentGroup: any = null;
   const numRows = Math.ceil(seats.length / COLS) || 10;
@@ -165,7 +162,6 @@ export default function EventDetailsPage() {
         </button>
       </div>
 
-      {/* FIXED HERO SECTION: Full Cover Image */}
       <div className="relative w-full h-[45vh] lg:h-[50vh] min-h-[350px] bg-[#07090E]">
         <img src={getEventImage(event?.eventCategory)} alt="Event Hero" className="absolute inset-0 w-full h-full object-cover object-center" />
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#07090E] via-[#07090E]/60 to-transparent" />
@@ -215,7 +211,6 @@ export default function EventDetailsPage() {
                 <div className="mt-2 text-[10px] font-bold tracking-[0.4em] text-slate-500 uppercase">Stage</div>
               </div>
 
-              {/* DENSE BOOKMYSHOW STYLE GRID RENDER */}
               <div className="flex flex-col w-full max-w-4xl px-1 sm:px-4">
                 {groupedRows.map((group, gIdx) => (
                   <div key={gIdx} className="w-full mb-6 relative">
@@ -226,7 +221,6 @@ export default function EventDetailsPage() {
                       </h3>
                     </div>
 
-                    {/* SEAT ROWS - Condensed */}
                     <div className="flex flex-col gap-1 sm:gap-1.5">
                       {group.rows.map((row) => (
                         <div key={row.rowIndex} className="flex items-center gap-2 sm:gap-4 w-full justify-center">
@@ -243,7 +237,6 @@ export default function EventDetailsPage() {
                               const isSelected = selectedSeats.some((s) => s.seatId === seat.seatId);
                               const isWalkway = category === 'BLOCKED';
 
-                              // Smaller empty div for walkways
                               if (isWalkway) {
                                 return <div key={`walkway-${index}`} className="w-6 h-6 sm:w-7 sm:h-7" />;
                               }
@@ -277,7 +270,6 @@ export default function EventDetailsPage() {
         </div>
       </main>
 
-      {/* FLOATING CHECKOUT PILL */}
       <div className={`fixed bottom-6 left-0 right-0 z-50 flex justify-center px-4 transition-all duration-500 ease-out ${selectedSeats.length > 0 ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0 pointer-events-none'}`}>
         <div className="w-full max-w-md bg-[#1A1D24]/95 backdrop-blur-xl border border-white/10 rounded-full p-2 pl-6 flex items-center justify-between shadow-[0_20px_40px_rgba(0,0,0,0.8)]">
 

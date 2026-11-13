@@ -15,7 +15,6 @@ export default function AuthPage() {
   const navigate = useNavigate();
   const { login } = useAuthStore();
 
-  // View state to handle the flow without leaving the page
   const [view, setView] = useState<'login' | 'forgot_email' | 'forgot_otp' | 'forgot_new_password'>('login');
 
   const [email, setEmail] = useState('');
@@ -26,11 +25,9 @@ export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Timer state for OTP
   const [timeLeft, setTimeLeft] = useState(120);
   const [isTimerActive, setIsTimerActive] = useState(false);
 
-  // OTP Timer Logic
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (isTimerActive && timeLeft > 0) {
@@ -121,7 +118,7 @@ export default function AuthPage() {
     setIsLoading(true);
     try {
       await api.auth.verifyOtp(email, otp);
-      setView('forgot_new_password'); // Move to final screen
+      setView('forgot_new_password');
     } catch (err: any) {
       setError(err.message || 'Invalid or expired OTP.');
     } finally {
@@ -141,7 +138,6 @@ export default function AuthPage() {
       await api.auth.resetPassword(email, newPassword);
       toast.success('Password reset successfully! Please sign in.');
 
-      // Reset all states and go back to login view
       setPassword('');
       setOtp('');
       setNewPassword('');
@@ -169,7 +165,6 @@ export default function AuthPage() {
         }
       `}</style>
 
-      {/* LEFT SIDE: HERO BANNER */}
       <div className="relative hidden lg:flex w-1/2 flex-col justify-end p-16 overflow-hidden bg-[#11131a]">
         <div className="absolute inset-0 z-0 bg-[#07090e]">
           <img
@@ -191,11 +186,9 @@ export default function AuthPage() {
         </div>
       </div>
 
-      {/* RIGHT SIDE: FORMS */}
       <div className="flex w-full lg:w-1/2 flex-col justify-center items-center p-6 sm:p-12 lg:p-20 relative grid-glow">
         <div className="w-full max-w-[420px] animate-fade-in relative z-10">
 
-          {/* Logo & Brand Name */}
           <div className="flex items-center gap-3 mb-10 cursor-pointer" onClick={() => navigate('/')}>
             <SoundwaveLogo />
             <span className="font-display text-xl font-bold tracking-tight text-[#f4f2ee]">
@@ -203,7 +196,6 @@ export default function AuthPage() {
             </span>
           </div>
 
-          {/* Dynamic Heading based on current view */}
           <h2 className="font-display text-4xl font-extrabold tracking-tight text-white mb-10">
             {view === 'login' && 'Welcome Back'}
             {view === 'forgot_email' && 'Reset Password'}
@@ -211,7 +203,6 @@ export default function AuthPage() {
             {view === 'forgot_new_password' && 'New Password'}
           </h2>
 
-          {/* VIEW: 1. LOGIN FORM */}
           {view === 'login' && (
             <form onSubmit={handleLogin} className="space-y-6">
               {error && (
@@ -271,7 +262,6 @@ export default function AuthPage() {
             </form>
           )}
 
-          {/* VIEW 2: FORGOT PASSWORD - EMAIL ENTRY */}
           {view === 'forgot_email' && (
             <form onSubmit={handleSendOtp} className="space-y-6 animate-fade-in">
               {error && (
@@ -312,7 +302,6 @@ export default function AuthPage() {
             </form>
           )}
 
-          {/* VIEW 3: FORGOT PASSWORD - OTP ENTRY */}
           {view === 'forgot_otp' && (
             <form onSubmit={handleVerifyOtp} className="space-y-6 animate-fade-in">
               {error && (
@@ -338,7 +327,6 @@ export default function AuthPage() {
                 />
               </div>
 
-              {/* Timer and Resend Row */}
               <div className="flex justify-between items-center text-sm px-1">
                 <span className="text-white/60">
                   {timeLeft > 0 ? `Code expires in ${formatTime(timeLeft)}` : 'Code expired'}
@@ -373,7 +361,6 @@ export default function AuthPage() {
             </form>
           )}
 
-          {/* VIEW 4: FORGOT PASSWORD - NEW PASSWORD ENTRY */}
           {view === 'forgot_new_password' && (
             <form onSubmit={handleResetPassword} className="space-y-6 animate-fade-in">
               {error && (

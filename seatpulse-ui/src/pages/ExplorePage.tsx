@@ -97,7 +97,6 @@ export default function ExplorePage() {
 
   const getRoleFromToken = () => {
       try {
-        // CHANGED: Use sessionStorage
         const token = sessionStorage.getItem('seatpulse_jwt');
         if (!token) return null;
         const payload = JSON.parse(atob(token.split('.')[1]));
@@ -134,7 +133,6 @@ export default function ExplorePage() {
         .animate-logo-sweep { position: absolute; top: 50%; animation: sweepToCenter 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
       `}</style>
 
-      {/* HEADER */}
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#07090E]/90 backdrop-blur-md shadow-none">
         <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-end px-5 lg:px-16 relative">
 

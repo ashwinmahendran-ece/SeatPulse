@@ -27,7 +27,6 @@ export default function ProfilePage() {
   const logout = useAuthStore((state) => state.logout);
   const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
 
-  // NEW: State to control the ID Card Modal
   const [selectedTicket, setSelectedTicket] = useState<any | null>(null);
 
   const { data: bookings = [], isLoading, error } = useQuery({
@@ -40,7 +39,6 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-24 selection:bg-indigo-500/30">
 
-      {/* HEADER */}
       <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/80 backdrop-blur-xl">
         <div className="mx-auto flex h-20 w-full max-w-[1440px] items-center justify-between px-5 lg:px-16">
           <button onClick={() => navigate('/explore')} className="flex items-center gap-2 text-slate-400 hover:text-indigo-400 transition-colors font-semibold">
@@ -61,7 +59,6 @@ export default function ProfilePage() {
 
       <main className="relative z-10 mx-auto w-full max-w-[1440px] px-5 pt-10 lg:px-16">
 
-        {/* PAGE TITLE & TABS */}
         <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
             <h1 className="font-display text-4xl font-extrabold tracking-tight text-white mb-2">
@@ -96,7 +93,6 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* TICKET LIST */}
         <div className="flex flex-col gap-6">
           {isLoading ? (
             [...Array(3)].map((_, i) => (
@@ -126,7 +122,6 @@ export default function ProfilePage() {
               const seats = booking.seats || (booking.seatRow ? [booking] : []);
               const isConfirmed = booking.status === 'CONFIRMED' || booking.seatStatus === 'BOOKED' || !booking.status;
 
-              // Generate dynamic QR Code URL based on the unique booking ID
               const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=SEATPULSE-${uniqueKey}-${eventName.replace(/\s+/g, '')}`;
 
               return (
@@ -190,7 +185,6 @@ export default function ProfilePage() {
                     </div>
                   </div>
 
-                  {/* Right Side: Generated QR Code */}
                   <div className="md:w-72 bg-slate-950 border-t md:border-t-0 md:border-l border-slate-800 border-dashed relative flex flex-col items-center justify-center p-8 group-hover:bg-slate-900/50 transition-colors">
                     <div className="hidden md:block absolute -top-4 -left-4 w-8 h-8 bg-slate-950 rounded-full border-b border-r border-slate-800 transform rotate-45"></div>
                     <div className="hidden md:block absolute -bottom-4 -left-4 w-8 h-8 bg-slate-950 rounded-full border-t border-r border-slate-800 transform -rotate-45"></div>
@@ -204,7 +198,6 @@ export default function ProfilePage() {
                       {isConfirmed ? 'CONFIRMED' : 'PENDING'}
                     </div>
 
-                    {/* DYNAMIC QR CODE IMAGE */}
                     <div className="bg-white p-2 rounded-xl mb-4 shadow-lg transform group-hover:scale-105 transition-transform">
                       <img src={qrCodeUrl} alt="Ticket QR" className="w-24 h-24 object-contain" />
                     </div>
@@ -220,19 +213,17 @@ export default function ProfilePage() {
         </div>
       </main>
 
-      {/* NEW: VIP ID CARD MODAL */}
       {selectedTicket && (
         <div
           className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in"
           onClick={() => setSelectedTicket(null)}
         >
-          {/* Modal Container */}
+
           <div
             className="relative w-full max-w-sm bg-slate-900 border border-slate-700 rounded-[2rem] shadow-2xl overflow-hidden transform scale-100 animate-slide-up"
             onClick={e => e.stopPropagation()} // Prevent clicks inside from closing it
           >
 
-            {/* Lanyard Hole visual (just for aesthetics) */}
             <div className="absolute top-4 left-1/2 -translate-x-1/2 w-12 h-3 bg-slate-950 rounded-full border border-slate-800 shadow-inner"></div>
 
             <button
@@ -242,9 +233,8 @@ export default function ProfilePage() {
               <X className="w-5 h-5" />
             </button>
 
-            {/* Header Section */}
             <div className="bg-indigo-600 px-8 pt-12 pb-8 text-center relative overflow-hidden">
-              {/* Pattern overlay */}
+
               <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '16px 16px' }}></div>
 
               <div className="relative z-10">
@@ -260,9 +250,8 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            {/* Body Section */}
             <div className="p-8 text-center bg-slate-900 relative">
-              {/* Fake dashed tear line */}
+
               <div className="absolute top-0 left-4 right-4 border-t-2 border-dashed border-slate-700/50"></div>
 
               <div className="mb-6">

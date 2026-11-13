@@ -131,7 +131,6 @@ export default function LandingPage() {
         }
       `}</style>
 
-      {/* HEADER */}
       <header className="w-full border-b border-white/10 bg-[#07090e]/90 backdrop-blur-md sticky top-0 z-50 shadow-none">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 py-5 flex flex-wrap justify-between items-center gap-4">
           <a href="#top" onClick={(e) => smoothScrollToElement(e, 'top')} className="flex items-center gap-2 font-extrabold tracking-tight no-underline cursor-pointer">
@@ -158,7 +157,6 @@ export default function LandingPage() {
       </header>
 
       <main id="top">
-        {/* SECTION 1: HERO */}
         <section className="grid-glow hero-aura w-full overflow-hidden border-b border-white/10 relative">
           <div className="max-w-7xl mx-auto px-5 sm:px-8 py-20 lg:py-28 grid lg:grid-cols-[1.12fr_.88fr] items-center gap-16 animate-fade-in">
             <div className="animate-slide-up">
@@ -170,14 +168,12 @@ export default function LandingPage() {
                 Premium by design. Fast by default. SeatPulse brings every seat, order, and unforgettable moment into one seamless experience.
               </p>
 
-              {/* RESTORED PREMIUM BUTTON UI FOR FIRST PAGE */}
               <button onClick={(e) => smoothScrollToElement(e, 'events')} className="group inline-flex items-center gap-3 rounded-full px-8 py-4 font-bold bg-[#e8d5b5] text-[#101116] hover:bg-white transition-all shadow-[0_0_40px_rgba(232,213,181,0.15)] focus:outline-none">
                 View Featured Events
                 <ArrowRight size={18} className="rotate-90 transition-transform duration-300 group-hover:translate-y-1" />
               </button>
             </div>
 
-            {/* DIGITAL TICKET MOCKUP */}
             <div className="relative max-w-lg w-full mx-auto animate-slide-up" style={{ animationDelay: '0.15s' }}>
               <div className="absolute inset-6 bg-[#e8d5b5]/10 blur-3xl rounded-full"></div>
               <div className="ticket-gradient ticket-dash relative rounded-[28px] border border-[#4e473d] p-7 sm:p-9 overflow-hidden shadow-[0_35px_90px_rgba(0,0,0,0.6),0_0_80px_rgba(232,213,181,0.1)] md:rotate-3 transition-transform hover:rotate-0 duration-500">
@@ -203,7 +199,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* SECTION 2: LIVE FEATURED EVENTS */}
         <section id="events" className="w-full pt-20 lg:pt-28 pb-4 bg-[#07090e] overflow-hidden">
           <div className="max-w-7xl mx-auto px-5 sm:px-8 mb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
@@ -288,7 +283,6 @@ export default function LandingPage() {
           </div>
         </section>
 
-{/* SECTION 3: CTA */}
         <section id="cta" className="w-full pt-16 pb-24 overflow-hidden border-t border-white/5" style={{ background: 'radial-gradient(circle at center, #1a1714 0%, #07090e 100%)' }}>
           <div className="max-w-7xl mx-auto px-5 sm:px-8 text-center relative z-10">
             <p className="font-mono text-[#e8d5b5] text-xs font-bold uppercase tracking-[0.16em] mb-5">YOUR NEXT EXPERIENCE STARTS HERE</p>

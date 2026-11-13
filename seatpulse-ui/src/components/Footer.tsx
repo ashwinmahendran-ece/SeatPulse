@@ -8,7 +8,6 @@ export default function Footer() {
     <footer className="w-full bg-[#07090e] border-t border-white/5 pt-16 pb-8 font-sans text-[#f4f2ee]">
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
 
-        {/* Top Section: Brand & Admin Access CTA */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-16">
           <div className="max-w-sm">
             <Link to="/" className="flex items-center gap-2 font-extrabold tracking-tight no-underline mb-4">
@@ -33,7 +32,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Middle Section: Links Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16 border-t border-white/5 pt-12">
           <div>
             <h4 className="font-mono text-[#e8d5b5] text-xs font-bold uppercase tracking-widest mb-4">Discover</h4>
@@ -66,7 +64,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom Section: Copyright */}
         <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/5">
           <p className="text-[#aeb2bb] text-xs">
             © {currentYear} SeatPulse. All rights reserved.

@@ -217,7 +217,6 @@ export default function MyBookingsPage() {
         </section>
       </main>
 
-      {/* QR DIGITAL TICKET MODAL */}
       {viewTicketDialog.isOpen && viewTicketDialog.order && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-md animate-fade-in" onClick={() => setViewTicketDialog({ isOpen: false, order: null })}></div>
@@ -270,7 +269,6 @@ export default function MyBookingsPage() {
         </div>
       )}
 
-      {/* CANCEL CONFIRMATION MODAL - ADDED */}
       {cancelDialog.isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div

@@ -6,7 +6,6 @@ import toast from 'react-hot-toast';
 import { api } from '../api/seatPulseApi';
 import type { SeatPlanItem } from '../types';
 
-// Helper to convert row index to alphabet (0 = A, 1 = B, 26 = AA, etc.)
 const getRowLabel = (index: number) => {
   let label = '';
   let i = index;
@@ -17,7 +16,6 @@ const getRowLabel = (index: number) => {
   return label;
 };
 
-// DYNAMIC COLUMN CALCULATOR
 const calculateCols = (seatsMap: any[]) => {
   if (!seatsMap || seatsMap.length === 0) return 15;
   const bRowIndex = seatsMap.findIndex(s => typeof s.seatNo === 'string' && s.seatNo.replace(/[0-9]/g, '').toUpperCase() === 'B');
@@ -55,11 +53,9 @@ export default function SeatingBuilderPage() {
   const [rows, setRows] = useState(10);
   const [cols, setCols] = useState(15);
 
-  // Paintbrush State
   const [selectedCategory, setSelectedCategory] = useState('REGULAR');
   const [bulkPrice, setBulkPrice] = useState('500');
 
-  // Bulk Row Assigner State
   const [startRow, setStartRow] = useState(0);
   const [endRow, setEndRow] = useState(2);
   const [bulkRowCategory, setBulkRowCategory] = useState('VIP');
@@ -74,7 +70,7 @@ export default function SeatingBuilderPage() {
       const isCustomLayout = existingSeats.length > 0 && hasSavedPathways;
 
       if (isCustomLayout) {
-        // FIX: Dynamically restore actual columns instead of defaulting to 15
+
         const loadedCols = calculateCols(existingSeats);
         const loadedRows = Math.ceil(existingSeats.length / loadedCols) || 10;
         setCols(loadedCols);
@@ -182,7 +178,7 @@ export default function SeatingBuilderPage() {
     const updated = [...seatMap];
 
     if (updated[index].status === 'BOOKED') {
-      toast.error("🔒 Cannot modify a seat that is already booked!");
+      toast.error("Cannot modify a seat that is already booked!");
       return;
     }
 
@@ -208,8 +204,6 @@ export default function SeatingBuilderPage() {
 
   const handleSave = async () => {
     if (!eventId) return;
-
-    // FIX: Only block the save if formSeatCount > 0, otherwise let it bypass to prevent getting stuck
     if (formSeatCount > 0 && mappedSeatCount > formSeatCount) {
       toast.error(`Map has ${mappedSeatCount} seats, but event capacity is only ${formSeatCount}. Please remove seats or increase capacity in Event Settings.`);
       return;
@@ -237,19 +231,15 @@ export default function SeatingBuilderPage() {
     }
   };
 
-  // UNIFORM MINIMAL SEAT COLORS (No Pink, Green, Yellow)
   const getAdminSeatColor = (category: string, status: string) => {
-    // Booked/Unavailable
+
     if (status === 'BOOKED') return 'bg-transparent border border-slate-700 text-slate-600 cursor-not-allowed opacity-50';
 
-    // Walkway/Empty
     if (category === 'BLOCKED') return 'border border-dashed border-slate-800 bg-transparent text-slate-700 hover:bg-slate-800/50 hover:border-slate-600';
 
-    // Available/Configured (All categories share the same clean look)
     return 'bg-transparent border border-slate-400 text-slate-300 hover:border-indigo-400 hover:text-indigo-400 transition-colors shadow-sm';
   };
 
-  // Group rows by their dominant category so we can apply sticky headers per group
   const groupedRows: { category: string, price: number, rows: any[] }[] = [];
   let currentGroup: any = null;
 
@@ -257,7 +247,6 @@ export default function SeatingBuilderPage() {
     const rowSeats = seatMap.slice(r * cols, (r + 1) * cols);
     const firstValidSeat = rowSeats.find(s => s.category !== 'BLOCKED');
 
-    // Determine the category for this row. If the row is fully blocked, inherit the previous group's category.
     const rowCat = firstValidSeat?.category || (currentGroup ? currentGroup.category : 'REGULAR');
     const rowPrice = firstValidSeat?.price || (currentGroup ? currentGroup.price : 0);
 
@@ -417,7 +406,6 @@ export default function SeatingBuilderPage() {
                 <input type="number" value={bulkPrice} disabled={selectedCategory === 'BLOCKED'} onChange={(e) => setBulkPrice(e.target.value)} className="w-20 rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-indigo-500 disabled:opacity-50" placeholder="₹" />
               </div>
 
-              {/* MINIMAL LEGEND */}
               <div className="mt-4 pt-4 border-t border-slate-800 flex flex-wrap items-center gap-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                 <span className="flex items-center gap-2"><div className="h-3 w-3 rounded-[4px] bg-transparent border border-slate-400"></div> Available</span>
                 <span className="flex items-center gap-2"><div className="h-3 w-3 rounded-[4px] bg-transparent border border-slate-700 opacity-50"></div> Booked</span>
@@ -427,7 +415,6 @@ export default function SeatingBuilderPage() {
           </div>
         </aside>
 
-        {/* MAP CANVAS (BOOKMYSHOW STYLE FULL GRID WITH STICKY CATEGORIES) */}
         <div className="flex-1 bg-slate-900 border border-slate-800 rounded-3xl shadow-xl overflow-y-auto overflow-x-hidden min-h-[600px] flex flex-col items-center justify-start relative custom-scrollbar pb-10">
 
           <div className="w-2/3 h-8 mt-6 bg-slate-800 rounded-t-3xl border-t border-x border-slate-700 mb-12 flex items-center justify-center shadow-[0_-10px_30px_rgba(255,255,255,0.02)] flex-shrink-0">
@@ -438,22 +425,18 @@ export default function SeatingBuilderPage() {
             {groupedRows.map((group, gIdx) => (
               <div key={gIdx} className="w-full mb-8 relative">
 
-                {/* STICKY BOOKMYSHOW-STYLE DIVIDER */}
                 <div className="sticky top-0 z-10 w-full bg-slate-900/95 backdrop-blur-md py-4 mb-4 flex justify-center items-center shadow-[0_10px_10px_-10px_rgba(0,0,0,0.3)]">
                   <h3 className="font-display text-sm font-bold text-slate-300 uppercase tracking-[0.1em]">
                     {group.category} : ₹{group.price}
                   </h3>
                 </div>
 
-                {/* SEAT ROWS FOR THIS CATEGORY */}
                 <div className="flex flex-col gap-2">
                   {group.rows.map((row) => (
                     <div key={row.rowIndex} className="flex items-center gap-4 sm:gap-6 w-full justify-center my-1">
 
-                      {/* Left Row Indicator */}
                       <div className="w-6 text-right text-[11px] font-black text-slate-500 uppercase">{row.rowLabel}</div>
 
-                      {/* Row Seats */}
                       <div className="flex gap-1.5 sm:gap-2">
                         {row.seats.map((seat: any, c: number) => {
                           const index = row.rowIndex * cols + c;
@@ -476,7 +459,6 @@ export default function SeatingBuilderPage() {
                         })}
                       </div>
 
-                      {/* Right Row Indicator */}
                       <div className="w-6 text-left text-[11px] font-black text-slate-500 uppercase hidden md:block">{row.rowLabel}</div>
 
                     </div>

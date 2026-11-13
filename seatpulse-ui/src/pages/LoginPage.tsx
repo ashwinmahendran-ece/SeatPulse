@@ -4,7 +4,6 @@ import { Loader2 } from 'lucide-react';
 import { api } from '../api/seatPulseApi';
 import { useAuthStore } from '../store/useAuthStore';
 
-// Custom Soundwave SVG matching your mockup
 const SoundwaveLogo = () => (
   <svg width="28" height="28" viewBox="0 0 24 24" fill="none" className="text-[#e8d5b5]">
     <path d="M12 3v18M8 7v10M16 6v12M4 10v4M20 9v6M2 11v2M22 11v2" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -31,11 +30,9 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      // The backend uses 'username', even though the UI label asks for Email
       const token = await api.auth.login({ username, password });
       login(token);
 
-      // Determine redirect based on role stored in token
       const payload = JSON.parse(atob(token.split('.')[1]));
       const role = payload.role || payload.roles || payload.authorities || 'USER';
 
@@ -69,9 +66,7 @@ export default function LoginPage() {
         }
       `}</style>
 
-      {/* LEFT SIDE: HERO BANNER (Hidden on mobile/tablet) */}
       <div className="relative hidden lg:flex w-1/2 flex-col justify-end p-16 overflow-hidden bg-[#11131a]">
-        {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1540039155733-d7696d4eb98b?auto=format&fit=crop&q=80&w=1920"
@@ -80,11 +75,9 @@ export default function LoginPage() {
           />
         </div>
 
-        {/* Gradients to blend the image into the dark UI */}
         <div className="absolute inset-0 z-0 bg-gradient-to-t from-[#07090e] via-[#07090e]/40 to-transparent"></div>
         <div className="absolute inset-0 z-0 bg-gradient-to-r from-transparent to-[#07090e]"></div>
 
-        {/* Content over image */}
         <div className="relative z-10 animate-slide-up" style={{ animationDelay: '0.2s' }}>
           <h1 className="font-display text-[64px] font-extrabold tracking-tight text-white mb-4 leading-none">
             Access, Elevated.
@@ -95,12 +88,10 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* RIGHT SIDE: LOGIN FORM */}
       <div className="flex w-full lg:w-1/2 flex-col justify-center items-center p-6 sm:p-12 lg:p-20 relative grid-glow">
 
         <div className="w-full max-w-[420px] animate-fade-in relative z-10">
 
-          {/* Logo & Brand Name */}
           <div className="flex items-center gap-3 mb-10 cursor-pointer" onClick={() => navigate('/')}>
             <SoundwaveLogo />
             <span className="font-display text-xl font-bold tracking-tight text-[#f4f2ee]">
@@ -114,14 +105,12 @@ export default function LoginPage() {
 
           <form onSubmit={handleLogin} className="space-y-6">
 
-            {/* Error Message Display */}
             {error && (
               <div className="animate-fade-in rounded-lg bg-red-500/10 border border-red-500/20 p-4 text-sm font-medium text-red-400">
                 {error}
               </div>
             )}
 
-            {/* Email Field */}
             <div className="space-y-2 animate-slide-up" style={{ animationDelay: '0.1s' }}>
               <label className="text-xs font-medium text-[#e8d5b5]">Email</label>
               <input
@@ -134,7 +123,6 @@ export default function LoginPage() {
               />
             </div>
 
-            {/* Password Field */}
             <div className="space-y-2 animate-slide-up" style={{ animationDelay: '0.2s' }}>
               <label className="text-xs font-medium text-[#e8d5b5]">Password</label>
               <input
@@ -147,7 +135,6 @@ export default function LoginPage() {
               />
             </div>
 
-            {/* Action Buttons */}
             <div className="pt-6 space-y-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
               <button
                 type="submit"

@@ -79,7 +79,6 @@ Thank you,
             </div>
           </div>
 
-          {/* Fallback Template Box */}
           <div className="bg-[#07090E] rounded-xl border border-white/10 p-6 mb-8">
             <div className="flex justify-between items-center mb-4">
               <p className="text-sm font-bold text-[#E8D5B5]">Application Template</p>

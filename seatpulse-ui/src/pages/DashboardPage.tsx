@@ -328,7 +328,6 @@ const handleLogout = async () => {
         </div>
       </main>
 
-      {/* MODAL: PREVIEW */}
       {previewEventId && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
           <div className="bg-[#1F2124] border border-white/10 rounded-[2rem] shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-300">
@@ -371,7 +370,6 @@ const handleLogout = async () => {
               ) : (
                 <div className="flex-1 flex flex-col lg:flex-row h-full overflow-hidden">
 
-                  {/* Left Side: Scrollable Grid Area (BookMyShow Layout) */}
                   <div className="flex-1 overflow-auto p-4 sm:p-8 flex flex-col items-center custom-scrollbar">
 
                     <div className="w-3/4 max-w-sm h-8 bg-[#1F2124] rounded-t-3xl border-t border-x border-white/10 mb-12 flex items-center justify-center shadow-[0_-10px_30px_rgba(255,255,255,0.02)] shrink-0">
@@ -382,14 +380,12 @@ const handleLogout = async () => {
                       {groupedRows.map((group, gIdx) => (
                         <div key={gIdx} className="w-full mb-8 relative">
 
-                          {/* Natural Scrolling Category Divider */}
                           <div className="w-full py-3 mb-4 flex justify-center items-center">
                             <h3 className="font-display text-xs font-bold text-slate-400 uppercase tracking-[0.1em]">
                               {group.category} : ₹{group.price}
                             </h3>
                           </div>
 
-                          {/* Rows */}
                           <div className="flex flex-col gap-1.5 sm:gap-2">
                             {group.rows.map((row) => (
                               <div key={row.rowIndex} className="flex items-center gap-3 sm:gap-4 w-full justify-center my-0.5">
@@ -426,7 +422,6 @@ const handleLogout = async () => {
 
                   </div>
 
-                  {/* Right Side: Minimal Legend */}
                   <div className="w-full lg:w-56 bg-[#1F2124] p-6 border-t lg:border-t-0 lg:border-l border-white/10 flex flex-col flex-shrink-0 z-10">
                     <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-6">Seat Legend</h4>
                     <div className="flex flex-col gap-5">

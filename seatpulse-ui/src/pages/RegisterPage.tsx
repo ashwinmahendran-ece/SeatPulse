@@ -62,7 +62,6 @@ const handleRegister = async (e: React.FormEvent) => {
         }
       `}} />
 
-      {/* LEFT SIDE: HERO BANNER */}
       <div className="relative hidden lg:flex w-1/2 flex-col justify-end p-16 overflow-hidden bg-[#11131a]">
         <div className="absolute inset-0 z-0 bg-[#07090e]">
           <img
@@ -85,7 +84,6 @@ const handleRegister = async (e: React.FormEvent) => {
         </div>
       </div>
 
-      {/* RIGHT SIDE: REGISTER FORM */}
       <div className="flex w-full lg:w-1/2 flex-col justify-center items-center p-6 sm:p-12 lg:p-20 relative grid-glow">
 
         <div className="w-full max-w-[420px] animate-fade-in relative z-10">
@@ -133,7 +131,6 @@ const handleRegister = async (e: React.FormEvent) => {
               />
             </div>
 
-            {/* Mobile Number Field */}
                         <div className="space-y-2 animate-slide-up" style={{ animationDelay: '0.17s' }}>
                           <label className="text-xs font-medium text-[#e8d5b5]">Mobile Number</label>
                           <input

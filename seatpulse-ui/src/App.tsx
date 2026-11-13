@@ -38,7 +38,6 @@ export default function App() {
 
           <main className="flex-grow">
             <Routes>
-              {/* Public Routes */}
               <Route path="/" element={<LandingPage />} />
               <Route path="/explore" element={<ExplorePage />} />
               <Route path="/event/:id" element={<EventDetailsPage />} />

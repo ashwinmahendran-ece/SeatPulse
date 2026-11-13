@@ -138,23 +138,29 @@ export const api = {
     }
   },
 
-  events: {
-    getAll: async (category: string = '', pageNo: number = 0, pageSize: number = 100): Promise<SpringPage<Event> | null> => {
-      try {
-        const response = await apiClient.get<SpringPage<Event>>('/api/events/search', {
-          params: {
-            category: category === 'All' ? '' : (category || ''),
-            pageNo: pageNo || 0,
-            pageSize: pageSize || 100,
-            sortBy: 'eventStartTime'
-          }
-        });
-        return response.data;
-      } catch (err) {
-        console.error('Failed to fetch events:', err);
-        return null;
+events: {
+  getAll: async (category: string = '', pageNo: number = 0, pageSize: number = 100): Promise<SpringPage<Event> | null> => {
+    try {
+      const queryParams: any = {
+        pageNo: pageNo || 0,
+        pageSize: pageSize || 100,
+        sortBy: 'eventStartTime'
+      };
+
+      if (category && category !== 'All') {
+        queryParams.category = category;
       }
-    },
+
+      const response = await apiClient.get<SpringPage<Event>>('/api/events/search', {
+        params: queryParams
+      });
+      return response.data;
+    } catch (err) {
+      console.error('Failed to fetch events:', err);
+      return null;
+    }
+  },
+
     create: async (eventData: Omit<Event, 'eventId'> & { totalSeats: number }): Promise<Event & { totalSeats?: number }> => {
       try {
         const response = await apiClient.post('/api/events/addEvent', eventData);

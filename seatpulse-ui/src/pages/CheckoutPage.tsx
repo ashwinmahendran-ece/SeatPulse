@@ -87,7 +87,6 @@ handler: async function (response: any) {
       try {
         toast.loading('Confirming seats securely...', { id: 'verify' });
 
-        // NEW: Send the exact parameters your updated Spring Boot backend expects
         await api.seats.confirmOrder({
           orderId: response.razorpay_order_id,
           paymentId: response.razorpay_payment_id,
@@ -142,7 +141,6 @@ handler: async function (response: any) {
     );
   }
 
-  // Success Screen
   if (isSuccess) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#0D0D0E] bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:32px_32px] px-5 py-24">
@@ -185,7 +183,6 @@ handler: async function (response: any) {
       </header>
 
       <div className="mx-auto max-w-[1200px] px-5 pt-10 lg:px-8 animate-slide-up">
-        {/* Changed to navigate(-1) to fix the routing loop */}
         <button onClick={() => navigate(-1)} className="mb-6 flex items-center text-sm font-medium text-slate-400 transition hover:text-white">
           ← Back
         </button>
