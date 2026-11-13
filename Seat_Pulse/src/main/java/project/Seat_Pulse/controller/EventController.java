@@ -39,19 +39,18 @@ public class EventController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<Page<Event>> searchEvents(
-            @RequestParam(value = "category", required = false) String category,
-            @RequestParam(value = "pageNo", defaultValue = "0") int pageNo,
-            @RequestParam(value = "pageSize", defaultValue = "100") int pageSize,
-            @RequestParam(value = "sortBy", defaultValue = "eventStartTime") String sortBy
-    ) {
+    public ResponseEntity<Page<Event>> searchUpcomingEvents(
+            @RequestParam(required = false, defaultValue = "") String category,
+            @RequestParam(required = false, defaultValue = "0") Integer pageNo,
+            @RequestParam(required = false, defaultValue = "50") Integer pageSize,
+            @RequestParam(required = false, defaultValue = "eventStartTime") String sortBy) {
 
-        if (category == null) {
-            category = "";
-        }
+        String safeCategory = (category == null || category.trim().isEmpty() || category.equalsIgnoreCase("All"))
+                ? ""
+                : category;
 
-        Page<Event> paginatedEvents = eventService.searchUpcomingEvents(category, pageNo, pageSize, sortBy);
-        return ResponseEntity.ok(paginatedEvents);
+        Page<Event> events = eventService.searchUpcomingEvents(safeCategory, pageNo, pageSize, sortBy);
+        return ResponseEntity.ok(events);
     }
 
     @PostMapping("/{eventId}/cancel")
