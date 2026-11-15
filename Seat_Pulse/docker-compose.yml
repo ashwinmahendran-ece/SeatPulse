@@ -1,16 +1,5 @@
 
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: seatpulse-mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: seat_pulse
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
 
   redis:
     image: redis:alpine
@@ -35,13 +24,14 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - mysql
       - redis
       - rabbitmq
     env_file:
       - .env
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/seat_pulse?useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_URL:jdbc:mysql://mysql-32c8faf2-ashwinmahendran441-4490.i.aivencloud.com:21474/defaultdb?ssl-mode=REQUIRED
+      - SPRING_DATASOURCE_USERNAME:avnadmin
+      - SPRING_DATASOURCE_PASSWORD:${AIVEN_DB_PASSWORD}
       - SPRING_REDIS_HOST=redis
       - SPRING_RABBITMQ_HOST=rabbitmq
 
