@@ -23,7 +23,7 @@ import project.Seat_Pulse.enums.SeatStatus;
 import project.Seat_Pulse.repository.EventRepository;
 import project.Seat_Pulse.repository.SeatRepository;
 import project.Seat_Pulse.repository.UserRepository;
-
+import project.Seat_Pulse.config.RestPageImpl;
 import java.util.*;
 
 @Service
@@ -91,8 +91,13 @@ public class EventService {
     public Page<Event> searchUpcomingEvents(String category, int pageNo, int pageSize, String sortBy) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(sortBy).descending());
         System.out.println("[DB HIT] Executing SQL to fetch events from the database...");
+        Page<Event> rawPage = eventRepo.searchUpcomingEvents(category, pageable);
 
-        return eventRepo.searchUpcomingEvents(category, pageable);
+        return new project.Seat_Pulse.config.RestPageImpl<>(
+                rawPage.getContent(),
+                rawPage.getPageable(),
+                rawPage.getTotalElements()
+        );
     }
 
     public List<Event> getEventsByOrganizer(String username) {
@@ -123,7 +128,7 @@ public class EventService {
             affectedEmails.add(seat.getLockedBy().getEmailId());
 
             if (seat.getPaymentId() != null && !seat.getPaymentId().isEmpty()) {
-                uniquePaymentIdsToRefund.add(seat.getPaymentId()); // Set automatically prevents duplicates!
+                uniquePaymentIdsToRefund.add(seat.getPaymentId());
             }
 
             seat.setStatus(SeatStatus.AVAILABLE);

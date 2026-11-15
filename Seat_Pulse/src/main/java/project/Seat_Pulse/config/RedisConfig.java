@@ -38,7 +38,6 @@ public class RedisConfig {
                 JsonTypeInfo.As.PROPERTY
         );
 
-        objectMapper.addMixIn(PageImpl.class, PageImplMixin.class);
         GenericJackson2JsonRedisSerializer serializer = new GenericJackson2JsonRedisSerializer(objectMapper);
 
         return RedisCacheConfiguration.defaultCacheConfig()
