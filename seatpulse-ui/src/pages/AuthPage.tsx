@@ -224,7 +224,16 @@ export default function AuthPage() {
               </div>
 
               <div className="space-y-2 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-                <label className="text-xs font-medium text-[#e8d5b5]">Password</label>
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-medium text-[#e8d5b5]">Password</label>
+                  <button
+                    type="button"
+                    onClick={() => { setView('forgot_email'); setError(''); }}
+                    className="text-xs font-medium text-white/60 transition-colors hover:text-[#e8d5b5] hover:underline underline-offset-4"
+                  >
+                    Forgot Password?
+                  </button>
+                </div>
                 <input
                   type="password"
                   value={password}
@@ -235,26 +244,18 @@ export default function AuthPage() {
                 />
               </div>
 
-              <div className="pt-6 space-y-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+              <div className="pt-4 space-y-3 animate-slide-up" style={{ animationDelay: '0.3s' }}>
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="flex w-full items-center justify-center rounded-full bg-[#e8d5b5] py-4 text-sm font-bold text-[#07090e] transition-all hover:bg-white hover:shadow-[0_0_30px_rgba(232,213,181,0.3)] disabled:opacity-70"
+                  className="flex w-full items-center justify-center rounded-xl bg-white py-3.5 text-sm font-semibold text-[#07090e] shadow-sm transition-all duration-200 hover:bg-neutral-200 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-white/30 disabled:opacity-70"
                 >
                   {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Sign In'}
                 </button>
 
-                <button
-                  type="button"
-                  onClick={() => { setView('forgot_email'); setError(''); }}
-                  className="flex w-full items-center justify-center text-sm font-bold text-[#e8d5b5] hover:text-white transition-colors"
-                >
-                  Forgot Password?
-                </button>
-
                 <Link
                   to="/register"
-                  className="flex w-full items-center justify-center rounded-full border border-[#e8d5b5]/40 bg-transparent py-4 text-sm font-bold text-[#e8d5b5] transition-colors hover:bg-[#e8d5b5]/10"
+                  className="flex w-full items-center justify-center rounded-xl border border-white/15 bg-white/[0.03] py-3.5 text-sm font-semibold text-white/80 transition-all duration-200 hover:border-white/30 hover:bg-white/[0.07] hover:text-white active:scale-[0.98]"
                 >
                   Create an Account
                 </Link>
@@ -282,11 +283,11 @@ export default function AuthPage() {
                 />
               </div>
 
-              <div className="pt-6 space-y-4">
+              <div className="pt-4 space-y-3">
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="flex w-full items-center justify-center rounded-full bg-[#e8d5b5] py-4 text-sm font-bold text-[#07090e] transition-all hover:bg-white hover:shadow-[0_0_30px_rgba(232,213,181,0.3)] disabled:opacity-70"
+                  className="flex w-full items-center justify-center rounded-xl bg-white py-3.5 text-sm font-semibold text-[#07090e] shadow-sm transition-all duration-200 hover:bg-neutral-200 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-white/30 disabled:opacity-70"
                 >
                   {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Send OTP'}
                 </button>
@@ -294,7 +295,7 @@ export default function AuthPage() {
                 <button
                   type="button"
                   onClick={() => { setView('login'); setError(''); }}
-                  className="flex w-full items-center justify-center rounded-full border border-[#e8d5b5]/40 bg-transparent py-4 text-sm font-bold text-[#e8d5b5] transition-colors hover:bg-[#e8d5b5]/10"
+                  className="flex w-full items-center justify-center rounded-xl border border-white/15 bg-white/[0.03] py-3.5 text-sm font-semibold text-white/80 transition-all duration-200 hover:border-white/30 hover:bg-white/[0.07] hover:text-white active:scale-[0.98]"
                 >
                   Back to Login
                 </button>
@@ -341,11 +342,11 @@ export default function AuthPage() {
                 </button>
               </div>
 
-              <div className="pt-6 space-y-4">
+              <div className="pt-4 space-y-3">
                 <button
                   type="submit"
                   disabled={isLoading || timeLeft === 0}
-                  className="flex w-full items-center justify-center rounded-full bg-[#e8d5b5] py-4 text-sm font-bold text-[#07090e] transition-all hover:bg-white hover:shadow-[0_0_30px_rgba(232,213,181,0.3)] disabled:opacity-70"
+                  className="flex w-full items-center justify-center rounded-xl bg-white py-3.5 text-sm font-semibold text-[#07090e] shadow-sm transition-all duration-200 hover:bg-neutral-200 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-white/30 disabled:opacity-70"
                 >
                   {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Verify OTP'}
                 </button>
@@ -353,7 +354,7 @@ export default function AuthPage() {
                 <button
                   type="button"
                   onClick={() => { setView('login'); setError(''); }}
-                  className="flex w-full items-center justify-center text-sm font-bold text-white/50 hover:text-white transition-colors"
+                  className="flex w-full items-center justify-center py-1 text-xs font-medium text-white/50 transition-colors hover:text-white"
                 >
                   Cancel
                 </button>
@@ -382,11 +383,11 @@ export default function AuthPage() {
                 />
               </div>
 
-              <div className="pt-6">
+              <div className="pt-4">
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="flex w-full items-center justify-center rounded-full bg-[#e8d5b5] py-4 text-sm font-bold text-[#07090e] transition-all hover:bg-white hover:shadow-[0_0_30px_rgba(232,213,181,0.3)] disabled:opacity-70"
+                  className="flex w-full items-center justify-center rounded-xl bg-white py-3.5 text-sm font-semibold text-[#07090e] shadow-sm transition-all duration-200 hover:bg-neutral-200 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-white/30 disabled:opacity-70"
                 >
                   {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Confirm Password Reset'}
                 </button>

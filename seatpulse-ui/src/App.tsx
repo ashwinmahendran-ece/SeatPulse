@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import RegisterPage from './pages/RegisterPage';
@@ -30,10 +31,21 @@ import NotFound from './pages/NotFoundPage';
 
 const queryClient = new QueryClient();
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
+        <ScrollToTop />
         <div className="min-h-screen flex flex-col bg-[#07090E] text-white transition-colors duration-300">
 
           <main className="flex-grow">
@@ -50,11 +62,11 @@ export default function App() {
               <Route path="/refunds" element={<RefundsPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/host" element={<HostEventPage />} />
-              <Route path="*" element={<NotFound />} />
 
               <Route element={<PrivateRoute />}>
                 <Route path="/checkout" element={<CheckoutPage />} />
                 <Route path="/profile" element={<MyBookingsPage />} />
+                <Route path="/my-tickets" element={<MyBookingsPage />} />
               </Route>
 
               <Route element={<AdminRoute />}>
@@ -65,7 +77,7 @@ export default function App() {
                 <Route path="/admin/scanner" element={<AdminScannerPage />} />
               </Route>
 
-              <Route path="*" element={<Navigate to="/" replace />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
 

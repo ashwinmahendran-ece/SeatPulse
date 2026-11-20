@@ -43,15 +43,6 @@ const getMonth = (d: Date) => d.toLocaleString('en-US', { month: 'short' }).toUp
 const getDay = (d: Date) => d.toLocaleString('en-US', { day: '2-digit' });
 const getDetails = (d: Date) => d.toLocaleString('en-US', { weekday: 'short', hour: 'numeric', minute: '2-digit' });
 
-const getRoleFromToken = () => {
-  try {
-    const token = localStorage.getItem('seatpulse_jwt');
-    if (!token) return null;
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.role || payload.roles || payload.authorities || null;
-  } catch (e) { return null; }
-};
-
 export default function ExplorePage() {
   const navigate = useNavigate();
   const { isAuthenticated, logout, user } = useAuthStore();
@@ -96,26 +87,25 @@ export default function ExplorePage() {
   };
 
   const getRoleFromToken = () => {
-      try {
-        const token = sessionStorage.getItem('seatpulse_jwt');
-        if (!token) return null;
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        return payload.role || payload.roles || payload.authorities || null;
-      } catch (e) { return null; }
-    };
+    try {
+      const token = sessionStorage.getItem('seatpulse_jwt');
+      if (!token) return null;
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.role || payload.roles || payload.authorities || null;
+    } catch (e) { return null; }
+  };
 
-    const handleLogout = async () => {
-        try {
-          await api.auth.logout();
-        } catch (err) {
-          console.error('Logout API failed');
-        } finally {
-          logout();
-          sessionStorage.removeItem('seatpulse_jwt');
-
-          window.location.href = '/';
-        }
-      };
+  const handleLogout = async () => {
+    try {
+      await api.auth.logout();
+    } catch (err) {
+      console.error('Logout API failed');
+    } finally {
+      logout();
+      sessionStorage.removeItem('seatpulse_jwt');
+      window.location.href = '/';
+    }
+  };
 
   const tokenRole = getRoleFromToken();
   const isAdmin = String(user?.role).includes('ADMIN') ||
@@ -130,18 +120,20 @@ export default function ExplorePage() {
         @keyframes slideInLeftCenter { 0% { opacity: 0; transform: translateX(-60px) scale(0.98); } 100% { opacity: 1; transform: translateX(0) scale(1); } }
         .animate-page-slide { animation: slideInLeftCenter 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
         @keyframes sweepToCenter { 0% { left: -20%; transform: translate(0, -50%) scale(0.9); opacity: 0; } 100% { left: 50%; transform: translate(-50%, -50%) scale(1); opacity: 1; } }
-        .animate-logo-sweep { position: absolute; top: 50%; animation: sweepToCenter 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        @media (min-width: 768px) {
+          .animate-logo-sweep { position: absolute; top: 50%; animation: sweepToCenter 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        }
       `}</style>
 
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#07090E]/90 backdrop-blur-md shadow-none">
-        <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-end px-5 lg:px-16 relative">
+        <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between md:justify-end gap-2 px-4 sm:px-5 lg:px-16 relative">
 
-          <button onClick={() => navigate('/')} className="animate-logo-sweep flex items-center font-display text-2xl md:text-[28px] font-black tracking-[-0.03em] whitespace-nowrap z-10 transition-transform hover:scale-[1.02]">
+          <button onClick={() => navigate('/')} className="animate-logo-sweep flex shrink-0 items-center font-display text-xl sm:text-2xl md:text-[28px] font-black tracking-[-0.03em] whitespace-nowrap z-10 transition-transform hover:scale-[1.02]">
             <span className="text-white">Seat</span>
             <span className="text-[#E8D5B5] ml-1.5">Pulse</span>
           </button>
 
-          <div className="flex items-center gap-3 sm:gap-4 relative z-20">
+          <div className="flex shrink-0 items-center gap-2 sm:gap-4 relative z-20">
             <div className="relative hidden sm:block">
               <button onClick={() => setIsLocationMenuOpen(!isLocationMenuOpen)} className="flex items-center gap-2 rounded-xl border border-white/10 bg-[#11131A] px-4 py-2 transition-all duration-300 hover:border-[#E8D5B5] hover:bg-[#161922]">
                 <MapPin className="h-4 w-4 text-[#E8D5B5]" />
@@ -170,20 +162,20 @@ export default function ExplorePage() {
             </div>
 
             {isAuthenticated ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 {isAdmin && (
-                  <button onClick={() => navigate('/admin')} className="flex items-center justify-center rounded-lg bg-[#E8D5B5]/10 px-3 py-2 text-xs font-bold text-[#E8D5B5] hover:bg-[#E8D5B5]/20 transition-all border border-[#E8D5B5]/20">Admin</button>
+                  <button onClick={() => navigate('/admin')} className="flex items-center justify-center rounded-lg bg-[#E8D5B5]/10 px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs font-bold text-[#E8D5B5] hover:bg-[#E8D5B5]/20 transition-all border border-[#E8D5B5]/20 whitespace-nowrap">Admin</button>
                 )}
-                <button onClick={() => navigate('/profile')} className="flex items-center justify-center rounded-lg px-3 py-2 text-xs font-bold text-slate-300 hover:bg-white/10 hover:text-white transition-all">My Tickets</button>
-                <button onClick={handleLogout} className="flex items-center justify-center rounded-lg border border-white/20 bg-transparent px-4 py-2 text-xs font-bold text-white hover:bg-white/10 transition-all">Log Out</button>
+                <button onClick={() => navigate('/profile')} className="flex items-center justify-center rounded-lg px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs font-bold text-slate-300 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">My Tickets</button>
+                <button onClick={handleLogout} className="flex items-center justify-center rounded-lg border border-white/20 bg-transparent px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-bold text-white hover:bg-white/10 transition-all whitespace-nowrap">Log Out</button>
               </div>
             ) : (
-              <button onClick={() => navigate('/login')} className="rounded-lg bg-[#E8D5B5] text-[#07090E] px-5 py-2 text-xs font-bold hover:bg-[#D6C09D] transition-all hover:-translate-y-0.5">Log In</button>
+              <button onClick={() => navigate('/login')} className="rounded-lg bg-[#E8D5B5] text-[#07090E] px-4 sm:px-5 py-2 text-xs font-bold hover:bg-[#D6C09D] transition-all hover:-translate-y-0.5 whitespace-nowrap">Log In</button>
             )}
           </div>
         </div>
 
-        <div className="mx-auto w-full max-w-[1440px] overflow-x-auto px-5 pb-3 custom-scrollbar lg:px-16 relative z-10 mt-2 sm:mt-0">
+        <div className="mx-auto w-full max-w-[1440px] overflow-x-auto px-4 sm:px-5 pb-3 custom-scrollbar lg:px-16 relative z-10 mt-2 sm:mt-0">
           <div className="flex gap-2">
             {CATEGORIES.map(c => (
               <button key={c} onClick={() => setActiveCategory(c)} className={`whitespace-nowrap rounded-full px-5 py-2 text-xs font-bold transition-all duration-300 active:scale-95 ${activeCategory === c ? 'bg-[#E8D5B5] text-[#07090E]' : 'bg-[#11131A] text-slate-400 border border-white/10 hover:bg-white/10 hover:text-white'}`}>
@@ -194,16 +186,34 @@ export default function ExplorePage() {
         </div>
       </header>
 
-      <main className="relative z-10 mx-auto w-full max-w-[1440px] px-5 pt-8 lg:px-16 animate-page-slide">
+      <main className="relative z-10 mx-auto w-full max-w-[1440px] px-4 sm:px-5 pt-8 lg:px-16 animate-page-slide">
 
         <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 max-w-full">
           <h1 className="font-display text-3xl md:text-4xl font-extrabold tracking-tight text-white">
             Find your <span className="font-serif italic font-light tracking-wide text-[#E8D5B5]">event.</span>
           </h1>
 
-          <div className="relative flex items-center w-full md:max-w-md group">
-            <Search className="absolute left-4 h-4 w-4 text-slate-500 group-focus-within:text-[#E8D5B5] transition-colors" />
-            <input type="text" placeholder="Search events, artists..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full rounded-[1.5rem] border border-white/10 bg-[#11131A] py-3 pl-11 pr-4 text-sm font-medium text-white placeholder-slate-500 outline-none transition-all duration-300 focus:border-[#E8D5B5]" />
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:max-w-md">
+            <div className="relative sm:hidden">
+              <MapPin className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-[#E8D5B5]" />
+              <select
+                value={activeLocation}
+                onChange={(e) => handleLocationSelect(e.target.value)}
+                className="w-full appearance-none rounded-[1.5rem] border border-white/10 bg-[#11131A] py-3 pl-11 pr-10 text-sm font-bold text-white outline-none transition-all duration-300 focus:border-[#E8D5B5]"
+              >
+                {dropdownLocations.map((loc) => (
+                  <option key={loc} value={loc} className="bg-[#11131A] text-white">
+                    {loc}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            </div>
+
+            <div className="relative flex items-center w-full group">
+              <Search className="absolute left-4 h-4 w-4 text-slate-500 group-focus-within:text-[#E8D5B5] transition-colors" />
+              <input type="text" placeholder="Search events, artists..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full rounded-[1.5rem] border border-white/10 bg-[#11131A] py-3 pl-11 pr-4 text-sm font-medium text-white placeholder-slate-500 outline-none transition-all duration-300 focus:border-[#E8D5B5]" />
+            </div>
           </div>
         </div>
 
@@ -255,15 +265,15 @@ export default function ExplorePage() {
                   </div>
 
                   <div className="mt-5 flex gap-4 px-2 pb-2">
-                    <div className="flex flex-col items-center justify-start min-w-[3rem] pt-0.5">
+                    <div className="flex flex-col items-center justify-start min-w-[3rem] shrink-0 pt-0.5">
                       <span className="text-[10px] font-bold text-[#E8D5B5] uppercase tracking-widest">{getMonth(d)}</span>
                       <span className="font-display text-2xl font-black text-white leading-none mt-1">{getDay(d)}</span>
                     </div>
-                    <div className="flex flex-col flex-1">
+                    <div className="flex flex-col flex-1 min-w-0">
                       <h3 className="font-display text-lg font-bold text-white line-clamp-1 group-hover:text-[#E8D5B5] transition-colors leading-tight mb-1.5">{event.eventName}</h3>
                       <p className="text-xs font-medium text-slate-400 mb-2">{getDetails(d)}</p>
                       <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
-                        <MapPin className="h-3.5 w-3.5 text-[#E8D5B5]" />
+                        <MapPin className="h-3.5 w-3.5 shrink-0 text-[#E8D5B5]" />
                         <span className="truncate">{event.venue || 'TBA Venue'}, {event.location || 'Unknown'}</span>
                       </div>
                     </div>

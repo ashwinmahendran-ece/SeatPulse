@@ -115,9 +115,6 @@ export default function LandingPage() {
           background-size: 44px 44px;
         }
         .ticket-gradient { background: linear-gradient(135deg, #22242d, #101218 65%); }
-        .ticket-dash::after {
-          content: ""; position: absolute; left: 0; right: 0; bottom: 103px; border-top: 1px dashed #6b6862;
-        }
 
         @keyframes scroll {
           0% { transform: translateX(0); }
@@ -132,23 +129,23 @@ export default function LandingPage() {
       `}</style>
 
       <header className="w-full border-b border-white/10 bg-[#07090e]/90 backdrop-blur-md sticky top-0 z-50 shadow-none">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 py-5 flex flex-wrap justify-between items-center gap-4">
-          <a href="#top" onClick={(e) => smoothScrollToElement(e, 'top')} className="flex items-center gap-2 font-extrabold tracking-tight no-underline cursor-pointer">
-            <span className="w-8 h-8 rounded-lg bg-[#e8d5b5] text-[#07090e] grid place-items-center">S</span>
-            <span className="font-display text-white text-lg">Seat</span>
-            <span className="font-display text-[#e8d5b5] text-lg -ml-2">Pulse</span>
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-4 sm:py-5 flex justify-between items-center gap-3">
+          <a href="#top" onClick={(e) => smoothScrollToElement(e, 'top')} className="flex shrink-0 items-center gap-2 font-extrabold tracking-tight no-underline cursor-pointer">
+            <span className="w-8 h-8 rounded-lg bg-[#e8d5b5] text-[#07090e] grid place-items-center shrink-0">S</span>
+            <span className="font-display text-white text-base sm:text-lg">Seat</span>
+            <span className="font-display text-[#e8d5b5] text-base sm:text-lg -ml-2">Pulse</span>
           </a>
 
-          <nav className="flex items-center gap-4 sm:gap-7">
-            <a href="#events" onClick={(e) => smoothScrollToElement(e, 'events')} className="text-[#b9bbc1] hover:text-white transition-colors text-sm font-semibold cursor-pointer">
+          <nav className="flex shrink-0 items-center gap-3 sm:gap-7">
+            <a href="#events" onClick={(e) => smoothScrollToElement(e, 'events')} className="hidden sm:inline-block text-[#b9bbc1] hover:text-white transition-colors text-sm font-semibold cursor-pointer whitespace-nowrap">
               Featured Events
             </a>
             {user ? (
-              <button onClick={() => navigate(user.role === 'ADMIN' ? '/admin' : '/profile')} className="rounded-full px-5 py-2.5 border border-[#e8d5b5] text-[#e8d5b5] hover:bg-[#e8d5b5] hover:text-[#07090e] transition-colors text-sm font-bold">
+              <button onClick={() => navigate(user.role === 'ADMIN' ? '/admin' : '/profile')} className="rounded-full px-4 sm:px-5 py-2 sm:py-2.5 border border-[#e8d5b5] text-[#e8d5b5] hover:bg-[#e8d5b5] hover:text-[#07090e] transition-colors text-xs sm:text-sm font-bold whitespace-nowrap">
                 Dashboard ↗
               </button>
             ) : (
-              <button onClick={() => navigate('/login')} className="rounded-full px-5 py-2.5 border border-[#e8d5b5] text-[#e8d5b5] hover:bg-[#e8d5b5] hover:text-[#07090e] transition-colors text-sm font-bold">
+              <button onClick={() => navigate('/login')} className="rounded-full px-4 sm:px-5 py-2 sm:py-2.5 border border-[#e8d5b5] text-[#e8d5b5] hover:bg-[#e8d5b5] hover:text-[#07090e] transition-colors text-xs sm:text-sm font-bold whitespace-nowrap">
                 Sign In ↗
               </button>
             )}
@@ -158,17 +155,17 @@ export default function LandingPage() {
 
       <main id="top">
         <section className="grid-glow hero-aura w-full overflow-hidden border-b border-white/10 relative">
-          <div className="max-w-7xl mx-auto px-5 sm:px-8 py-20 lg:py-28 grid lg:grid-cols-[1.12fr_.88fr] items-center gap-16 animate-fade-in">
+          <div className="max-w-7xl mx-auto px-4 sm:px-8 py-14 sm:py-20 lg:py-28 grid lg:grid-cols-[1.12fr_.88fr] items-center gap-12 lg:gap-16 animate-fade-in">
             <div className="animate-slide-up">
               <p className="font-mono uppercase tracking-[0.16em] text-[#e8d5b5] mb-6 text-xs font-bold">THE NEW STANDARD IN EVENT TICKETING</p>
               <h1 className="font-display font-extrabold max-w-3xl mb-7 text-4xl sm:text-5xl lg:text-[54px] leading-[1.1] text-[#f4f2ee] tracking-tight">
                 The Ultimate Ticketing Experience
               </h1>
-              <p className="text-[#aeb2bb] leading-relaxed max-w-xl mb-10 text-lg">
+              <p className="text-[#aeb2bb] leading-relaxed max-w-xl mb-10 text-base sm:text-lg">
                 Premium by design. Fast by default. SeatPulse brings every seat, order, and unforgettable moment into one seamless experience.
               </p>
 
-              <button onClick={(e) => smoothScrollToElement(e, 'events')} className="group inline-flex items-center gap-3 rounded-full px-8 py-4 font-bold bg-[#e8d5b5] text-[#101116] hover:bg-white transition-all shadow-[0_0_40px_rgba(232,213,181,0.15)] focus:outline-none">
+              <button onClick={(e) => smoothScrollToElement(e, 'events')} className="group inline-flex items-center gap-3 rounded-full px-8 py-3.5 text-sm font-bold bg-[#e8d5b5] text-[#101116] hover:bg-[#f5ebd8] active:scale-[0.98] transition-all duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#e8d5b5]/40">
                 View Featured Events
                 <ArrowRight size={18} className="rotate-90 transition-transform duration-300 group-hover:translate-y-1" />
               </button>
@@ -176,22 +173,22 @@ export default function LandingPage() {
 
             <div className="relative max-w-lg w-full mx-auto animate-slide-up" style={{ animationDelay: '0.15s' }}>
               <div className="absolute inset-6 bg-[#e8d5b5]/10 blur-3xl rounded-full"></div>
-              <div className="ticket-gradient ticket-dash relative rounded-[28px] border border-[#4e473d] p-7 sm:p-9 overflow-hidden shadow-[0_35px_90px_rgba(0,0,0,0.6),0_0_80px_rgba(232,213,181,0.1)] md:rotate-3 transition-transform hover:rotate-0 duration-500">
-                <div className="flex justify-between items-start">
+              <div className="ticket-gradient relative rounded-[28px] border border-[#4e473d] p-6 sm:p-9 overflow-hidden shadow-[0_35px_90px_rgba(0,0,0,0.6),0_0_80px_rgba(232,213,181,0.1)] md:rotate-3 transition-transform hover:rotate-0 duration-500">
+                <div className="flex justify-between items-start gap-2">
                   <p className="font-extrabold tracking-tight"><span className="text-white">Seat</span><span className="text-[#e8d5b5]">Pulse</span></p>
-                  <span className="font-mono text-[#e8d5b5] text-[10px] uppercase tracking-widest border border-[#e8d5b5]/30 px-2 py-1 rounded bg-[#07090e]/50 backdrop-blur-md">DIGITAL PASS</span>
+                  <span className="font-mono text-[#e8d5b5] text-[10px] uppercase tracking-widest border border-[#e8d5b5]/30 px-2 py-1 rounded bg-[#07090e]/50 backdrop-blur-md shrink-0">DIGITAL PASS</span>
                 </div>
-                <div className="mt-16 mb-12">
+                <div className="mt-10 sm:mt-16 mb-8 sm:mb-12">
                   <p className="font-mono text-[#a9a5a0] mb-3 text-[11px] uppercase tracking-widest">YOUR NEXT EXPERIENCE</p>
-                  <h2 className="font-display font-extrabold tracking-tight text-[#f4f2ee] text-3xl">Every moment, perfectly placed.</h2>
+                  <h2 className="font-display font-extrabold tracking-tight text-[#f4f2ee] text-2xl sm:text-3xl">Every moment, perfectly placed.</h2>
                 </div>
-                <div className="flex justify-between items-end gap-4 pt-9 border-t border-dashed border-[#6b6862] mt-8">
-                  <div>
+                <div className="flex justify-between items-end gap-4 pt-6 sm:pt-9 border-t border-dashed border-[#6b6862] mt-6 sm:mt-8">
+                  <div className="min-w-0">
                     <p className="font-mono text-[#a9a5a0] mb-2 text-[10px] uppercase tracking-widest">BUILT FOR THE MOMENT</p>
-                    <p className="text-[#e8d5b5] font-bold text-base">Access, elevated.</p>
+                    <p className="text-[#e8d5b5] font-bold text-sm sm:text-base">Access, elevated.</p>
                   </div>
-                  <div className="bg-white p-2 rounded-lg">
-                     <img src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=SEATPULSE-PREVIEW&color=000000&bgcolor=ffffff`} alt="QR Code" className="w-20 h-20" />
+                  <div className="bg-white p-2 rounded-lg shrink-0">
+                     <img src={`https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=SEATPULSE-PREVIEW&color=000000&bgcolor=ffffff`} alt="QR Code" className="w-16 h-16 sm:w-20 sm:h-20" />
                   </div>
                 </div>
               </div>
@@ -200,20 +197,20 @@ export default function LandingPage() {
         </section>
 
         <section id="events" className="w-full pt-20 lg:pt-28 pb-4 bg-[#07090e] overflow-hidden">
-          <div className="max-w-7xl mx-auto px-5 sm:px-8 mb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="max-w-7xl mx-auto px-4 sm:px-8 mb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
               <p className="font-mono text-[#e8d5b5] text-xs font-bold uppercase tracking-[0.16em] mb-4">01 / FEATURED EXPERIENCES</p>
               <h2 className="font-display font-extrabold text-[#f4f2ee] text-3xl sm:text-4xl">Trending Events</h2>
               <p className="text-[#aeb2bb] mt-4 max-w-xl text-base">Secure your spot at the fastest-selling tech summits, concerts, and live shows happening right now.</p>
             </div>
-            <button onClick={() => navigate('/explore')} className="flex items-center gap-2 text-[#e8d5b5] hover:text-white font-bold transition-colors">
+            <button onClick={() => navigate('/explore')} className="flex items-center gap-2 text-[#e8d5b5] hover:text-white font-bold transition-colors self-start md:self-auto">
               View all events <ArrowRight size={18} />
             </button>
           </div>
 
           <div className="relative w-full max-w-[1920px] mx-auto">
-            <div className="absolute left-0 top-0 bottom-0 w-16 md:w-40 bg-gradient-to-r from-[#07090e] via-[#07090e]/90 to-transparent z-10 pointer-events-none"></div>
-            <div className="absolute right-0 top-0 bottom-0 w-16 md:w-40 bg-gradient-to-l from-[#07090e] via-[#07090e]/90 to-transparent z-10 pointer-events-none"></div>
+            <div className="absolute left-0 top-0 bottom-0 w-6 sm:w-16 md:w-40 bg-gradient-to-r from-[#07090e] via-[#07090e]/90 to-transparent z-10 pointer-events-none"></div>
+            <div className="absolute right-0 top-0 bottom-0 w-6 sm:w-16 md:w-40 bg-gradient-to-l from-[#07090e] via-[#07090e]/90 to-transparent z-10 pointer-events-none"></div>
 
             {isLoading ? (
               <div className="flex gap-6 px-8 overflow-hidden">
@@ -222,7 +219,7 @@ export default function LandingPage() {
                 ))}
               </div>
             ) : upcomingEvents.length === 0 ? (
-               <div className="py-16 text-center border border-[#30333b] rounded-[28px] max-w-7xl mx-auto mx-5 bg-[#11131a]">
+               <div className="py-16 text-center border border-[#30333b] rounded-[28px] max-w-7xl mx-5 sm:mx-auto bg-[#11131a]">
                  <p className="text-[#aeb2bb] font-medium">No upcoming events found. Check back soon!</p>
                </div>
             ) : (
@@ -245,7 +242,7 @@ export default function LandingPage() {
                         <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
                         <img src={getEventImage(event.eventCategory)} alt={event.eventName} className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out" />
 
-                        <div className="absolute top-4 left-4 flex gap-2 z-20">
+                        <div className="absolute top-4 left-4 flex flex-wrap gap-2 z-20">
                           <span className="font-mono bg-[#07090e]/80 backdrop-blur-md border border-[#e8d5b5]/30 text-[#e8d5b5] text-[10px] font-bold uppercase tracking-widest px-2.5 py-1 rounded">
                             {event.eventCategory || 'Featured'}
                           </span>
@@ -284,12 +281,12 @@ export default function LandingPage() {
         </section>
 
         <section id="cta" className="w-full pt-16 pb-24 overflow-hidden border-t border-white/5" style={{ background: 'radial-gradient(circle at center, #1a1714 0%, #07090e 100%)' }}>
-          <div className="max-w-7xl mx-auto px-5 sm:px-8 text-center relative z-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-8 text-center relative z-10">
             <p className="font-mono text-[#e8d5b5] text-xs font-bold uppercase tracking-[0.16em] mb-5">YOUR NEXT EXPERIENCE STARTS HERE</p>
             <h2 className="font-display font-extrabold text-[#f4f2ee] text-3xl sm:text-4xl mb-5">Ready to experience it live?</h2>
             <p className="text-[#b9bbc1] text-base mb-10">Browse upcoming events and secure your spot.</p>
             <div className="flex flex-wrap justify-center gap-4">
-              <button onClick={() => navigate('/explore')} className="rounded-full bg-[#e8d5b5] text-[#101116] px-8 py-4 font-bold hover:bg-white transition-colors shadow-[0_0_40px_rgba(232,213,181,0.2)]">
+              <button onClick={() => navigate('/explore')} className="rounded-full bg-[#e8d5b5] text-[#101116] px-8 py-3.5 text-sm font-bold hover:bg-[#f5ebd8] active:scale-[0.98] transition-all duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#e8d5b5]/40">
                 Explore All Events ↗
               </button>
             </div>

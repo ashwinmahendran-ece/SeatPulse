@@ -88,14 +88,14 @@ const handleRegister = async (e: React.FormEvent) => {
 
         <div className="w-full max-w-[420px] animate-fade-in relative z-10">
 
-          <div className="flex items-center gap-3 mb-10 cursor-pointer" onClick={() => navigate('/')}>
+          <div className="flex items-center gap-3 mb-8 sm:mb-10 cursor-pointer" onClick={() => navigate('/')}>
             <SoundwaveLogo />
             <span className="font-display text-xl font-bold tracking-tight text-[#f4f2ee]">
               Seat<span className="text-[#e8d5b5]">Pulse</span>
             </span>
           </div>
 
-          <h2 className="font-display text-4xl font-extrabold tracking-tight text-white mb-8">
+          <h2 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-8">
             Create an Account
           </h2>
 
@@ -155,18 +155,18 @@ const handleRegister = async (e: React.FormEvent) => {
               />
             </div>
 
-            <div className="pt-4 space-y-4 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+            <div className="pt-4 space-y-3 animate-slide-up" style={{ animationDelay: '0.3s' }}>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="flex w-full items-center justify-center rounded-full bg-[#e8d5b5] py-4 text-sm font-bold text-[#07090e] transition-all hover:bg-white hover:shadow-[0_0_30px_rgba(232,213,181,0.3)] disabled:opacity-70"
+                className="flex w-full items-center justify-center rounded-xl bg-white py-3.5 text-sm font-semibold text-[#07090e] shadow-sm transition-all duration-200 hover:bg-neutral-200 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-white/30 disabled:opacity-70"
               >
                 {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Sign Up'}
               </button>
 
               <Link
                 to="/login"
-                className="flex w-full items-center justify-center rounded-full border border-[#e8d5b5]/40 bg-transparent py-4 text-sm font-bold text-[#e8d5b5] transition-colors hover:bg-[#e8d5b5]/10"
+                className="flex w-full items-center justify-center rounded-xl border border-white/15 bg-white/[0.03] py-3.5 text-sm font-semibold text-white/80 transition-all duration-200 hover:border-white/30 hover:bg-white/[0.07] hover:text-white active:scale-[0.98]"
               >
                 Already have an account? Sign In
               </Link>

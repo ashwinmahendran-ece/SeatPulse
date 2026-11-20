@@ -1,23 +1,52 @@
 package project.Seat_Pulse.service;
 
-import jakarta.mail.internet.MimeMessage;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 import project.Seat_Pulse.DTOs.BulkNotificationMessageDto;
 import project.Seat_Pulse.DTOs.NotificationMessageDto;
 import project.Seat_Pulse.config.RabbitMQConfig;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class NotificationService {
 
-    private final JavaMailSender mailSender;
+    private final RestClient restClient;
 
-    public NotificationService(JavaMailSender mailSender) {
-        this.mailSender = mailSender;
+    @Value("${brevo.api.key}")
+    private String brevoApiKey;
+
+    @Value("${mail.from}")
+    private String senderEmail;
+
+    @Value("${app.frontend.url:https://seat-pulse.vercel.app}")
+    private String frontendUrl;
+
+    public NotificationService() {
+        this.restClient = RestClient.create();
+    }
+
+    private void sendViaBrevo(String toEmail, String subject, String content, boolean isHtml) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("sender", Map.of("name", "SeatPulse", "email", senderEmail));
+        body.put("to", List.of(Map.of("email", toEmail)));
+        body.put("subject", subject);
+        body.put(isHtml ? "htmlContent" : "textContent", content);
+
+        restClient.post()
+                .uri("https://api.brevo.com/v3/smtp/email")
+                .header("api-key", brevoApiKey)
+                .header("accept", MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(body)
+                .retrieve()
+                .toBodilessEntity();
     }
 
     @RabbitListener(queues = RabbitMQConfig.NOTIFICATION_QUEUE)
@@ -40,7 +69,7 @@ public class NotificationService {
                         "- The Admin Team"
         );
 
-        mailSender.send(message);
+        sendViaBrevo(payload.userEmail(), message.getSubject(), message.getText(), false);
         System.out.println("[Email Worker] SUCCESS! Real email delivered to " + payload.userEmail() + "\n");
     }
 
@@ -54,11 +83,7 @@ public class NotificationService {
         }
 
         try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
-            helper.setTo(payload.userEmail());
-            helper.setSubject("Your SeatPulse Tickets are Confirmed: " + payload.eventName());
+            String subject = "Your SeatPulse Tickets are Confirmed: " + payload.eventName();
 
             String seatList = String.join(", ", payload.seatNumbers());
             int qty = payload.seatNumbers().size();
@@ -88,14 +113,13 @@ public class NotificationService {
                             </div>
                             <p style="margin: 0; font-size: 14px; color: #726E75;">Order ID: <strong style="color: #FFFFFF;">%s</strong></p>
                             <br/>
-                            <a href="http://localhost:5173/my-tickets" style="display: inline-block; background-color: #6735E8; color: #FFFFFF; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; font-size: 14px;">View Digital Tickets</a>
+                           <a href="%s/my-tickets" style="display: inline-block; background-color: #6735E8; color: #FFFFFF; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; font-size: 14px;">View Digital Tickets</a>
                         </div>
                     </div>
                 </div>
-                """.formatted(payload.userName(), payload.eventName(), qrData, qty, seatList, payload.orderId());
+                """.formatted(payload.userName(), payload.eventName(), qrData, qty, seatList, payload.orderId(), frontendUrl);
 
-            helper.setText(htmlContent, true);
-            mailSender.send(message);
+            sendViaBrevo(payload.userEmail(), subject, htmlContent, true);
             System.out.println("[RabbitMQ Email Worker] SUCCESS! Grouped HTML email delivered to " + payload.userEmail() + "\n");
 
         } catch (Exception e) {

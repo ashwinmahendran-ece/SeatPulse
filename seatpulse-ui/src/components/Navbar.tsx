@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Ticket, LogIn, User } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
+import { api } from '../api/seatPulseApi';
 
 export default function Navbar() {
   const { isAuthenticated, logout } = useAuthStore();
@@ -19,11 +20,11 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-sage-light/30 bg-cream/90 backdrop-blur-md transition-all duration-300">
-      <div className="mx-auto flex h-20 max-w-[1440px] items-center justify-between px-6 lg:px-12">
+      <div className="mx-auto flex h-16 sm:h-20 max-w-[1440px] items-center justify-between gap-4 px-4 sm:px-6 lg:px-12">
 
         <Link
           to="/"
-          className="flex items-center font-display text-3xl font-black tracking-tight text-burgundy transition-transform hover:scale-[1.02]"
+          className="flex shrink-0 items-center font-display text-2xl sm:text-3xl font-black tracking-tight text-burgundy transition-transform hover:scale-[1.02]"
         >
           Seat<span className="italic text-sage-dark ml-1">Pulse</span>
         </Link>
@@ -65,11 +66,11 @@ export default function Navbar() {
           )}
         </nav>
 
-        <div className="md:hidden flex items-center">
+        <div className="md:hidden flex shrink-0 items-center gap-2">
           {isAuthenticated ? (
-            <Link to="/profile" className="text-burgundy p-2"><User size={24} /></Link>
+            <Link to="/profile" className="text-burgundy p-2"><User size={22} /></Link>
           ) : (
-            <Link to="/login" className="text-burgundy p-2"><LogIn size={24} /></Link>
+            <Link to="/login" className="text-burgundy p-2"><LogIn size={22} /></Link>
           )}
         </div>
       </div>

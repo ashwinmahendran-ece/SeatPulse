@@ -29,7 +29,8 @@ const getEmailFromToken = () => {
     const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
         return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
     }).join(''));
-    return JSON.parse(jsonPayload).email || JSON.parse(jsonPayload).emailId || null;
+    const parsed = JSON.parse(jsonPayload);
+    return parsed.email || parsed.emailId || parsed.sub || null;
   } catch (e) { return null; }
 };
 
@@ -100,34 +101,36 @@ export default function MyBookingsPage() {
           0% { left: -20%; transform: translate(0, -50%) scale(0.9); opacity: 0; }
           100% { left: 50%; transform: translate(-50%, -50%) scale(1); opacity: 1; }
         }
-        .animate-logo-sweep {
-          position: absolute; top: 50%; animation: sweepToCenter 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0;
+        @media (min-width: 768px) {
+          .animate-logo-sweep {
+            position: absolute; top: 50%; animation: sweepToCenter 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0;
+          }
         }
       `}</style>
 
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#07090E]/90 backdrop-blur-md shadow-none px-5 lg:px-16">
-        <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between relative">
-          <button onClick={() => navigate('/explore')} className="flex items-center gap-2 text-sm font-bold text-slate-400 transition-colors hover:text-[#E8D5B5] z-20">
-            <ArrowLeft size={16} /> Back to Events
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#07090E]/90 backdrop-blur-md shadow-none px-4 sm:px-5 lg:px-16">
+        <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between gap-3 relative">
+          <button onClick={() => navigate('/explore')} className="flex shrink-0 items-center gap-2 text-xs sm:text-sm font-bold text-slate-400 transition-colors hover:text-[#E8D5B5] z-20 whitespace-nowrap">
+            <ArrowLeft size={16} className="shrink-0" /> Back to Events
           </button>
 
-          <div className="animate-logo-sweep flex items-center font-display text-xl sm:text-2xl font-black tracking-[-0.03em] whitespace-nowrap z-10">
+          <div className="animate-logo-sweep flex shrink-0 items-center font-display text-xl sm:text-2xl font-black tracking-[-0.03em] whitespace-nowrap z-10">
             <span className="text-white">Seat</span>
             <span className="text-[#E8D5B5] ml-1.5">Pulse</span>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-[1000px] px-5 pt-10 lg:px-16 relative z-10 animate-fade-in">
+      <main className="mx-auto w-full max-w-[1000px] px-4 sm:px-5 pt-10 lg:px-16 relative z-10 animate-fade-in">
 
-        <section className="mb-10 flex flex-col sm:flex-row items-center justify-between gap-6 rounded-3xl border border-white/10 bg-[#11131A] p-6 sm:p-8 shadow-2xl">
-          <div className="flex items-center gap-5">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#E8D5B5]/10 text-[#E8D5B5] shadow-inner ring-1 ring-[#E8D5B5]/20">
-              <UserIcon size={32} />
+        <section className="mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6 rounded-3xl border border-white/10 bg-[#11131A] p-6 sm:p-8 shadow-2xl">
+          <div className="flex items-center gap-4 sm:gap-5 min-w-0">
+            <div className="flex h-14 w-14 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-full bg-[#E8D5B5]/10 text-[#E8D5B5] shadow-inner ring-1 ring-[#E8D5B5]/20">
+              <UserIcon size={28} className="sm:w-8 sm:h-8" />
             </div>
-            <div>
-              <h1 className="font-display text-2xl font-bold text-white">{displayName}</h1>
-              <p className="text-sm font-bold text-slate-400">{displayEmail}</p>
+            <div className="min-w-0">
+              <h1 className="font-display text-xl sm:text-2xl font-bold text-white truncate">{displayName}</h1>
+              <p className="text-sm font-bold text-slate-400 break-all">{displayEmail}</p>
             </div>
           </div>
           <button
@@ -142,16 +145,16 @@ export default function MyBookingsPage() {
                           window.location.href = '/';
                         }
                       }}
-                      className="rounded-xl border border-white/20 bg-transparent px-6 py-2.5 text-sm font-bold text-white transition hover:bg-[#E8D5B5] hover:text-[#07090E] hover:border-[#E8D5B5]"
+                      className="w-full sm:w-auto shrink-0 rounded-xl border border-white/20 bg-transparent px-6 py-2.5 text-sm font-bold text-white transition hover:bg-[#E8D5B5] hover:text-[#07090E] hover:border-[#E8D5B5]"
                     >
                       Log Out
                     </button>
         </section>
 
         <section>
-          <div className="mb-8 flex items-center justify-between">
-            <h2 className="font-display text-3xl font-black text-white">My Orders</h2>
-            <span className="rounded-full bg-[#E8D5B5]/10 border border-[#E8D5B5]/20 px-4 py-1.5 text-xs font-bold text-[#E8D5B5]">
+          <div className="mb-8 flex items-center justify-between gap-3">
+            <h2 className="font-display text-2xl sm:text-3xl font-black text-white">My Orders</h2>
+            <span className="shrink-0 rounded-full bg-[#E8D5B5]/10 border border-[#E8D5B5]/20 px-4 py-1.5 text-xs font-bold text-[#E8D5B5]">
               {orderCards.length} {orderCards.length === 1 ? 'Order' : 'Orders'}
             </span>
           </div>
@@ -161,7 +164,7 @@ export default function MyBookingsPage() {
               <Loader2 className="h-8 w-8 animate-spin mb-4" />
             </div>
           ) : orderCards.length === 0 ? (
-            <div className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-white/10 bg-[#11131A] py-20 text-center">
+            <div className="flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-white/10 bg-[#11131A] py-20 px-4 text-center">
               <Ticket className="h-12 w-12 text-slate-600 mb-4" />
               <h3 className="font-display text-2xl font-bold text-white">No bookings yet</h3>
               <p className="mt-2 text-sm font-medium text-slate-400">Secure your spot at the next major event.</p>
@@ -175,25 +178,25 @@ export default function MyBookingsPage() {
                 const eventTitle = order.eventName || `Event #${order.eventId}`;
                 return (
                   <div key={index} className="flex flex-col md:flex-row overflow-hidden rounded-3xl border border-white/10 bg-[#11131A] shadow-xl transition-transform hover:-translate-y-1 hover:border-[#E8D5B5]/50">
-                    <div className="flex-1 p-6 sm:p-8">
-                      <div className="flex items-center gap-3 mb-5">
-                        <span className="flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-400">
-                          <CheckCircle2 size={14} /> Confirmed
+                    <div className="flex-1 p-6 sm:p-8 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-5">
+                        <span className="flex shrink-0 items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-emerald-400">
+                          <CheckCircle2 size={14} className="shrink-0" /> Confirmed
                         </span>
-                        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                        <span className="text-xs font-bold text-slate-500 uppercase tracking-wider break-all">
                           ID: {order.displayOrderId}
                         </span>
                       </div>
-                      <h3 className="font-display text-2xl font-black text-white mb-4 pr-4">{eventTitle}</h3>
+                      <h3 className="font-display text-xl sm:text-2xl font-black text-white mb-4 sm:pr-4">{eventTitle}</h3>
                       <div className="space-y-3 text-sm font-bold text-slate-300">
-                        <p className="flex items-center gap-3"><Calendar size={18} className="text-[#E8D5B5]" /> {formatTicketDate(order.eventStartTime)}</p>
-                        <p className="flex items-center gap-3"><MapPin size={18} className="text-[#E8D5B5]" /> {order.venue || 'Main Stadium'}, {order.location || 'City'}</p>
+                        <p className="flex items-center gap-3"><Calendar size={18} className="shrink-0 text-[#E8D5B5]" /> <span>{formatTicketDate(order.eventStartTime)}</span></p>
+                        <p className="flex items-center gap-3"><MapPin size={18} className="shrink-0 text-[#E8D5B5]" /> <span className="min-w-0 break-words">{order.venue || 'Main Stadium'}, {order.location || 'City'}</span></p>
                       </div>
                     </div>
 
                     <div className="flex flex-col justify-center border-t-2 border-dashed border-white/10 md:border-l-2 md:border-t-0 bg-[#0A0C14] p-6 sm:p-8 md:w-[320px] relative">
                       <div className="flex gap-4 items-center mb-6">
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-0">
                           <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Qty: {order.seatNumbers.length}</p>
                           <p className="font-display text-2xl font-extrabold text-[#E8D5B5] leading-tight break-words">
                             {order.seatNumbers.join(', ')}
@@ -201,10 +204,10 @@ export default function MyBookingsPage() {
                         </div>
                       </div>
                       <div className="flex gap-3">
-                        <button onClick={() => setViewTicketDialog({ isOpen: true, order })} className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#E8D5B5] text-[#07090E] py-3 text-sm font-bold transition hover:bg-[#D6C09D] hover:-translate-y-0.5">
-                          <QrCode size={18} /> View Ticket
+                        <button onClick={() => setViewTicketDialog({ isOpen: true, order })} className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#E8D5B5] text-[#07090E] py-3 text-sm font-bold transition hover:bg-[#D6C09D] hover:-translate-y-0.5 whitespace-nowrap">
+                          <QrCode size={18} className="shrink-0" /> View Ticket
                         </button>
-                        <button onClick={() => setCancelDialog({ isOpen: true, seatIds: order.seatIds, seatNumbers: order.seatNumbers.join(', '), eventName: eventTitle, status: 'confirm' })} className="flex items-center justify-center rounded-xl border border-red-500/30 bg-red-500/10 px-4 text-sm font-bold text-red-400 transition hover:bg-red-500/20 hover:-translate-y-0.5">
+                        <button onClick={() => setCancelDialog({ isOpen: true, seatIds: order.seatIds, seatNumbers: order.seatNumbers.join(', '), eventName: eventTitle, status: 'confirm' })} className="flex shrink-0 items-center justify-center rounded-xl border border-red-500/30 bg-red-500/10 px-4 text-sm font-bold text-red-400 transition hover:bg-red-500/20 hover:-translate-y-0.5">
                           <X size={20} />
                         </button>
                       </div>
@@ -218,27 +221,27 @@ export default function MyBookingsPage() {
       </main>
 
       {viewTicketDialog.isOpen && viewTicketDialog.order && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-md animate-fade-in" onClick={() => setViewTicketDialog({ isOpen: false, order: null })}></div>
-          <div className="relative z-10 w-full max-w-[400px] animate-slide-up">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-md animate-fade-in" onClick={() => setViewTicketDialog({ isOpen: false, order: null })}></div>
+          <div className="relative z-10 w-full max-w-[400px] my-auto animate-slide-up">
 
             <div className="bg-[#11131A] rounded-[2rem] overflow-hidden shadow-2xl ticket-cutout border border-white/10">
 
-              <div className="bg-[#E8D5B5] p-8 text-[#07090E] text-center relative overflow-hidden">
+              <div className="bg-[#E8D5B5] p-6 sm:p-8 text-[#07090E] text-center relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-white/40 blur-3xl rounded-full translate-x-10 -translate-y-10"></div>
-                <h3 className="font-display text-2xl font-bold relative z-10">{viewTicketDialog.order.eventName}</h3>
+                <h3 className="font-display text-xl sm:text-2xl font-bold relative z-10">{viewTicketDialog.order.eventName}</h3>
                 <p className="text-sm font-bold text-[#07090E]/70 mt-2 relative z-10">{formatTicketDate(viewTicketDialog.order.eventStartTime)}</p>
               </div>
 
-              <div className="p-8 bg-[#11131A]">
-                <div className="flex justify-between items-center mb-6">
-                  <div>
+              <div className="p-6 sm:p-8 bg-[#11131A]">
+                <div className="flex justify-between items-center gap-4 mb-6">
+                  <div className="min-w-0">
                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Seats</p>
-                    <p className="font-display text-2xl font-black text-white">{viewTicketDialog.order.seatNumbers.join(', ')}</p>
+                    <p className="font-display text-xl sm:text-2xl font-black text-white break-words">{viewTicketDialog.order.seatNumbers.join(', ')}</p>
                   </div>
-                  <div className="text-right">
+                  <div className="text-right shrink-0">
                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Qty</p>
-                    <p className="font-display text-2xl font-black text-white">{viewTicketDialog.order.seatNumbers.length}</p>
+                    <p className="font-display text-xl sm:text-2xl font-black text-white">{viewTicketDialog.order.seatNumbers.length}</p>
                   </div>
                 </div>
 
@@ -252,12 +255,12 @@ export default function MyBookingsPage() {
                     src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${viewTicketDialog.order.seatIds[0]}&color=000000&bgcolor=ffffff`}
                     alt="QR" className="w-40 h-40 mb-3 rounded-lg"
                   />
-                  <p className="font-mono text-xs font-bold tracking-widest text-slate-800">ORDER #{viewTicketDialog.order.displayOrderId}</p>
+                  <p className="font-mono text-xs font-bold tracking-widest text-slate-800 break-all text-center">ORDER #{viewTicketDialog.order.displayOrderId}</p>
                 </div>
 
-                <div className="mt-6 pt-6 border-t border-dashed border-white/10 flex justify-between items-center text-xs font-bold text-slate-400">
-                  <span className="flex items-center gap-1.5"><UserIcon size={14} /> {displayName}</span>
-                  <span className="flex items-center gap-1.5 text-emerald-400"><CreditCard size={14} /> Paid</span>
+                <div className="mt-6 pt-6 border-t border-dashed border-white/10 flex justify-between items-center gap-2 text-xs font-bold text-slate-400">
+                  <span className="flex items-center gap-1.5 min-w-0 truncate"><UserIcon size={14} className="shrink-0" /> <span className="truncate">{displayName}</span></span>
+                  <span className="flex shrink-0 items-center gap-1.5 text-emerald-400"><CreditCard size={14} /> Paid</span>
                 </div>
               </div>
             </div>
@@ -270,13 +273,13 @@ export default function MyBookingsPage() {
       )}
 
       {cancelDialog.isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
           <div
-            className="absolute inset-0 bg-black/80 backdrop-blur-md animate-fade-in"
+            className="fixed inset-0 bg-black/80 backdrop-blur-md animate-fade-in"
             onClick={() => cancelDialog.status === 'confirm' && setCancelDialog(prev => ({ ...prev, isOpen: false }))}
           ></div>
 
-          <div className="relative z-10 w-full max-w-[400px] bg-[#11131A] rounded-3xl border border-white/10 p-8 shadow-2xl animate-slide-up text-center">
+          <div className="relative z-10 w-full max-w-[400px] my-auto bg-[#11131A] rounded-3xl border border-white/10 p-6 sm:p-8 shadow-2xl animate-slide-up text-center">
             {cancelDialog.status === 'confirm' ? (
               <>
                 <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-red-500/10 mb-6 border border-red-500/20">
