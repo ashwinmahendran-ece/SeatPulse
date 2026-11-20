@@ -3,6 +3,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import project.Seat_Pulse.DTOs.UserRegistrationDto;
 import project.Seat_Pulse.DTOs.UserResponseDto;
 import project.Seat_Pulse.Entity.User;
@@ -20,13 +21,21 @@ public class UserService {
 
     private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
 
-    public UserService(UserRepository userRepo,AuthenticationManager authenticationManager,JwtService jwtService) {
+    private PasswordEncoder passwordEncoder;
+
+    public UserService(UserRepository userRepo,AuthenticationManager authenticationManager,JwtService jwtService, PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public UserResponseDto registerUser(UserRegistrationDto userRegistrationDto){
+
+        if(userRepo.existsByEmailId(userRegistrationDto.getEmailId())){
+            throw new RuntimeException("Email already exists");
+        }
+
         User user = new User();
         user.setUserName(userRegistrationDto.getUserName());
         user.setEmailId(userRegistrationDto.getEmailId());

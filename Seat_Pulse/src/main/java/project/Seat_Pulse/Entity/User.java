@@ -14,6 +14,7 @@ public class User{
 
     private String mobileNo;
 
+    @Column(unique = true, nullable = false)
     private String emailId;
 
     private String password;
