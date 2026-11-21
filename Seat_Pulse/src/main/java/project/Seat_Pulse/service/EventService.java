@@ -110,6 +110,7 @@ public class EventService {
     }
 
     @Transactional
+    @CacheEvict(value = "eventsCache", allEntries = true)
     public void cancelEntireEvent(Long eventId) {
         Event event = eventRepo.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
@@ -120,12 +121,14 @@ public class EventService {
                 .filter(seat -> seat.getStatus() == SeatStatus.BOOKED)
                 .toList();
 
-        List<String> affectedEmails = new ArrayList<>();
+        Set<String> affectedEmails = new HashSet<>();
 
         Set<String> uniquePaymentIdsToRefund = new HashSet<>();
 
         for (Seat seat : bookedSeats) {
-            affectedEmails.add(seat.getLockedBy().getEmailId());
+            if (seat.getLockedBy() != null && seat.getLockedBy().getEmailId() != null) {
+                affectedEmails.add(seat.getLockedBy().getEmailId());
+            }
 
             if (seat.getPaymentId() != null && !seat.getPaymentId().isEmpty()) {
                 uniquePaymentIdsToRefund.add(seat.getPaymentId());
@@ -150,7 +153,7 @@ public class EventService {
             System.err.println("CRITICAL: Failed to process event refunds - " + e.getMessage());
         }
 
-        EventCancellationDto payload = new EventCancellationDto(eventId, event.getEventName(), affectedEmails);
+        EventCancellationDto payload = new EventCancellationDto(eventId, event.getEventName(), new ArrayList<>(affectedEmails));
         rabbitTemplate.convertAndSend("cancellation_exchange", "routing.cancellation", payload);
     }
 }

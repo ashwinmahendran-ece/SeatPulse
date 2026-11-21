@@ -270,15 +270,15 @@ export default function SeatingBuilderPage() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-24 selection:bg-indigo-500/30">
       <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/80 backdrop-blur-xl">
-        <div className="mx-auto flex h-20 w-full max-w-[1440px] items-center justify-between px-5 lg:px-16">
-          <button onClick={() => navigate('/admin')} className="flex items-center gap-2 text-slate-400 hover:text-indigo-400 transition-colors font-semibold text-sm">
+        <div className="mx-auto flex h-16 sm:h-20 w-full max-w-[1440px] items-center justify-between gap-3 px-4 sm:px-5 lg:px-16">
+          <button onClick={() => navigate('/admin')} className="shrink-0 whitespace-nowrap py-2 flex items-center gap-2 text-slate-400 hover:text-indigo-400 transition-colors font-semibold text-sm">
             <ArrowLeft className="w-5 h-5" /> Back to Dashboard
           </button>
 
           <button
             onClick={handleSave}
             disabled={isLoading}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-full text-sm font-bold shadow-lg transition-all bg-indigo-600 hover:bg-indigo-500 text-white shadow-[0_0_15px_rgba(79,70,229,0.3)] disabled:opacity-50"
+            className="shrink-0 whitespace-nowrap flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold shadow-sm transition-all bg-white hover:bg-neutral-200 text-[#07090e] active:scale-[0.98] disabled:opacity-50"
           >
             {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             Save Layout
@@ -286,10 +286,10 @@ export default function SeatingBuilderPage() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-[1440px] px-5 pt-8 lg:px-16 flex flex-col xl:flex-row gap-8">
+      <main className="mx-auto w-full max-w-[1440px] px-4 sm:px-5 pt-6 sm:pt-8 lg:px-16 flex flex-col xl:flex-row gap-6 sm:gap-8">
         <aside className="w-full xl:w-[360px] flex-shrink-0 space-y-6">
           <div>
-            <h1 className="font-display text-3xl font-extrabold tracking-tight text-white mb-2">
+            <h1 className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-2">
               Seating Canvas
             </h1>
             <p className="text-slate-400 text-sm">Design rows and configure pricing tiers.</p>
@@ -313,7 +313,7 @@ export default function SeatingBuilderPage() {
             </div>
           </div>
 
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-6">
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl space-y-6">
 
             <div className="space-y-4">
               <h3 className="text-sm font-bold text-slate-300 uppercase tracking-widest flex items-center gap-2">
@@ -322,11 +322,11 @@ export default function SeatingBuilderPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-semibold text-slate-500 mb-1.5 block">Total Rows</label>
-                  <input type="number" min="1" max="100" value={rows} onChange={(e) => handleGridResize(Number(e.target.value), cols)} className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-indigo-500" />
+                  <input type="number" min="1" max="100" value={rows} onChange={(e) => handleGridResize(Number(e.target.value), cols)} className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-base sm:text-sm text-slate-100 outline-none focus:border-indigo-500" />
                 </div>
                 <div>
                   <label className="text-xs font-semibold text-slate-500 mb-1.5 block">Seats Per Row</label>
-                  <input type="number" min="1" max="100" value={cols} onChange={(e) => handleGridResize(rows, Number(e.target.value))} className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-indigo-500" />
+                  <input type="number" min="1" max="100" value={cols} onChange={(e) => handleGridResize(rows, Number(e.target.value))} className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-base sm:text-sm text-slate-100 outline-none focus:border-indigo-500" />
                 </div>
               </div>
             </div>
@@ -341,13 +341,13 @@ export default function SeatingBuilderPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Start Row</label>
-                    <select value={startRow} onChange={(e) => setStartRow(Number(e.target.value))} className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white font-bold outline-none focus:border-indigo-500">
+                    <select value={startRow} onChange={(e) => setStartRow(Number(e.target.value))} className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-base sm:text-sm text-white font-bold outline-none focus:border-indigo-500">
                       {Array.from({length: rows}).map((_, i) => <option key={i} value={i}>{getRowLabel(i)}</option>)}
                     </select>
                   </div>
                   <div>
                     <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">End Row</label>
-                    <select value={endRow} onChange={(e) => setEndRow(Number(e.target.value))} className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-white font-bold outline-none focus:border-indigo-500">
+                    <select value={endRow} onChange={(e) => setEndRow(Number(e.target.value))} className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-base sm:text-sm text-white font-bold outline-none focus:border-indigo-500">
                       {Array.from({length: rows}).map((_, i) => <option key={i} value={i}>{getRowLabel(i)}</option>)}
                     </select>
                   </div>
@@ -356,7 +356,7 @@ export default function SeatingBuilderPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Category</label>
-                    <select value={bulkRowCategory} onChange={(e) => setBulkRowCategory(e.target.value)} className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm font-bold text-white outline-none focus:border-indigo-500">
+                    <select value={bulkRowCategory} onChange={(e) => setBulkRowCategory(e.target.value)} className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-base sm:text-sm font-bold text-white outline-none focus:border-indigo-500">
                       <option value="VIP">VIP</option>
                       <option value="PREMIUM">Premium</option>
                       <option value="BALCONY">Balcony</option>
@@ -365,11 +365,11 @@ export default function SeatingBuilderPage() {
                   </div>
                   <div>
                     <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Price (₹)</label>
-                    <input type="number" value={bulkRowPrice} onChange={(e) => setBulkRowPrice(e.target.value)} className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm font-bold text-white outline-none focus:border-indigo-500" />
+                    <input type="number" value={bulkRowPrice} onChange={(e) => setBulkRowPrice(e.target.value)} className="w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-base sm:text-sm font-bold text-white outline-none focus:border-indigo-500" />
                   </div>
                 </div>
 
-                <button onClick={applyBulkRowSettings} className="w-full mt-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold py-2.5 rounded-lg transition-colors shadow-sm">
+                <button onClick={applyBulkRowSettings} className="w-full mt-2 border border-white/15 bg-white/10 hover:bg-white/15 text-white text-sm font-bold py-2.5 rounded-lg transition-colors shadow-sm">
                   Apply to Rows
                 </button>
               </div>
@@ -382,7 +382,7 @@ export default function SeatingBuilderPage() {
                 <Spline className="w-4 h-4 text-indigo-400" /> 3. Add Walkways
               </h3>
               <div className="flex gap-2">
-                <input type="number" min="1" max={cols} value={walkwayCol} onChange={(e) => setWalkwayCol(Number(e.target.value))} className="w-24 rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-sm text-slate-100 outline-none focus:border-indigo-500" placeholder="Col #" />
+                <input type="number" min="1" max={cols} value={walkwayCol} onChange={(e) => setWalkwayCol(Number(e.target.value))} className="w-24 min-w-0 rounded-xl border border-slate-700 bg-slate-950 px-3 py-2.5 text-base sm:text-sm text-slate-100 outline-none focus:border-indigo-500" placeholder="Col #" />
                 <button onClick={() => insertWalkwayColumn(walkwayCol)} className="flex-1 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2">
                   <Trash2 className="w-4 h-4 text-slate-400" /> Drop Aisle
                 </button>
@@ -396,14 +396,14 @@ export default function SeatingBuilderPage() {
                 <Tag className="w-4 h-4 text-indigo-400" /> 4. Fine Tune (Paintbrush)
               </h3>
               <div className="flex gap-2">
-                <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} className="flex-1 rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-indigo-500">
+                <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} className="flex-1 min-w-0 rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-base sm:text-sm text-slate-100 outline-none focus:border-indigo-500">
                   <option value="REGULAR">Regular</option>
                   <option value="VIP">VIP</option>
                   <option value="PREMIUM">Premium</option>
                   <option value="BALCONY">Balcony</option>
                   <option value="BLOCKED">🛑 Remove Seat</option>
                 </select>
-                <input type="number" value={bulkPrice} disabled={selectedCategory === 'BLOCKED'} onChange={(e) => setBulkPrice(e.target.value)} className="w-20 rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 outline-none focus:border-indigo-500 disabled:opacity-50" placeholder="₹" />
+                <input type="number" value={bulkPrice} disabled={selectedCategory === 'BLOCKED'} onChange={(e) => setBulkPrice(e.target.value)} className="w-20 min-w-0 rounded-xl border border-slate-700 bg-slate-950 px-3 py-2 text-base sm:text-sm text-slate-100 outline-none focus:border-indigo-500 disabled:opacity-50" placeholder="₹" />
               </div>
 
               <div className="mt-4 pt-4 border-t border-slate-800 flex flex-wrap items-center gap-4 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
@@ -415,57 +415,59 @@ export default function SeatingBuilderPage() {
           </div>
         </aside>
 
-        <div className="flex-1 bg-slate-900 border border-slate-800 rounded-3xl shadow-xl overflow-y-auto overflow-x-hidden min-h-[600px] flex flex-col items-center justify-start relative custom-scrollbar pb-10">
+        <div className="flex-1 bg-slate-900 border border-slate-800 rounded-3xl shadow-xl overflow-auto min-h-[420px] xl:min-h-[600px] relative custom-scrollbar pb-10">
+          <div className="w-max min-w-full mx-auto flex flex-col items-center">
 
-          <div className="w-2/3 h-8 mt-6 bg-slate-800 rounded-t-3xl border-t border-x border-slate-700 mb-12 flex items-center justify-center shadow-[0_-10px_30px_rgba(255,255,255,0.02)] flex-shrink-0">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em]">Stage</span>
-          </div>
+            <div className="w-2/3 h-8 mt-6 bg-slate-800 rounded-t-3xl border-t border-x border-slate-700 mb-12 flex items-center justify-center shadow-[0_-10px_30px_rgba(255,255,255,0.02)] flex-shrink-0">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em]">Stage</span>
+            </div>
 
-          <div className="flex flex-col w-full max-w-4xl px-6">
-            {groupedRows.map((group, gIdx) => (
-              <div key={gIdx} className="w-full mb-8 relative">
+            <div className="flex flex-col w-max mx-auto px-3 sm:px-6">
+              {groupedRows.map((group, gIdx) => (
+                <div key={gIdx} className="w-full mb-8 relative">
 
-                <div className="sticky top-0 z-10 w-full bg-slate-900/95 backdrop-blur-md py-4 mb-4 flex justify-center items-center shadow-[0_10px_10px_-10px_rgba(0,0,0,0.3)]">
-                  <h3 className="font-display text-sm font-bold text-slate-300 uppercase tracking-[0.1em]">
-                    {group.category} : ₹{group.price}
-                  </h3>
-                </div>
+                  <div className="sticky top-0 z-10 w-full bg-slate-900/95 backdrop-blur-md py-4 mb-4 flex justify-center items-center shadow-[0_10px_10px_-10px_rgba(0,0,0,0.3)]">
+                    <h3 className="font-display text-sm font-bold text-slate-300 uppercase tracking-[0.1em]">
+                      {group.category} : ₹{group.price}
+                    </h3>
+                  </div>
 
-                <div className="flex flex-col gap-2">
-                  {group.rows.map((row) => (
-                    <div key={row.rowIndex} className="flex items-center gap-4 sm:gap-6 w-full justify-center my-1">
+                  <div className="flex flex-col gap-2">
+                    {group.rows.map((row) => (
+                      <div key={row.rowIndex} className="flex items-center gap-4 sm:gap-6 w-full justify-center my-1">
 
-                      <div className="w-6 text-right text-[11px] font-black text-slate-500 uppercase">{row.rowLabel}</div>
+                        <div className="w-6 text-right text-[11px] font-black text-slate-500 uppercase">{row.rowLabel}</div>
 
-                      <div className="flex gap-1.5 sm:gap-2">
-                        {row.seats.map((seat: any, c: number) => {
-                          const index = row.rowIndex * cols + c;
-                          const isBooked = seat.status === 'BOOKED';
-                          const isBlocked = seat.category === 'BLOCKED';
+                        <div className="flex gap-1.5 sm:gap-2">
+                          {row.seats.map((seat: any, c: number) => {
+                            const index = row.rowIndex * cols + c;
+                            const isBooked = seat.status === 'BOOKED';
+                            const isBlocked = seat.category === 'BLOCKED';
 
-                          return (
-                            <button
-                              key={index}
-                              onClick={() => updateSingleSeat(index)}
-                              disabled={isBooked}
-                              className={`w-7 h-7 sm:w-9 sm:h-9 rounded-[6px] flex items-center justify-center text-[8px] sm:text-[9px] transition-all
-                                ${getAdminSeatColor(seat.category, seat.status)}
-                              `}
-                              title={isBooked ? `${seat.seatNo} (Booked)` : isBlocked ? `Empty Col ${(c) + 1}` : `${seat.seatNo} - ${seat.category} (₹${seat.price})`}
-                            >
-                              {isBooked ? <Lock className="w-3 h-3" /> : isBlocked ? null : seat.seatNo}
-                            </button>
-                          );
-                        })}
+                            return (
+                              <button
+                                key={index}
+                                onClick={() => updateSingleSeat(index)}
+                                disabled={isBooked}
+                                className={`w-7 h-7 sm:w-9 sm:h-9 rounded-[6px] flex items-center justify-center text-[8px] sm:text-[9px] transition-all
+                                  ${getAdminSeatColor(seat.category, seat.status)}
+                                `}
+                                title={isBooked ? `${seat.seatNo} (Booked)` : isBlocked ? `Empty Col ${(c) + 1}` : `${seat.seatNo} - ${seat.category} (₹${seat.price})`}
+                              >
+                                {isBooked ? <Lock className="w-3 h-3" /> : isBlocked ? null : seat.seatNo}
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        <div className="w-6 text-left text-[11px] font-black text-slate-500 uppercase hidden md:block">{row.rowLabel}</div>
+
                       </div>
-
-                      <div className="w-6 text-left text-[11px] font-black text-slate-500 uppercase hidden md:block">{row.rowLabel}</div>
-
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </main>

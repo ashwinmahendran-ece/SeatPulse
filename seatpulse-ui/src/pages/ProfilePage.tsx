@@ -1,9 +1,16 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { ArrowLeft, Ticket, Calendar, MapPin, CheckCircle2, Clock, User, X } from 'lucide-react';
+import { ArrowLeft, Ticket, Calendar, MapPin, CheckCircle2, Clock, X } from 'lucide-react';
 import { api } from '../api/seatPulseApi';
 import { useAuthStore } from '../store/useAuthStore';
+
+const getInitials = (name?: string) => {
+  if (!name || !name.trim()) return 'U';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
 
 const formatTicketDate = (dateVal: string | number[] | undefined) => {
   if (!dateVal) return '';
@@ -40,37 +47,41 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-24 selection:bg-indigo-500/30">
 
       <header className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/80 backdrop-blur-xl">
-        <div className="mx-auto flex h-20 w-full max-w-[1440px] items-center justify-between px-5 lg:px-16">
-          <button onClick={() => navigate('/explore')} className="flex items-center gap-2 text-slate-400 hover:text-indigo-400 transition-colors font-semibold">
+        <div className="mx-auto flex h-16 sm:h-20 w-full max-w-[1440px] items-center justify-between gap-2 px-4 sm:px-5 lg:px-16">
+          <button onClick={() => navigate('/explore')} className="shrink-0 whitespace-nowrap py-2 flex items-center gap-2 text-sm sm:text-base text-slate-400 hover:text-indigo-400 transition-colors font-semibold">
             <ArrowLeft className="w-5 h-5" /> Back to Events
           </button>
 
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900 border border-slate-800">
-              <User className="w-4 h-4 text-indigo-400" />
-              <span className="text-sm font-semibold text-slate-200">{user?.username || 'User'}</span>
+          <div className="flex items-center gap-2.5 sm:gap-4 shrink-0">
+            <div className="flex items-center gap-2.5 p-1 sm:pl-1.5 sm:pr-4 sm:py-1.5 rounded-full bg-slate-900 border border-slate-800">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-xs font-bold text-[#07090e]">
+                {getInitials(user?.username)}
+              </div>
+              <span className="hidden sm:inline max-w-[140px] truncate text-sm font-semibold text-slate-200">
+                {user?.username || 'User'}
+              </span>
             </div>
-            <button onClick={logout} className="rounded-full border border-slate-700 bg-slate-900 px-5 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
+            <button onClick={logout} className="shrink-0 whitespace-nowrap rounded-full border border-slate-700 bg-slate-900 px-4 sm:px-5 py-2 text-xs font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition">
               Log Out
             </button>
           </div>
         </div>
       </header>
 
-      <main className="relative z-10 mx-auto w-full max-w-[1440px] px-5 pt-10 lg:px-16">
+      <main className="relative z-10 mx-auto w-full max-w-[1440px] px-4 sm:px-5 pt-6 sm:pt-10 lg:px-16">
 
         <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div>
-            <h1 className="font-display text-4xl font-extrabold tracking-tight text-white mb-2">
+            <h1 className="font-display text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-2">
               My Tickets
             </h1>
             <p className="text-slate-400">Manage your upcoming events and past memories.</p>
           </div>
 
-          <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-800 w-fit">
+          <div className="grid grid-cols-2 sm:flex bg-slate-900 p-1 rounded-xl border border-slate-800 w-full sm:w-fit">
             <button
               onClick={() => setActiveTab('upcoming')}
-              className={`px-6 py-2 rounded-lg text-sm font-semibold transition-all ${
+              className={`px-4 sm:px-6 py-2 rounded-lg text-sm font-semibold transition-all ${
                 activeTab === 'upcoming' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
@@ -78,7 +89,7 @@ export default function ProfilePage() {
             </button>
             <button
               onClick={() => setActiveTab('past')}
-              className={`px-6 py-2 rounded-lg text-sm font-semibold transition-all ${
+              className={`px-4 sm:px-6 py-2 rounded-lg text-sm font-semibold transition-all ${
                 activeTab === 'past' ? 'bg-slate-800 text-white shadow-sm' : 'text-slate-400 hover:text-slate-200'
               }`}
             >
@@ -99,13 +110,13 @@ export default function ProfilePage() {
               <div key={i} className="animate-pulse h-40 w-full rounded-2xl bg-slate-900 border border-slate-800"></div>
             ))
           ) : safeBookings.length === 0 ? (
-            <div className="py-24 flex flex-col items-center justify-center text-slate-500 border border-dashed border-slate-800 rounded-3xl bg-slate-900/20">
+            <div className="py-24 flex flex-col items-center justify-center text-slate-500 border border-dashed border-slate-800 rounded-3xl bg-slate-900/20 px-4 text-center">
               <div className="w-20 h-20 rounded-full bg-slate-900 flex items-center justify-center mb-6">
                 <Ticket className="w-10 h-10 text-slate-700" />
               </div>
               <h3 className="text-2xl font-bold text-slate-300 mb-2">No tickets found</h3>
               <p className="text-slate-400 mb-6">Looks like you haven't booked any {activeTab} events yet.</p>
-              <button onClick={() => navigate('/explore')} className="rounded-full bg-indigo-600 px-8 py-3 text-sm font-bold text-white shadow-[0_0_15px_rgba(79,70,229,0.3)] hover:bg-indigo-500 transition-all">
+              <button onClick={() => navigate('/explore')} className="rounded-full bg-white px-8 py-3 text-sm font-bold text-[#07090e] shadow-sm hover:bg-neutral-200 active:scale-[0.98] transition-all">
                 Browse Events
               </button>
             </div>
@@ -128,28 +139,27 @@ export default function ProfilePage() {
                 <div
                   key={uniqueKey}
                   onClick={() => setSelectedTicket({ ...booking, uniqueKey, qrCodeUrl, eventName, eventCity, eventVenue, eventCategory, startTime, seats, isConfirmed })}
-                  className="group flex flex-col md:flex-row bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-xl hover:border-indigo-500/50 hover:shadow-[0_8px_30px_rgba(79,70,229,0.2)] transition-all cursor-pointer"
+                  className="group flex flex-col md:flex-row bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-xl hover:border-white/25 transition-all cursor-pointer"
                 >
-                  <div className="flex-1 p-6 lg:p-8 flex flex-col justify-between relative">
-                    <div className="absolute top-0 right-0 p-6 md:hidden">
-                      <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${
-                        isConfirmed
-                          ? 'bg-emerald-400/10 text-emerald-400 border-emerald-400/20'
-                          : 'bg-amber-400/10 text-amber-400 border-amber-400/20'
-                      }`}>
-                        {isConfirmed ? <CheckCircle2 className="w-3.5 h-3.5" /> : <Clock className="w-3.5 h-3.5" />}
-                        {isConfirmed ? 'CONFIRMED' : 'PENDING'}
-                      </div>
-                    </div>
-
+                  <div className="flex-1 p-4 sm:p-6 lg:p-8 flex flex-col justify-between relative">
                     <div>
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className="px-2.5 py-1 rounded-md bg-indigo-500/10 text-indigo-400 text-xs font-bold uppercase tracking-widest border border-indigo-500/20">
-                          {eventCategory}
-                        </span>
-                        <span className="text-slate-500 text-sm font-medium">ID: #{String(uniqueKey).substring(0,8)}</span>
+                      <div className="flex items-center justify-between gap-2 mb-3">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <span className="shrink-0 px-2.5 py-1 rounded-md bg-indigo-500/10 text-indigo-400 text-xs font-bold uppercase tracking-widest border border-indigo-500/20">
+                            {eventCategory}
+                          </span>
+                          <span className="text-slate-500 text-xs sm:text-sm font-medium truncate">ID: #{String(uniqueKey).substring(0,8)}</span>
+                        </div>
+                        <div className={`md:hidden shrink-0 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border ${
+                          isConfirmed
+                            ? 'bg-emerald-400/10 text-emerald-400 border-emerald-400/20'
+                            : 'bg-amber-400/10 text-amber-400 border-amber-400/20'
+                        }`}>
+                          {isConfirmed ? <CheckCircle2 className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
+                          {isConfirmed ? 'CONFIRMED' : 'PENDING'}
+                        </div>
                       </div>
-                      <h3 className="font-display text-2xl md:text-3xl font-bold text-white mb-4 line-clamp-2 group-hover:text-indigo-400 transition-colors">
+                      <h3 className="font-display text-xl sm:text-2xl md:text-3xl font-bold text-white mb-4 line-clamp-2 group-hover:text-indigo-400 transition-colors">
                         {eventName}
                       </h3>
 
@@ -220,7 +230,7 @@ export default function ProfilePage() {
         >
 
           <div
-            className="relative w-full max-w-sm bg-slate-900 border border-slate-700 rounded-[2rem] shadow-2xl overflow-hidden transform scale-100 animate-slide-up"
+            className="relative w-full max-w-sm max-h-[90vh] overflow-y-auto bg-slate-900 border border-slate-700 rounded-[2rem] shadow-2xl transform scale-100 animate-slide-up"
             onClick={e => e.stopPropagation()} // Prevent clicks inside from closing it
           >
 
@@ -228,12 +238,12 @@ export default function ProfilePage() {
 
             <button
               onClick={() => setSelectedTicket(null)}
-              className="absolute top-6 right-6 p-2 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition"
+              className="absolute top-6 right-6 z-20 p-2 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <div className="bg-indigo-600 px-8 pt-12 pb-8 text-center relative overflow-hidden">
+            <div className="bg-indigo-600 px-6 pt-10 pb-6 sm:px-8 sm:pt-12 sm:pb-8 text-center relative overflow-hidden">
 
               <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '16px 16px' }}></div>
 
@@ -250,7 +260,7 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            <div className="p-8 text-center bg-slate-900 relative">
+            <div className="p-6 sm:p-8 text-center bg-slate-900 relative">
 
               <div className="absolute top-0 left-4 right-4 border-t-2 border-dashed border-slate-700/50"></div>
 
@@ -272,7 +282,7 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              <div className="flex flex-col items-center justify-center p-6 bg-white rounded-3xl mx-auto w-48 shadow-lg">
+              <div className="flex flex-col items-center justify-center p-4 sm:p-6 bg-white rounded-3xl mx-auto w-40 sm:w-48 shadow-lg">
                 <img src={selectedTicket.qrCodeUrl} alt="Scan to Enter" className="w-full h-auto object-contain" />
               </div>
 

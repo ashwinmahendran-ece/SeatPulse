@@ -154,8 +154,8 @@ const handleLogout = async () => {
   return (
     <div className="min-h-screen bg-[#1A1C1E] text-slate-100 font-sans pb-24 selection:bg-indigo-500/30">
 
-<header className="sticky top-0 z-50 border-b border-white/10 bg-[#1F2124]/90 backdrop-blur-md">
-        <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between px-5 lg:px-16">
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#1F2124]/90 backdrop-blur-md">
+        <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between px-4 sm:px-5 lg:px-16">
           <div className="flex items-center gap-4">
             <button onClick={() => navigate('/')} className="flex items-center font-display text-xl font-black tracking-[-0.03em] whitespace-nowrap transition-transform hover:scale-[1.02]">
               <span className="text-white">Seat</span>
@@ -167,7 +167,7 @@ const handleLogout = async () => {
             </span>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3 sm:gap-6">
             <span className="text-sm font-semibold text-slate-400 hidden sm:block">
               Welcome, <span className="text-white">{user?.username || 'Admin'}</span>
             </span>
@@ -183,7 +183,7 @@ const handleLogout = async () => {
 
               <div className="w-px h-4 bg-white/10 hidden sm:block"></div>
 
-              <button onClick={handleLogout} className="rounded-lg border border-white/10 bg-[#1A1C1E] px-4 py-2 text-xs font-bold text-slate-300 hover:bg-white hover:text-[#1A1C1E] transition-all">
+              <button onClick={handleLogout} className="whitespace-nowrap shrink-0 rounded-lg border border-white/10 bg-[#1A1C1E] px-4 py-2 text-xs font-bold text-slate-300 hover:bg-white hover:text-[#1A1C1E] transition-all">
                 Log Out
               </button>
             </div>
@@ -197,7 +197,7 @@ const handleLogout = async () => {
           <h2 className="font-display text-2xl font-bold text-white mb-6 flex items-center gap-2">
             <BarChart3 className="w-6 h-6 text-indigo-400" /> Platform Overview
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
 
             {[
               { label: 'Total Events', value: stats?.totalEvents || 0, icon: Ticket, color: 'text-indigo-400', bg: 'bg-indigo-400/10' },
@@ -205,10 +205,10 @@ const handleLogout = async () => {
               { label: 'Total Revenue', value: `₹${stats?.totalRevenue?.toLocaleString() || 0}`, icon: IndianRupee, color: 'text-amber-400', bg: 'bg-amber-400/10' },
               { label: 'Registered Users', value: stats?.registeredUsers || 0, icon: Users, color: 'text-[#05d5ff]', bg: 'bg-[#05d5ff]/10' },
             ].map((stat, idx) => (
-              <div key={idx} className="bg-[#1F2124] border border-white/10 p-6 rounded-[2rem] relative overflow-hidden shadow-xl group hover:border-white/20 transition-colors backdrop-blur-sm">
+              <div key={idx} className="bg-[#1F2124] border border-white/10 p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] relative overflow-hidden shadow-xl group hover:border-white/20 transition-colors backdrop-blur-sm">
                 <div className="relative z-10">
                   <p className="text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest">{stat.label}</p>
-                  <p className="font-display text-4xl font-extrabold text-white">
+                  <p className="font-display text-2xl sm:text-4xl font-extrabold text-white">
                     {isLoadingStats ? <Loader2 className="w-8 h-8 animate-spin text-indigo-400" /> : stat.value}
                   </p>
                 </div>
@@ -221,25 +221,25 @@ const handleLogout = async () => {
 
         <div>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                      <h2 className="font-display text-2xl font-bold text-white flex items-center gap-2">
-                        <Calendar className="w-6 h-6 text-indigo-400" /> Event Management
-                      </h2>
-                      <div className="flex items-center gap-3">
-                        <button
-                          onClick={() => navigate('/admin/scanner')}
-                          className="flex items-center justify-center gap-2 bg-[#1A1C1E] border border-white/10 hover:border-indigo-500 hover:text-indigo-400 text-slate-300 px-5 py-3 rounded-xl text-sm font-bold transition-all"
-                        >
-                          <ScanLine className="w-4 h-4" /> Scan Tickets
-                        </button>
+            <h2 className="font-display text-2xl font-bold text-white flex items-center gap-2">
+              <Calendar className="w-6 h-6 text-indigo-400" /> Event Management
+            </h2>
+            <div className="grid grid-cols-2 sm:flex w-full sm:w-auto items-center gap-2.5 sm:gap-3">
+              <button
+                onClick={() => navigate('/admin/scanner')}
+                className="flex items-center justify-center gap-2 bg-[#1A1C1E] border border-white/10 hover:border-indigo-500 hover:text-indigo-400 text-slate-300 px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all"
+              >
+                <ScanLine className="w-4 h-4 shrink-0" /> Scan Tickets
+              </button>
 
-                        <button
-                          onClick={() => navigate('/admin/events/new')}
-                          className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl text-sm font-bold shadow-[0_0_20px_rgba(79,70,229,0.3)] transition-all hover:scale-[1.02] active:scale-95"
-                        >
-                          <Plus className="w-4 h-4" /> Create New Event
-                        </button>
-                      </div>
-                    </div>
+              <button
+                onClick={() => navigate('/admin/events/new')}
+                className="flex items-center justify-center gap-2 bg-white hover:bg-neutral-200 text-[#07090e] px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap shadow-sm transition-all active:scale-[0.98]"
+              >
+                <Plus className="w-4 h-4 shrink-0" /> Create New Event
+              </button>
+            </div>
+          </div>
 
           <div className="bg-[#1F2124] border border-white/10 rounded-[2rem] overflow-hidden shadow-xl backdrop-blur-sm">
             <div className="hidden lg:grid grid-cols-12 gap-4 p-6 border-b border-white/10 bg-[#1A1C1E]/50 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
@@ -266,7 +266,7 @@ const handleLogout = async () => {
                 </div>
               ) : (
                 safeEvents.map((event: any) => (
-                  <div key={event.eventId} className="grid grid-cols-1 lg:grid-cols-12 gap-4 p-6 items-center hover:bg-white/5 transition-colors group">
+                  <div key={event.eventId} className="grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 sm:p-6 items-center hover:bg-white/5 transition-colors group">
 
                     <div className="lg:hidden text-[10px] font-bold text-indigo-400 mb-2 uppercase tracking-widest">ID: #{event.eventId}</div>
 
@@ -281,7 +281,7 @@ const handleLogout = async () => {
                       </span>
                     </div>
 
-                    <div className="col-span-1 lg:col-span-3 flex items-start gap-2 mt-4 lg:mt-0">
+                    <div className="col-span-1 lg:col-span-3 flex items-start gap-2 mt-2 lg:mt-0">
                       <MapPin className="w-4 h-4 text-slate-500 mt-0.5 shrink-0" />
                       <div>
                         <p className="text-sm font-semibold text-slate-200">{event.venue || 'TBA Venue'}</p>
@@ -289,16 +289,16 @@ const handleLogout = async () => {
                       </div>
                     </div>
 
-                    <div className="col-span-1 lg:col-span-2 mt-4 lg:mt-0 flex items-center gap-2">
+                    <div className="col-span-1 lg:col-span-2 mt-2 lg:mt-0 flex items-center gap-2">
                       <Calendar className="w-4 h-4 text-slate-500 lg:hidden" />
                       <p className="text-sm font-medium text-slate-300">{formatAdminDate(event.eventStartTime)}</p>
                     </div>
 
-<div className="col-span-1 lg:col-span-2 flex justify-start lg:justify-end mt-6 lg:mt-0 gap-3">
+                    <div className="col-span-1 lg:col-span-2 flex justify-start lg:justify-end mt-4 lg:mt-0 gap-3">
                       <button
                         onClick={() => handleCancelEvent(event.eventId, event.eventName)}
                         disabled={cancelEventMutation.isPending}
-                        className="flex items-center justify-center h-10 w-10 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 hover:text-red-400 transition-colors border border-red-500/20 disabled:pointer-events-none disabled:opacity-50"
+                        className="flex items-center justify-center h-10 w-10 shrink-0 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 hover:text-red-400 transition-colors border border-red-500/20 disabled:pointer-events-none disabled:opacity-50"
                         title="Cancel Event"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -306,7 +306,7 @@ const handleLogout = async () => {
 
                       <button
                         onClick={() => setPreviewEventId(event.eventId)}
-                        className="flex items-center justify-center h-10 w-10 rounded-xl bg-[#1A1C1E] hover:bg-white/10 text-slate-400 hover:text-white transition-colors border border-white/10"
+                        className="flex items-center justify-center h-10 w-10 shrink-0 rounded-xl bg-[#1A1C1E] hover:bg-white/10 text-slate-400 hover:text-white transition-colors border border-white/10"
                         title="Preview Seat Map"
                       >
                         <Eye className="w-4 h-4" />
@@ -314,7 +314,7 @@ const handleLogout = async () => {
 
                       <button
                         onClick={() => navigate(`/admin/events/${event.eventId}/seating`)}
-                        className="flex items-center gap-2 h-10 px-4 rounded-xl bg-[#1A1C1E] hover:bg-indigo-600 hover:border-indigo-500 text-xs font-bold text-slate-300 hover:text-white transition-colors border border-white/10"
+                        className="flex-1 sm:flex-initial flex items-center justify-center gap-2 h-10 px-4 rounded-xl bg-[#1A1C1E] hover:bg-indigo-600 hover:border-indigo-500 text-xs font-bold text-slate-300 hover:text-white whitespace-nowrap transition-colors border border-white/10"
                       >
                         Manage Seating <ArrowRight className="w-4 h-4" />
                       </button>
@@ -329,11 +329,11 @@ const handleLogout = async () => {
       </main>
 
       {previewEventId && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 sm:p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
           <div className="bg-[#1F2124] border border-white/10 rounded-[2rem] shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-300">
 
-            <div className="flex items-center justify-between px-6 py-5 border-b border-white/10 bg-[#1A1C1E] z-10">
-              <h3 className="font-display text-xl font-bold text-white flex items-center gap-2">
+            <div className="flex items-center justify-between px-4 sm:px-6 py-4 sm:py-5 border-b border-white/10 bg-[#1A1C1E] z-10">
+              <h3 className="font-display text-base sm:text-xl font-bold text-white flex items-center gap-2">
                 <Eye className="w-5 h-5 text-indigo-400" /> Seat Map Preview
               </h3>
               <div className="flex items-center gap-4">
@@ -370,61 +370,63 @@ const handleLogout = async () => {
               ) : (
                 <div className="flex-1 flex flex-col lg:flex-row h-full overflow-hidden">
 
-                  <div className="flex-1 overflow-auto p-4 sm:p-8 flex flex-col items-center custom-scrollbar">
+                  <div className="flex-1 overflow-auto p-4 sm:p-8 custom-scrollbar">
+                    <div className="w-max min-w-full mx-auto flex flex-col items-center">
 
-                    <div className="w-3/4 max-w-sm h-8 bg-[#1F2124] rounded-t-3xl border-t border-x border-white/10 mb-12 flex items-center justify-center shadow-[0_-10px_30px_rgba(255,255,255,0.02)] shrink-0">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Stage</span>
-                    </div>
+                      <div className="w-3/4 max-w-sm h-8 bg-[#1F2124] rounded-t-3xl border-t border-x border-white/10 mb-12 flex items-center justify-center shadow-[0_-10px_30px_rgba(255,255,255,0.02)] shrink-0">
+                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Stage</span>
+                      </div>
 
-                    <div className="flex flex-col w-full max-w-4xl px-2 pb-16">
-                      {groupedRows.map((group, gIdx) => (
-                        <div key={gIdx} className="w-full mb-8 relative">
+                      <div className="flex flex-col w-max mx-auto px-2 pb-16">
+                        {groupedRows.map((group, gIdx) => (
+                          <div key={gIdx} className="w-full mb-8 relative">
 
-                          <div className="w-full py-3 mb-4 flex justify-center items-center">
-                            <h3 className="font-display text-xs font-bold text-slate-400 uppercase tracking-[0.1em]">
-                              {group.category} : ₹{group.price}
-                            </h3>
-                          </div>
+                            <div className="w-full py-3 mb-4 flex justify-center items-center">
+                              <h3 className="font-display text-xs font-bold text-slate-400 uppercase tracking-[0.1em]">
+                                {group.category} : ₹{group.price}
+                              </h3>
+                            </div>
 
-                          <div className="flex flex-col gap-1.5 sm:gap-2">
-                            {group.rows.map((row) => (
-                              <div key={row.rowIndex} className="flex items-center gap-3 sm:gap-4 w-full justify-center my-0.5">
+                            <div className="flex flex-col gap-1.5 sm:gap-2">
+                              {group.rows.map((row) => (
+                                <div key={row.rowIndex} className="flex items-center gap-3 sm:gap-4 w-full justify-center my-0.5">
 
-                                <div className="w-4 sm:w-6 text-right text-[10px] font-black text-slate-500 uppercase">{row.rowLabel}</div>
+                                  <div className="w-4 sm:w-6 text-right text-[10px] font-black text-slate-500 uppercase">{row.rowLabel}</div>
 
-                                <div className="flex gap-1 sm:gap-1.5">
-                                  {row.seats.map((seat: any, c: number) => {
-                                    const status = String(seat.seatStatus || seat.status || 'AVAILABLE').toUpperCase();
-                                    const category = String(seat.seatCategory || seat.category).toUpperCase();
-                                    const isBlocked = category === 'BLOCKED';
+                                  <div className="flex gap-1 sm:gap-1.5">
+                                    {row.seats.map((seat: any, c: number) => {
+                                      const status = String(seat.seatStatus || seat.status || 'AVAILABLE').toUpperCase();
+                                      const category = String(seat.seatCategory || seat.category).toUpperCase();
+                                      const isBlocked = category === 'BLOCKED';
 
-                                    return (
-                                      <div
-                                        key={c}
-                                        className={`w-6 h-6 sm:w-8 sm:h-8 rounded-[4px] flex items-center justify-center text-[7px] sm:text-[9px] font-bold
-                                          ${isBlocked ? 'border border-dashed border-slate-700/50 bg-transparent cursor-default pointer-events-none' : getPreviewSeatColor(category, status)}
-                                        `}
-                                      >
-                                        {!isBlocked && (seat.displaySeatNo || seat.seatNo)}
-                                      </div>
-                                    );
-                                  })}
+                                      return (
+                                        <div
+                                          key={c}
+                                          className={`w-6 h-6 sm:w-8 sm:h-8 rounded-[4px] flex items-center justify-center text-[7px] sm:text-[9px] font-bold
+                                            ${isBlocked ? 'border border-dashed border-slate-700/50 bg-transparent cursor-default pointer-events-none' : getPreviewSeatColor(category, status)}
+                                          `}
+                                        >
+                                          {!isBlocked && (seat.displaySeatNo || seat.seatNo)}
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+
+                                  <div className="w-4 sm:w-6 text-left text-[10px] font-black text-slate-500 uppercase hidden md:block">{row.rowLabel}</div>
+
                                 </div>
-
-                                <div className="w-4 sm:w-6 text-left text-[10px] font-black text-slate-500 uppercase hidden md:block">{row.rowLabel}</div>
-
-                              </div>
-                            ))}
+                              ))}
+                            </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
+                        ))}
+                      </div>
 
+                    </div>
                   </div>
 
-                  <div className="w-full lg:w-56 bg-[#1F2124] p-6 border-t lg:border-t-0 lg:border-l border-white/10 flex flex-col flex-shrink-0 z-10">
-                    <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-6">Seat Legend</h4>
-                    <div className="flex flex-col gap-5">
+                  <div className="w-full lg:w-56 bg-[#1F2124] p-4 lg:p-6 border-t lg:border-t-0 lg:border-l border-white/10 flex flex-col flex-shrink-0 z-10">
+                    <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 lg:mb-6">Seat Legend</h4>
+                    <div className="flex flex-row flex-wrap lg:flex-col gap-4 lg:gap-5">
                       <div className="flex items-center gap-4">
                         <div className="w-6 h-6 rounded-[4px] bg-transparent border border-slate-400"></div>
                         <span className="text-xs font-bold text-slate-300 tracking-wider">Available</span>

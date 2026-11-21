@@ -10,7 +10,6 @@ import project.Seat_Pulse.Entity.Seat;
 import project.Seat_Pulse.enums.SeatStatus;
 import project.Seat_Pulse.repository.SeatRepository;
 import project.Seat_Pulse.config.RabbitMQConfig;
-
 import java.util.List;
 
 @Service
@@ -61,6 +60,6 @@ public class CancellationWorkers {
             }
         }
 
-        System.out.println("📧 [Cancellation Mailer] Pushed " + emailCount + " apology emails to the Notification Queue!");
+        System.out.println("[Cancellation Mailer] Pushed " + emailCount + " apology emails to the Notification Queue!");
     }
 }

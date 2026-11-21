@@ -1,22 +1,29 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Ticket, LogIn, User } from 'lucide-react';
+import { LogIn } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { api } from '../api/seatPulseApi';
 
+const getInitials = (name?: string) => {
+  if (!name || !name.trim()) return 'U';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
+
 export default function Navbar() {
-  const { isAuthenticated, logout } = useAuthStore();
+  const { isAuthenticated, logout, user } = useAuthStore();
   const location = useLocation();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-      try {
-        await api.auth.logout();
-      } finally {
-        logout();
-        sessionStorage.removeItem('seatpulse_jwt');
-        navigate('/');
-      }
-    };
+    try {
+      await api.auth.logout();
+    } finally {
+      logout();
+      sessionStorage.removeItem('seatpulse_jwt');
+      navigate('/');
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-sage-light/30 bg-cream/90 backdrop-blur-md transition-all duration-300">
@@ -45,7 +52,9 @@ export default function Navbar() {
                 to="/profile"
                 className="flex items-center gap-2 text-burgundy hover:text-burgundy-light transition-colors"
               >
-                <Ticket size={18} />
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-burgundy text-xs font-bold text-cream-light">
+                  {getInitials(user?.username)}
+                </span>
                 My Tickets
               </Link>
               <button
@@ -68,7 +77,11 @@ export default function Navbar() {
 
         <div className="md:hidden flex shrink-0 items-center gap-2">
           {isAuthenticated ? (
-            <Link to="/profile" className="text-burgundy p-2"><User size={22} /></Link>
+            <Link to="/profile" className="p-1" aria-label="Profile">
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-burgundy text-xs font-bold text-cream-light">
+                {getInitials(user?.username)}
+              </span>
+            </Link>
           ) : (
             <Link to="/login" className="text-burgundy p-2"><LogIn size={22} /></Link>
           )}

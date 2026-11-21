@@ -12,6 +12,7 @@ import project.Seat_Pulse.DTOs.*;
 import project.Seat_Pulse.Entity.Event;
 import project.Seat_Pulse.Entity.Seat;
 import project.Seat_Pulse.Entity.User;
+import project.Seat_Pulse.enums.EventStatus;
 import project.Seat_Pulse.enums.SeatStatus;
 import project.Seat_Pulse.repository.EventRepository;
 import project.Seat_Pulse.repository.SeatRepository;
@@ -69,6 +70,9 @@ public class SeatService {
     public SeatResponseDto lockedSeat(long seatId, long userId) {
         Seat seat = seatRepo.findById(seatId)
                 .orElseThrow(() -> new RuntimeException("Seat not found"));
+        if (seat.getEvent().getStatus() == EventStatus.CANCELLED) {
+            throw new RuntimeException("This event has been cancelled. Seats cannot be locked.");
+        }
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -92,6 +96,9 @@ public class SeatService {
         Seat seat = seatRepo.findById(seatId)
                 .orElseThrow(() -> new RuntimeException("Seat not found"));
 
+        if (seat.getEvent().getStatus() == EventStatus.CANCELLED) {
+            throw new RuntimeException("This event has been cancelled. Booking is not allowed.");
+        }
         if (seat.getStatus() != SeatStatus.LOCKED) {
             throw new RuntimeException("Seat must be locked before booking!");
         }
@@ -251,6 +258,9 @@ public class SeatService {
         String eventName = "SeatPulse Event";
 
         for (Seat seat : lockedSeats) {
+            if (seat.getEvent().getStatus() == EventStatus.CANCELLED) {
+                throw new RuntimeException("This event has been cancelled. Order cannot be confirmed.");
+            }
             seat.setStatus(SeatStatus.BOOKED);
             seat.setOrderId(orderId);
             seat.setPaymentId(paymentId);

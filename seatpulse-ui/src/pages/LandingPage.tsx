@@ -141,11 +141,11 @@ export default function LandingPage() {
               Featured Events
             </a>
             {user ? (
-              <button onClick={() => navigate(user.role === 'ADMIN' ? '/admin' : '/profile')} className="rounded-full px-4 sm:px-5 py-2 sm:py-2.5 border border-[#e8d5b5] text-[#e8d5b5] hover:bg-[#e8d5b5] hover:text-[#07090e] transition-colors text-xs sm:text-sm font-bold whitespace-nowrap">
+              <button onClick={() => navigate(user.role === 'ADMIN' ? '/admin' : '/profile')} className="rounded-full px-4 sm:px-5 py-2 sm:py-2.5 border border-white/15 bg-white/5 text-white hover:bg-white/10 transition-colors text-xs sm:text-sm font-bold whitespace-nowrap">
                 Dashboard ↗
               </button>
             ) : (
-              <button onClick={() => navigate('/login')} className="rounded-full px-4 sm:px-5 py-2 sm:py-2.5 border border-[#e8d5b5] text-[#e8d5b5] hover:bg-[#e8d5b5] hover:text-[#07090e] transition-colors text-xs sm:text-sm font-bold whitespace-nowrap">
+              <button onClick={() => navigate('/login')} className="rounded-full px-4 sm:px-5 py-2 sm:py-2.5 border border-white/15 bg-white/5 text-white hover:bg-white/10 transition-colors text-xs sm:text-sm font-bold whitespace-nowrap">
                 Sign In ↗
               </button>
             )}
@@ -155,17 +155,17 @@ export default function LandingPage() {
 
       <main id="top">
         <section className="grid-glow hero-aura w-full overflow-hidden border-b border-white/10 relative">
-          <div className="max-w-7xl mx-auto px-4 sm:px-8 py-14 sm:py-20 lg:py-28 grid lg:grid-cols-[1.12fr_.88fr] items-center gap-12 lg:gap-16 animate-fade-in">
+          <div className="max-w-7xl mx-auto px-4 sm:px-8 py-10 sm:py-20 lg:py-28 grid lg:grid-cols-[1.12fr_.88fr] items-center gap-12 lg:gap-16 animate-fade-in">
             <div className="animate-slide-up">
               <p className="font-mono uppercase tracking-[0.16em] text-[#e8d5b5] mb-6 text-xs font-bold">THE NEW STANDARD IN EVENT TICKETING</p>
-              <h1 className="font-display font-extrabold max-w-3xl mb-7 text-4xl sm:text-5xl lg:text-[54px] leading-[1.1] text-[#f4f2ee] tracking-tight">
+              <h1 className="font-display font-extrabold max-w-3xl mb-7 text-3xl sm:text-5xl lg:text-[54px] leading-[1.1] text-[#f4f2ee] tracking-tight">
                 The Ultimate Ticketing Experience
               </h1>
               <p className="text-[#aeb2bb] leading-relaxed max-w-xl mb-10 text-base sm:text-lg">
                 Premium by design. Fast by default. SeatPulse brings every seat, order, and unforgettable moment into one seamless experience.
               </p>
 
-              <button onClick={(e) => smoothScrollToElement(e, 'events')} className="group inline-flex items-center gap-3 rounded-full px-8 py-3.5 text-sm font-bold bg-[#e8d5b5] text-[#101116] hover:bg-[#f5ebd8] active:scale-[0.98] transition-all duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#e8d5b5]/40">
+              <button onClick={(e) => smoothScrollToElement(e, 'events')} className="group w-full sm:w-auto justify-center inline-flex items-center gap-3 rounded-full px-8 py-3.5 text-sm font-bold bg-white text-[#07090e] hover:bg-neutral-200 active:scale-[0.98] transition-all duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-white/30">
                 View Featured Events
                 <ArrowRight size={18} className="rotate-90 transition-transform duration-300 group-hover:translate-y-1" />
               </button>
@@ -196,7 +196,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="events" className="w-full pt-20 lg:pt-28 pb-4 bg-[#07090e] overflow-hidden">
+        <section id="events" className="w-full pt-14 sm:pt-20 lg:pt-28 pb-4 bg-[#07090e] overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-8 mb-6 flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
               <p className="font-mono text-[#e8d5b5] text-xs font-bold uppercase tracking-[0.16em] mb-4">01 / FEATURED EXPERIENCES</p>
@@ -215,7 +215,7 @@ export default function LandingPage() {
             {isLoading ? (
               <div className="flex gap-6 px-8 overflow-hidden">
                 {[...Array(5)].map((_, i) => (
-                  <div key={i} className="animate-pulse w-[280px] md:w-[340px] shrink-0 h-[380px] rounded-[28px] bg-[#11131a] border border-[#292c35]"></div>
+                  <div key={i} className="animate-pulse w-[260px] sm:w-[280px] md:w-[340px] shrink-0 h-[380px] rounded-[28px] bg-[#11131a] border border-[#292c35]"></div>
                 ))}
               </div>
             ) : upcomingEvents.length === 0 ? (
@@ -229,6 +229,10 @@ export default function LandingPage() {
                   if (!isAutoScrolling.current && !isHovered) setIsHovered(true);
                 }}
                 onMouseLeave={() => setIsHovered(false)}
+                onTouchStart={() => {
+                  if (!isAutoScrolling.current) setIsHovered(true);
+                }}
+                onTouchEnd={() => setIsHovered(false)}
               >
                 {[...upcomingEvents, ...upcomingEvents].map((event: any, index: number) => {
                   const isTrending = index % 7 === 0 || index % 7 === 1;
@@ -236,7 +240,7 @@ export default function LandingPage() {
                     <div
                       key={`${event.eventId}-${index}`}
                       onClick={() => navigate(`/event/${event.eventId}`, { state: { event } })}
-                      className="w-[280px] md:w-[340px] shrink-0 group cursor-pointer bg-[#11131a] border border-[#292c35] rounded-[28px] overflow-hidden hover:border-[#e8d5b5]/40 transition-all duration-500 hover:-translate-y-2 shadow-[0_15px_40px_rgba(0,0,0,0.4)] hover:shadow-[0_20px_50px_rgba(232,213,181,0.08)] flex flex-col"
+                      className="w-[260px] sm:w-[280px] md:w-[340px] shrink-0 group cursor-pointer bg-[#11131a] border border-[#292c35] rounded-[28px] overflow-hidden hover:border-[#e8d5b5]/40 transition-all duration-500 hover:-translate-y-2 shadow-[0_15px_40px_rgba(0,0,0,0.4)] hover:shadow-[0_20px_50px_rgba(232,213,181,0.08)] flex flex-col"
                     >
                       <div className="h-48 md:h-52 w-full overflow-hidden relative border-b border-[#292c35]">
                         <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
@@ -280,13 +284,13 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="cta" className="w-full pt-16 pb-24 overflow-hidden border-t border-white/5" style={{ background: 'radial-gradient(circle at center, #1a1714 0%, #07090e 100%)' }}>
+        <section id="cta" className="w-full pt-12 sm:pt-16 pb-16 sm:pb-24 overflow-hidden border-t border-white/5" style={{ background: 'radial-gradient(circle at center, #1a1714 0%, #07090e 100%)' }}>
           <div className="max-w-7xl mx-auto px-4 sm:px-8 text-center relative z-10">
             <p className="font-mono text-[#e8d5b5] text-xs font-bold uppercase tracking-[0.16em] mb-5">YOUR NEXT EXPERIENCE STARTS HERE</p>
             <h2 className="font-display font-extrabold text-[#f4f2ee] text-3xl sm:text-4xl mb-5">Ready to experience it live?</h2>
             <p className="text-[#b9bbc1] text-base mb-10">Browse upcoming events and secure your spot.</p>
             <div className="flex flex-wrap justify-center gap-4">
-              <button onClick={() => navigate('/explore')} className="rounded-full bg-[#e8d5b5] text-[#101116] px-8 py-3.5 text-sm font-bold hover:bg-[#f5ebd8] active:scale-[0.98] transition-all duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-[#e8d5b5]/40">
+              <button onClick={() => navigate('/explore')} className="w-full sm:w-auto justify-center inline-flex items-center rounded-full bg-white text-[#07090e] px-8 py-3.5 text-sm font-bold hover:bg-neutral-200 active:scale-[0.98] transition-all duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-white/30">
                 Explore All Events ↗
               </button>
             </div>

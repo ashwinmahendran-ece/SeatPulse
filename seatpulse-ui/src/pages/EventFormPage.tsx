@@ -83,12 +83,12 @@ export default function EventFormPage() {
   return (
     <div className="min-h-screen bg-[#1A1C1E] pb-24 font-sans text-slate-100 selection:bg-indigo-500/30">
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#1F2124]/90 backdrop-blur-md">
-        <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between px-5 lg:px-16">
-          <button onClick={() => navigate('/admin')} className="flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-white transition-colors">
+        <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between gap-3 px-4 sm:px-5 lg:px-16">
+          <button onClick={() => navigate('/admin')} className="shrink-0 whitespace-nowrap py-2 flex items-center gap-2 text-sm font-bold text-slate-400 hover:text-white transition-colors">
             <ArrowLeft size={16} /> Back to Dashboard
           </button>
 
-          <div className="flex items-center font-display text-xl font-black tracking-[-0.03em] whitespace-nowrap">
+          <div className="flex items-center font-display text-lg sm:text-xl font-black tracking-[-0.03em] whitespace-nowrap">
             <span className="text-white">Seat</span>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-[#05d5ff] ml-1">Pulse</span>
             <span className="text-indigo-500 animate-pulse ml-0.5">*</span>
@@ -96,14 +96,14 @@ export default function EventFormPage() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-4xl px-5 pt-10 lg:px-16 animate-in fade-in slide-in-from-bottom-8 duration-500">
+      <div className="mx-auto max-w-4xl px-4 sm:px-5 pt-6 sm:pt-10 lg:px-16 animate-in fade-in slide-in-from-bottom-8 duration-500">
         <div className="mb-8">
-          <h1 className="font-display text-4xl font-bold text-white">Create New Event</h1>
+          <h1 className="font-display text-2xl sm:text-4xl font-bold text-white">Create New Event</h1>
           <p className="mt-2 text-sm text-slate-400">Configure event details and core capacity before designing the map.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-8">
-          <section className="rounded-[2rem] border border-white/10 bg-[#1F2124] p-6 shadow-xl sm:p-8">
+        <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
+          <section className="rounded-2xl sm:rounded-[2rem] border border-white/10 bg-[#1F2124] p-4 shadow-xl sm:p-8">
             <h2 className="font-display text-xl font-bold text-white mb-6 border-b border-white/10 pb-4">Event Details</h2>
 
             <div className="space-y-6">
@@ -118,7 +118,7 @@ export default function EventFormPage() {
                   value={formData.eventName}
                   onChange={handleChange}
                   placeholder="e.g., Ilaiyaraaja Live Concert"
-                  className="w-full rounded-xl border border-white/10 bg-[#1A1C1E] px-4 py-3.5 text-sm text-white placeholder-slate-500 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                  className="w-full rounded-xl border border-white/10 bg-[#1A1C1E] px-4 py-3.5 text-base sm:text-sm text-white placeholder-slate-500 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
                 />
               </div>
 
@@ -131,7 +131,7 @@ export default function EventFormPage() {
                     name="eventCategory"
                     value={formData.eventCategory}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-white/10 bg-[#1A1C1E] px-4 py-3.5 text-sm text-white outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                    className="w-full rounded-xl border border-white/10 bg-[#1A1C1E] px-4 py-3.5 text-base sm:text-sm text-white outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
                   >
                     {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
@@ -149,14 +149,14 @@ export default function EventFormPage() {
                     value={formData.totalSeats}
                     onChange={handleChange}
                     placeholder="Maximum number of attendees"
-                    className="w-full rounded-xl border border-white/10 bg-[#1A1C1E] px-4 py-3.5 text-sm text-white placeholder-slate-500 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                    className="w-full rounded-xl border border-white/10 bg-[#1A1C1E] px-4 py-3.5 text-base sm:text-sm text-white placeholder-slate-500 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
                   />
                 </div>
               </div>
             </div>
           </section>
 
-          <section className="rounded-[2rem] border border-white/10 bg-[#1F2124] p-6 shadow-xl sm:p-8">
+          <section className="rounded-2xl sm:rounded-[2rem] border border-white/10 bg-[#1F2124] p-4 shadow-xl sm:p-8">
             <h2 className="font-display text-xl font-bold text-white mb-6 border-b border-white/10 pb-4">Schedule & Location</h2>
 
             <div className="space-y-6">
@@ -170,7 +170,7 @@ export default function EventFormPage() {
                     required
                     value={formData.location}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-white/10 bg-[#1A1C1E] px-4 py-3.5 text-sm text-white outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                    className="w-full rounded-xl border border-white/10 bg-[#1A1C1E] px-4 py-3.5 text-base sm:text-sm text-white outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
                   >
                     <option value="" disabled>Select a city...</option>
                     {TAMIL_NADU_CITIES.map(city => (
@@ -190,7 +190,7 @@ export default function EventFormPage() {
                     value={formData.venue}
                     onChange={handleChange}
                     placeholder="e.g., Nehru Stadium"
-                    className="w-full rounded-xl border border-white/10 bg-[#1A1C1E] px-4 py-3.5 text-sm text-white placeholder-slate-500 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                    className="w-full rounded-xl border border-white/10 bg-[#1A1C1E] px-4 py-3.5 text-base sm:text-sm text-white placeholder-slate-500 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
                   />
                 </div>
               </div>
@@ -206,7 +206,7 @@ export default function EventFormPage() {
                     required
                     value={formData.eventStartTime}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-white/10 bg-[#1A1C1E] px-4 py-3.5 text-sm text-white outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 [color-scheme:dark]"
+                    className="w-full min-w-0 max-w-full rounded-xl border border-white/10 bg-[#1A1C1E] px-4 py-3.5 text-base sm:text-sm text-white outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 [color-scheme:dark]"
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -219,7 +219,7 @@ export default function EventFormPage() {
                     required
                     value={formData.eventEndTime}
                     onChange={handleChange}
-                    className="w-full rounded-xl border border-white/10 bg-[#1A1C1E] px-4 py-3.5 text-sm text-white outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 [color-scheme:dark]"
+                    className="w-full min-w-0 max-w-full rounded-xl border border-white/10 bg-[#1A1C1E] px-4 py-3.5 text-base sm:text-sm text-white outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 [color-scheme:dark]"
                   />
                 </div>
               </div>
@@ -230,7 +230,7 @@ export default function EventFormPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-4 text-base font-bold text-white shadow-[0_0_20px_rgba(79,70,229,0.3)] transition-all hover:scale-[1.01] hover:bg-indigo-500 active:scale-95 disabled:pointer-events-none disabled:opacity-70"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-white px-6 py-4 text-base font-bold text-[#07090e] shadow-sm transition-all hover:bg-neutral-200 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-70"
             >
               {isLoading ? <><Loader2 className="h-5 w-5 animate-spin" /> Launching Event...</> : 'Save Details & Design Map'}
             </button>

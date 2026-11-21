@@ -58,14 +58,7 @@ export default function AuthPage() {
       const token = await api.auth.login({ emailId: email, password });
       login(token);
 
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const role = payload.role || payload.roles || payload.authorities || 'USER';
-
-      if (role === 'ADMIN') {
-        navigate('/admin');
-      } else {
-        navigate('/explore');
-      }
+      navigate('/explore');
     } catch (err: any) {
       setError(err.message || 'Invalid email or password.');
     } finally {

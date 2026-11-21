@@ -174,9 +174,4 @@ public class RabbitMQConfig {
     public Binding bookingBinding(Queue bookingQueue, DirectExchange bookingExchange) {
         return BindingBuilder.bind(bookingQueue).to(bookingExchange).with(BOOKING_ROUTING_KEY);
     }
-
-    @Bean
-    public MessageConverter jsonMessageConverter() {
-        return new Jackson2JsonMessageConverter();
-    }
 }

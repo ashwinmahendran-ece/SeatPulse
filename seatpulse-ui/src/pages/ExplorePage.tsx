@@ -30,6 +30,13 @@ const getEventImage = (category?: string) => {
   return (category && CATEGORY_IMAGES[category]) || CATEGORY_IMAGES.Default;
 };
 
+const getInitials = (name?: string) => {
+  if (!name || !name.trim()) return 'U';
+  const parts = name.trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+};
+
 const parseDate = (dateVal: string | number[] | undefined) => {
   if (!dateVal) return new Date();
   if (Array.isArray(dateVal)) {
@@ -166,11 +173,20 @@ export default function ExplorePage() {
                 {isAdmin && (
                   <button onClick={() => navigate('/admin')} className="flex items-center justify-center rounded-lg bg-[#E8D5B5]/10 px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs font-bold text-[#E8D5B5] hover:bg-[#E8D5B5]/20 transition-all border border-[#E8D5B5]/20 whitespace-nowrap">Admin</button>
                 )}
-                <button onClick={() => navigate('/profile')} className="flex items-center justify-center rounded-lg px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs font-bold text-slate-300 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap">My Tickets</button>
+                <button
+                  onClick={() => navigate('/profile')}
+                  title="My Profile & Tickets"
+                  className="flex items-center gap-2 rounded-full border border-white/10 bg-[#11131A] p-1 sm:pl-1.5 sm:pr-3.5 sm:py-1 text-xs font-bold text-slate-200 hover:border-white/25 hover:bg-white/10 hover:text-white transition-all whitespace-nowrap"
+                >
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white text-[11px] font-bold text-[#07090e]">
+                    {getInitials(user?.username)}
+                  </span>
+                  <span className="hidden sm:inline">My Tickets</span>
+                </button>
                 <button onClick={handleLogout} className="flex items-center justify-center rounded-lg border border-white/20 bg-transparent px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-bold text-white hover:bg-white/10 transition-all whitespace-nowrap">Log Out</button>
               </div>
             ) : (
-              <button onClick={() => navigate('/login')} className="rounded-lg bg-[#E8D5B5] text-[#07090E] px-4 sm:px-5 py-2 text-xs font-bold hover:bg-[#D6C09D] transition-all hover:-translate-y-0.5 whitespace-nowrap">Log In</button>
+              <button onClick={() => navigate('/login')} className="rounded-xl bg-white text-[#07090e] px-4 sm:px-5 py-2 text-xs font-bold shadow-sm hover:bg-neutral-200 active:scale-[0.98] transition-all whitespace-nowrap">Log In</button>
             )}
           </div>
         </div>
@@ -186,10 +202,10 @@ export default function ExplorePage() {
         </div>
       </header>
 
-      <main className="relative z-10 mx-auto w-full max-w-[1440px] px-4 sm:px-5 pt-8 lg:px-16 animate-page-slide">
+      <main className="relative z-10 mx-auto w-full max-w-[1440px] px-4 sm:px-5 pt-6 sm:pt-8 lg:px-16 animate-page-slide">
 
         <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 max-w-full">
-          <h1 className="font-display text-3xl md:text-4xl font-extrabold tracking-tight text-white">
+          <h1 className="font-display text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white">
             Find your <span className="font-serif italic font-light tracking-wide text-[#E8D5B5]">event.</span>
           </h1>
 
@@ -199,7 +215,7 @@ export default function ExplorePage() {
               <select
                 value={activeLocation}
                 onChange={(e) => handleLocationSelect(e.target.value)}
-                className="w-full appearance-none rounded-[1.5rem] border border-white/10 bg-[#11131A] py-3 pl-11 pr-10 text-sm font-bold text-white outline-none transition-all duration-300 focus:border-[#E8D5B5]"
+                className="w-full appearance-none rounded-[1.5rem] border border-white/10 bg-[#11131A] py-3 pl-11 pr-10 text-base sm:text-sm font-bold text-white outline-none transition-all duration-300 focus:border-[#E8D5B5]"
               >
                 {dropdownLocations.map((loc) => (
                   <option key={loc} value={loc} className="bg-[#11131A] text-white">
@@ -212,7 +228,7 @@ export default function ExplorePage() {
 
             <div className="relative flex items-center w-full group">
               <Search className="absolute left-4 h-4 w-4 text-slate-500 group-focus-within:text-[#E8D5B5] transition-colors" />
-              <input type="text" placeholder="Search events, artists..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full rounded-[1.5rem] border border-white/10 bg-[#11131A] py-3 pl-11 pr-4 text-sm font-medium text-white placeholder-slate-500 outline-none transition-all duration-300 focus:border-[#E8D5B5]" />
+              <input type="text" placeholder="Search events, artists..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full rounded-[1.5rem] border border-white/10 bg-[#11131A] py-3 pl-11 pr-4 text-base sm:text-sm font-medium text-white placeholder-slate-500 outline-none transition-all duration-300 focus:border-[#E8D5B5]" />
             </div>
           </div>
         </div>
