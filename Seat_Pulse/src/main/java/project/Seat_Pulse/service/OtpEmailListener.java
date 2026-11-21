@@ -20,7 +20,7 @@ public class OtpEmailListener {
 
     public OtpEmailListener(
             @Value("${brevo.api.key}") String brevoApiKey,
-            @Value("${brevo.sender.email}") String senderEmail) {
+            @Value("${mail.from}") String senderEmail) {
         this.brevoApiKey = brevoApiKey;
         this.senderEmail = senderEmail;
         this.restClient = RestClient.builder()

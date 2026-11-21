@@ -189,7 +189,6 @@ handler: async function (response: any) {
 
         <h1 className="font-display text-3xl font-bold text-white md:text-4xl">Complete your booking</h1>
 
-        {/* Dynamic Hero Event Banner */}
         <div className="mt-8 overflow-hidden rounded-[1.5rem] border border-white/5 bg-[#131315] relative">
            <div className="absolute inset-0 opacity-10 bg-gradient-to-r from-purple-600 to-blue-600 blur-3xl"></div>
            <div className="relative p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center gap-6">
@@ -212,15 +211,15 @@ handler: async function (response: any) {
               <div className="mt-6 grid gap-5 sm:grid-cols-2">
                 <div className="space-y-1.5">
                   <label className="text-sm font-medium text-slate-400">First Name</label>
-                  <input required className="w-full rounded-xl border border-white/5 bg-[#1A1A1C] px-4 py-3.5 text-sm text-white placeholder-slate-600 outline-none transition focus:border-[#FCEADA] focus:ring-1 focus:ring-[#FCEADA]" placeholder="Ashwin" />
+                  <input required className="w-full rounded-xl border border-white/5 bg-[#1A1A1C] px-4 py-3.5 text-sm text-white placeholder-slate-600 outline-none transition focus:border-[#FCEADA] focus:ring-1 focus:ring-[#FCEADA]" placeholder="" />
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-sm font-medium text-slate-400">Last Name</label>
-                  <input required className="w-full rounded-xl border border-white/5 bg-[#1A1A1C] px-4 py-3.5 text-sm text-white placeholder-slate-600 outline-none transition focus:border-[#FCEADA] focus:ring-1 focus:ring-[#FCEADA]" placeholder="Mahendran" />
+                  <input required className="w-full rounded-xl border border-white/5 bg-[#1A1A1C] px-4 py-3.5 text-sm text-white placeholder-slate-600 outline-none transition focus:border-[#FCEADA] focus:ring-1 focus:ring-[#FCEADA]" placeholder="" />
                 </div>
                 <div className="space-y-1.5 sm:col-span-2">
                   <label className="text-sm font-medium text-slate-400">Email Address</label>
-                  <input required type="email" className="w-full rounded-xl border border-white/5 bg-[#1A1A1C] px-4 py-3.5 text-sm text-white placeholder-slate-600 outline-none transition focus:border-[#FCEADA] focus:ring-1 focus:ring-[#FCEADA]" placeholder="ashwinmahendran441@gmail.com" />
+                  <input required type="email" className="w-full rounded-xl border border-white/5 bg-[#1A1A1C] px-4 py-3.5 text-sm text-white placeholder-slate-600 outline-none transition focus:border-[#FCEADA] focus:ring-1 focus:ring-[#FCEADA]" placeholder="" />
                 </div>
               </div>
             </section>
