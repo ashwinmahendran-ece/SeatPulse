@@ -5,10 +5,10 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full bg-[#07090e] border-t border-white/5 pt-16 pb-8 font-sans text-[#f4f2ee]">
-      <div className="max-w-7xl mx-auto px-5 sm:px-8">
+    <footer className="w-full bg-[#07090e] border-t border-white/5 pt-12 sm:pt-16 pb-8 font-sans text-[#f4f2ee]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8">
 
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-16">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 mb-10 sm:mb-16">
           <div className="max-w-sm">
             <Link to="/" className="flex items-center gap-2 font-extrabold tracking-tight no-underline mb-4">
               <span className="w-8 h-8 rounded-lg bg-[#e8d5b5] text-[#07090e] grid place-items-center text-lg">S</span>
@@ -20,19 +20,19 @@ export default function Footer() {
             </p>
           </div>
 
-          <div className="flex flex-col items-start md:items-end p-6 rounded-2xl bg-[#11131a] border border-[#292c35] md:text-right">
+          <div className="w-full md:w-auto flex flex-col items-start md:items-end p-5 sm:p-6 rounded-2xl bg-[#11131a] border border-[#292c35] md:text-right">
             <h3 className="text-[#f4f2ee] font-bold text-lg mb-2">Already an Organizer?</h3>
             <p className="text-[#aeb2bb] text-sm mb-4">Log in to manage your venues and ticket sales.</p>
             <Link
               to="/admin/login"
-              className="inline-flex items-center gap-2 text-sm font-bold text-[#07090e] bg-[#e8d5b5] hover:bg-white px-5 py-2.5 rounded-full transition-colors"
+              className="w-full sm:w-auto justify-center inline-flex items-center gap-2 text-sm font-bold text-[#07090e] bg-white hover:bg-neutral-200 active:scale-[0.98] shadow-sm px-5 py-2.5 rounded-full transition-all"
             >
               Admin Portal <ArrowUpRight size={16} />
             </Link>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16 border-t border-white/5 pt-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-8 sm:gap-8 mb-10 sm:mb-16 border-t border-white/5 pt-8 sm:pt-12">
           <div>
             <h4 className="font-mono text-[#e8d5b5] text-xs font-bold uppercase tracking-widest mb-4">Discover</h4>
             <ul className="space-y-3">
@@ -64,11 +64,11 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/5">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-3 text-center md:text-left pt-8 border-t border-white/5">
           <p className="text-[#aeb2bb] text-xs">
             © {currentYear} SeatPulse. All rights reserved.
           </p>
-          <div className="flex gap-4 mt-4 md:mt-0 text-[#aeb2bb] text-xs font-mono uppercase tracking-wider">
+          <div className="flex gap-4 text-[#aeb2bb] text-xs font-mono uppercase tracking-wider">
             <span>Built for high concurrency</span>
           </div>
         </div>

@@ -120,22 +120,24 @@ export default function ExplorePage() {
                   String(tokenRole).includes('ADMIN');
 
   return (
-    <div className="min-h-screen bg-[#07090E] pb-24 font-sans text-white overflow-x-hidden selection:bg-[#E8D5B5]/30 selection:text-white">
+    <div className="min-h-screen bg-[#07090E] pb-24 font-sans text-white overflow-x-clip selection:bg-[#E8D5B5]/30 selection:text-white">
       <style>{`
         @keyframes slideUpFade { 0% { opacity: 0; transform: translateY(20px) scale(0.99); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
         .animate-stagger-card { animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        @keyframes fadeInMobile { 0% { opacity: 0; } 100% { opacity: 1; } }
         @keyframes slideInLeftCenter { 0% { opacity: 0; transform: translateX(-60px) scale(0.98); } 100% { opacity: 1; transform: translateX(0) scale(1); } }
-        .animate-page-slide { animation: slideInLeftCenter 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .animate-page-slide { animation: fadeInMobile 0.5s ease-out forwards; }
         @keyframes sweepToCenter { 0% { left: -20%; transform: translate(0, -50%) scale(0.9); opacity: 0; } 100% { left: 50%; transform: translate(-50%, -50%) scale(1); opacity: 1; } }
         @media (min-width: 768px) {
+          .animate-page-slide { animation: slideInLeftCenter 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
           .animate-logo-sweep { position: absolute; top: 50%; animation: sweepToCenter 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
         }
       `}</style>
 
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#07090E]/90 backdrop-blur-md shadow-none">
-        <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between md:justify-end gap-2 px-4 sm:px-5 lg:px-16 relative">
+        <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between md:justify-end gap-2 px-3 sm:px-5 lg:px-16 relative">
 
-          <button onClick={() => navigate('/')} className="animate-logo-sweep flex shrink-0 items-center font-display text-xl sm:text-2xl md:text-[28px] font-black tracking-[-0.03em] whitespace-nowrap z-10 transition-transform hover:scale-[1.02]">
+          <button onClick={() => navigate('/')} className="animate-logo-sweep flex shrink-0 items-center font-display text-lg sm:text-2xl md:text-[28px] font-black tracking-[-0.03em] whitespace-nowrap z-10 transition-transform hover:scale-[1.02]">
             <span className="text-white">Seat</span>
             <span className="text-[#E8D5B5] ml-1.5">Pulse</span>
           </button>
@@ -171,7 +173,7 @@ export default function ExplorePage() {
             {isAuthenticated ? (
               <div className="flex items-center gap-1.5 sm:gap-2">
                 {isAdmin && (
-                  <button onClick={() => navigate('/admin')} className="flex items-center justify-center rounded-lg bg-[#E8D5B5]/10 px-2.5 sm:px-3 py-1.5 sm:py-2 text-xs font-bold text-[#E8D5B5] hover:bg-[#E8D5B5]/20 transition-all border border-[#E8D5B5]/20 whitespace-nowrap">Admin</button>
+                  <button onClick={() => navigate('/admin')} className="flex items-center justify-center rounded-lg bg-[#E8D5B5]/10 px-2 sm:px-3 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold text-[#E8D5B5] hover:bg-[#E8D5B5]/20 transition-all border border-[#E8D5B5]/20 whitespace-nowrap">Admin</button>
                 )}
                 <button
                   onClick={() => navigate('/profile')}
@@ -183,10 +185,10 @@ export default function ExplorePage() {
                   </span>
                   <span className="hidden sm:inline">My Tickets</span>
                 </button>
-                <button onClick={handleLogout} className="flex items-center justify-center rounded-lg border border-white/20 bg-transparent px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-bold text-white hover:bg-white/10 transition-all whitespace-nowrap">Log Out</button>
+                <button onClick={handleLogout} className="flex items-center justify-center rounded-lg border border-white/20 bg-transparent px-2.5 sm:px-4 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold text-white hover:bg-white/10 transition-all whitespace-nowrap">Log Out</button>
               </div>
             ) : (
-              <button onClick={() => navigate('/login')} className="rounded-xl bg-white text-[#07090e] px-4 sm:px-5 py-2 text-xs font-bold shadow-sm hover:bg-neutral-200 active:scale-[0.98] transition-all whitespace-nowrap">Log In</button>
+              <button onClick={() => navigate('/login')} className="rounded-xl bg-white text-[#07090e] px-3 sm:px-5 py-1.5 sm:py-2 text-[11px] sm:text-xs font-bold shadow-sm hover:bg-neutral-200 active:scale-[0.98] transition-all whitespace-nowrap">Log In</button>
             )}
           </div>
         </div>
@@ -267,7 +269,7 @@ export default function ExplorePage() {
               return (
                 <button
                   key={event.eventId} onClick={() => navigate(`/event/${event.eventId}`, { state: { event } })}
-                  className="animate-stagger-card group flex flex-col text-left transition-all duration-300 hover:-translate-y-2 focus:outline-none rounded-2xl border border-white/10 bg-[#11131A] p-3 hover:border-[#E8D5B5]"
+                  className="animate-stagger-card group flex flex-col w-full min-w-0 overflow-hidden text-left transition-all duration-300 hover:-translate-y-2 focus:outline-none rounded-2xl border border-white/10 bg-[#11131A] p-3 hover:border-[#E8D5B5]"
                   style={{ animationDelay: `${i * 40}ms` }}
                 >
                   <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-[#1A1D24]">
@@ -280,7 +282,7 @@ export default function ExplorePage() {
                     )}
                   </div>
 
-                  <div className="mt-5 flex gap-4 px-2 pb-2">
+                  <div className="mt-5 flex gap-4 px-2 pb-2 w-full min-w-0">
                     <div className="flex flex-col items-center justify-start min-w-[3rem] shrink-0 pt-0.5">
                       <span className="text-[10px] font-bold text-[#E8D5B5] uppercase tracking-widest">{getMonth(d)}</span>
                       <span className="font-display text-2xl font-black text-white leading-none mt-1">{getDay(d)}</span>
@@ -288,13 +290,13 @@ export default function ExplorePage() {
                     <div className="flex flex-col flex-1 min-w-0">
                       <h3 className="font-display text-lg font-bold text-white line-clamp-1 group-hover:text-[#E8D5B5] transition-colors leading-tight mb-1.5">{event.eventName}</h3>
                       <p className="text-xs font-medium text-slate-400 mb-2">{getDetails(d)}</p>
-                      <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500">
+                      <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500 min-w-0">
                         <MapPin className="h-3.5 w-3.5 shrink-0 text-[#E8D5B5]" />
                         <span className="truncate">{event.venue || 'TBA Venue'}, {event.location || 'Unknown'}</span>
                       </div>
                     </div>
                   </div>
-                  <div className="mt-auto px-2 pb-1 flex justify-end">
+                  <div className="mt-auto px-2 pb-1 flex justify-end w-full">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/5 border border-white/10 text-white transition-all duration-300 group-hover:bg-[#E8D5B5] group-hover:border-[#E8D5B5] group-hover:text-[#07090E]">
                       <ArrowRight size={14} />
                     </div>

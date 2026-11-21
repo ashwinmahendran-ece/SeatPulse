@@ -24,6 +24,7 @@ import project.Seat_Pulse.repository.EventRepository;
 import project.Seat_Pulse.repository.SeatRepository;
 import project.Seat_Pulse.repository.UserRepository;
 import project.Seat_Pulse.config.RestPageImpl;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -114,6 +115,14 @@ public class EventService {
     public void cancelEntireEvent(Long eventId) {
         Event event = eventRepo.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found"));
+
+        if (event.getStatus() == EventStatus.CANCELLED) {
+            throw new IllegalStateException("Event is already cancelled");
+        }
+        if (event.getEventStartTime() != null && event.getEventStartTime().isBefore(LocalDateTime.now())) {
+            throw new IllegalStateException("Completed events cannot be cancelled");
+        }
+
         event.setStatus(EventStatus.CANCELLED);
         eventRepo.save(event);
 

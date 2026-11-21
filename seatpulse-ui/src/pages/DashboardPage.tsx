@@ -9,8 +9,8 @@ import toast from 'react-hot-toast';
 import { api } from '../api/seatPulseApi';
 import { useAuthStore } from '../store/useAuthStore';
 
-const formatAdminDate = (dateVal: string | number[] | undefined) => {
-  if (!dateVal) return 'TBA';
+const parseAdminDate = (dateVal: string | number[] | undefined): Date | null => {
+  if (!dateVal) return null;
   let d: Date;
   if (Array.isArray(dateVal)) {
     const [y, m, day, h = 0, min = 0, s = 0] = dateVal;
@@ -18,7 +18,13 @@ const formatAdminDate = (dateVal: string | number[] | undefined) => {
   } else {
     d = new Date(dateVal);
   }
-  if (Number.isNaN(d.getTime())) return 'Invalid Date';
+  return Number.isNaN(d.getTime()) ? null : d;
+};
+
+const formatAdminDate = (dateVal: string | number[] | undefined) => {
+  if (!dateVal) return 'TBA';
+  const d = parseAdminDate(dateVal);
+  if (!d) return 'Invalid Date';
   return d.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' });
 };
 
@@ -138,7 +144,7 @@ export default function DashboardPage() {
     return 'bg-transparent border border-slate-400 text-slate-300';
   };
 
-const handleLogout = async () => {
+  const handleLogout = async () => {
     try {
       await api.auth.logout();
     } catch (err) {
@@ -152,22 +158,22 @@ const handleLogout = async () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#1A1C1E] text-slate-100 font-sans pb-24 selection:bg-indigo-500/30">
+    <div className="min-h-screen bg-[#1A1C1E] text-slate-100 font-sans pb-24 overflow-x-clip selection:bg-indigo-500/30">
 
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#1F2124]/90 backdrop-blur-md">
-        <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between px-4 sm:px-5 lg:px-16">
-          <div className="flex items-center gap-4">
-            <button onClick={() => navigate('/')} className="flex items-center font-display text-xl font-black tracking-[-0.03em] whitespace-nowrap transition-transform hover:scale-[1.02]">
-              <span className="text-white">Seat</span>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-[#05d5ff] ml-1">Pulse</span>
-              <span className="text-indigo-500 animate-pulse ml-0.5">*</span>
+        <div className="mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between gap-2 px-4 sm:px-5 lg:px-16">
+          <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+            <button onClick={() => navigate('/')} className="flex shrink-0 items-center gap-2 font-extrabold tracking-tight whitespace-nowrap transition-transform hover:scale-[1.02]">
+              <span className="w-8 h-8 rounded-lg bg-[#e8d5b5] text-[#07090e] grid place-items-center text-lg">S</span>
+              <span className="font-display text-white text-xl">Seat</span>
+              <span className="font-display text-[#e8d5b5] text-xl -ml-2">Pulse</span>
             </button>
             <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 text-[10px] font-bold uppercase tracking-widest border border-indigo-500/20">
               <Activity className="w-3.5 h-3.5" /> Admin Portal
             </span>
           </div>
 
-          <div className="flex items-center gap-3 sm:gap-6">
+          <div className="flex items-center gap-3 sm:gap-6 shrink-0">
             <span className="text-sm font-semibold text-slate-400 hidden sm:block">
               Welcome, <span className="text-white">{user?.username || 'Admin'}</span>
             </span>
@@ -183,7 +189,7 @@ const handleLogout = async () => {
 
               <div className="w-px h-4 bg-white/10 hidden sm:block"></div>
 
-              <button onClick={handleLogout} className="whitespace-nowrap shrink-0 rounded-lg border border-white/10 bg-[#1A1C1E] px-4 py-2 text-xs font-bold text-slate-300 hover:bg-white hover:text-[#1A1C1E] transition-all">
+              <button onClick={handleLogout} className="whitespace-nowrap shrink-0 rounded-lg border border-white/10 bg-[#1A1C1E] px-3.5 sm:px-4 py-2 text-xs font-bold text-slate-300 hover:bg-white hover:text-[#1A1C1E] transition-all">
                 Log Out
               </button>
             </div>
@@ -191,10 +197,10 @@ const handleLogout = async () => {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-[1440px] px-5 pt-10 lg:px-16 animate-in fade-in slide-in-from-bottom-8 duration-500">
+      <main className="mx-auto w-full max-w-[1440px] px-4 sm:px-5 pt-6 sm:pt-10 lg:px-16 animate-in fade-in slide-in-from-bottom-8 duration-500">
 
-        <div className="mb-12">
-          <h2 className="font-display text-2xl font-bold text-white mb-6 flex items-center gap-2">
+        <div className="mb-10 sm:mb-12">
+          <h2 className="font-display text-xl sm:text-2xl font-bold text-white mb-5 sm:mb-6 flex items-center gap-2">
             <BarChart3 className="w-6 h-6 text-indigo-400" /> Platform Overview
           </h2>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
@@ -205,15 +211,15 @@ const handleLogout = async () => {
               { label: 'Total Revenue', value: `₹${stats?.totalRevenue?.toLocaleString() || 0}`, icon: IndianRupee, color: 'text-amber-400', bg: 'bg-amber-400/10' },
               { label: 'Registered Users', value: stats?.registeredUsers || 0, icon: Users, color: 'text-[#05d5ff]', bg: 'bg-[#05d5ff]/10' },
             ].map((stat, idx) => (
-              <div key={idx} className="bg-[#1F2124] border border-white/10 p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] relative overflow-hidden shadow-xl group hover:border-white/20 transition-colors backdrop-blur-sm">
-                <div className="relative z-10">
-                  <p className="text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest">{stat.label}</p>
-                  <p className="font-display text-2xl sm:text-4xl font-extrabold text-white">
-                    {isLoadingStats ? <Loader2 className="w-8 h-8 animate-spin text-indigo-400" /> : stat.value}
+              <div key={idx} className="bg-[#1F2124] border border-white/10 p-4 sm:p-6 rounded-2xl sm:rounded-[2rem] relative overflow-hidden shadow-xl group hover:border-white/20 transition-colors backdrop-blur-sm min-w-0">
+                <div className="relative z-10 min-w-0">
+                  <p className="text-[10px] sm:text-xs font-bold text-slate-400 mb-2 uppercase tracking-widest pr-7">{stat.label}</p>
+                  <p className="font-display text-xl sm:text-4xl font-extrabold text-white truncate">
+                    {isLoadingStats ? <Loader2 className="w-7 h-7 sm:w-8 sm:h-8 animate-spin text-indigo-400" /> : stat.value}
                   </p>
                 </div>
                 <div className={`absolute -bottom-4 -right-4 w-28 h-28 rounded-full ${stat.bg} blur-3xl group-hover:scale-150 transition-transform duration-700`}></div>
-                <stat.icon className={`absolute top-6 right-6 w-6 h-6 ${stat.color} opacity-40`} />
+                <stat.icon className={`absolute top-4 right-4 sm:top-6 sm:right-6 w-5 h-5 sm:w-6 sm:h-6 ${stat.color} opacity-40`} />
               </div>
             ))}
           </div>
@@ -221,7 +227,7 @@ const handleLogout = async () => {
 
         <div>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <h2 className="font-display text-2xl font-bold text-white flex items-center gap-2">
+            <h2 className="font-display text-xl sm:text-2xl font-bold text-white flex items-center gap-2">
               <Calendar className="w-6 h-6 text-indigo-400" /> Event Management
             </h2>
             <div className="grid grid-cols-2 sm:flex w-full sm:w-auto items-center gap-2.5 sm:gap-3">
@@ -241,7 +247,7 @@ const handleLogout = async () => {
             </div>
           </div>
 
-          <div className="bg-[#1F2124] border border-white/10 rounded-[2rem] overflow-hidden shadow-xl backdrop-blur-sm">
+          <div className="bg-[#1F2124] border border-white/10 rounded-2xl sm:rounded-[2rem] overflow-hidden shadow-xl backdrop-blur-sm">
             <div className="hidden lg:grid grid-cols-12 gap-4 p-6 border-b border-white/10 bg-[#1A1C1E]/50 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
               <div className="col-span-1">ID</div>
               <div className="col-span-4">Event Details</div>
@@ -265,63 +271,89 @@ const handleLogout = async () => {
                   <p className="text-sm font-medium text-slate-400">Create your first event to get started.</p>
                 </div>
               ) : (
-                safeEvents.map((event: any) => (
-                  <div key={event.eventId} className="grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 sm:p-6 items-center hover:bg-white/5 transition-colors group">
+                safeEvents.map((event: any) => {
+                  const statusStr = String(event.status || event.eventStatus || '').toUpperCase();
+                  const parsedStart = parseAdminDate(event.eventStartTime);
+                  const isCancelled = statusStr === 'CANCELLED';
+                  const isCompleted = !isCancelled && (statusStr === 'COMPLETED' || (parsedStart !== null && parsedStart.getTime() < Date.now()));
+                  const isLocked = isCancelled || isCompleted;
 
-                    <div className="lg:hidden text-[10px] font-bold text-indigo-400 mb-2 uppercase tracking-widest">ID: #{event.eventId}</div>
+                  return (
+                    <div
+                      key={event.eventId}
+                      className={`grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 sm:p-6 items-center hover:bg-white/5 transition-colors group ${isLocked ? 'opacity-70' : ''}`}
+                    >
 
-                    <div className="hidden lg:block col-span-1 text-xs font-bold text-slate-500">
-                      #{event.eventId}
-                    </div>
+                      <div className="lg:hidden text-[10px] font-bold text-indigo-400 mb-1 uppercase tracking-widest">ID: #{event.eventId}</div>
 
-                    <div className="col-span-1 lg:col-span-4">
-                      <p className="text-lg font-bold text-white mb-1.5 group-hover:text-indigo-400 transition-colors">{event.eventName}</p>
-                      <span className="inline-block px-2.5 py-1 bg-indigo-500/10 text-indigo-400 text-[10px] font-bold uppercase tracking-widest rounded border border-indigo-500/20">
-                        {event.eventCategory || 'Event'}
-                      </span>
-                    </div>
-
-                    <div className="col-span-1 lg:col-span-3 flex items-start gap-2 mt-2 lg:mt-0">
-                      <MapPin className="w-4 h-4 text-slate-500 mt-0.5 shrink-0" />
-                      <div>
-                        <p className="text-sm font-semibold text-slate-200">{event.venue || 'TBA Venue'}</p>
-                        <p className="text-xs font-medium text-slate-500">{event.location || 'Unknown City'}</p>
+                      <div className="hidden lg:block col-span-1 text-xs font-bold text-slate-500">
+                        #{event.eventId}
                       </div>
+
+                      <div className="col-span-1 lg:col-span-4 min-w-0">
+                        <p className="text-base sm:text-lg font-bold text-white mb-1.5 group-hover:text-indigo-400 transition-colors break-words">{event.eventName}</p>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="inline-block px-2.5 py-1 bg-indigo-500/10 text-indigo-400 text-[10px] font-bold uppercase tracking-widest rounded border border-indigo-500/20">
+                            {event.eventCategory || 'Event'}
+                          </span>
+                          {isCancelled && (
+                            <span className="inline-block px-2.5 py-1 bg-red-500/10 text-red-400 text-[10px] font-bold uppercase tracking-widest rounded border border-red-500/20">
+                              Cancelled
+                            </span>
+                          )}
+                          {isCompleted && (
+                            <span className="inline-block px-2.5 py-1 bg-slate-500/10 text-slate-400 text-[10px] font-bold uppercase tracking-widest rounded border border-slate-500/20">
+                              Completed
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="col-span-1 lg:col-span-3 flex items-start gap-2 mt-1 lg:mt-0 min-w-0">
+                        <MapPin className="w-4 h-4 text-slate-500 mt-0.5 shrink-0" />
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-slate-200 break-words">{event.venue || 'TBA Venue'}</p>
+                          <p className="text-xs font-medium text-slate-500 break-words">{event.location || 'Unknown City'}</p>
+                        </div>
+                      </div>
+
+                      <div className="col-span-1 lg:col-span-2 mt-1 lg:mt-0 flex items-center gap-2 min-w-0">
+                        <Calendar className="w-4 h-4 text-slate-500 lg:hidden shrink-0" />
+                        <p className="text-sm font-medium text-slate-300">{formatAdminDate(event.eventStartTime)}</p>
+                      </div>
+
+                      <div className="col-span-1 lg:col-span-2 flex justify-start lg:justify-end mt-2 lg:mt-0 gap-2.5 sm:gap-3">
+                        <button
+                          onClick={() => handleCancelEvent(event.eventId, event.eventName)}
+                          disabled={cancelEventMutation.isPending || isLocked}
+                          className="flex items-center justify-center h-10 w-10 shrink-0 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 hover:text-red-400 transition-colors border border-red-500/20 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-red-500/10"
+                          title={isCancelled ? 'Event already cancelled' : isCompleted ? 'Completed events cannot be cancelled' : 'Cancel Event'}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+
+                        <button
+                          onClick={() => setPreviewEventId(event.eventId)}
+                          disabled={isCancelled}
+                          className="flex items-center justify-center h-10 w-10 shrink-0 rounded-xl bg-[#1A1C1E] hover:bg-white/10 text-slate-400 hover:text-white transition-colors border border-white/10 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[#1A1C1E]"
+                          title={isCancelled ? 'Seat map unavailable for cancelled events' : 'Preview Seat Map'}
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+
+                        <button
+                          onClick={() => navigate(`/admin/events/${event.eventId}/seating`)}
+                          disabled={isLocked}
+                          className="flex-1 sm:flex-initial flex items-center justify-center gap-2 h-10 px-4 rounded-xl bg-[#1A1C1E] hover:bg-indigo-600 hover:border-indigo-500 text-xs font-bold text-slate-300 hover:text-white whitespace-nowrap transition-colors border border-white/10 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-[#1A1C1E] disabled:hover:border-white/10 disabled:hover:text-slate-300"
+                          title={isCancelled ? 'Cancelled events cannot be edited' : isCompleted ? 'Completed events cannot be edited' : 'Manage Seating'}
+                        >
+                          Manage Seating <ArrowRight className="w-4 h-4" />
+                        </button>
+                      </div>
+
                     </div>
-
-                    <div className="col-span-1 lg:col-span-2 mt-2 lg:mt-0 flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-slate-500 lg:hidden" />
-                      <p className="text-sm font-medium text-slate-300">{formatAdminDate(event.eventStartTime)}</p>
-                    </div>
-
-                    <div className="col-span-1 lg:col-span-2 flex justify-start lg:justify-end mt-4 lg:mt-0 gap-3">
-                      <button
-                        onClick={() => handleCancelEvent(event.eventId, event.eventName)}
-                        disabled={cancelEventMutation.isPending}
-                        className="flex items-center justify-center h-10 w-10 shrink-0 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 hover:text-red-400 transition-colors border border-red-500/20 disabled:pointer-events-none disabled:opacity-50"
-                        title="Cancel Event"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-
-                      <button
-                        onClick={() => setPreviewEventId(event.eventId)}
-                        className="flex items-center justify-center h-10 w-10 shrink-0 rounded-xl bg-[#1A1C1E] hover:bg-white/10 text-slate-400 hover:text-white transition-colors border border-white/10"
-                        title="Preview Seat Map"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
-
-                      <button
-                        onClick={() => navigate(`/admin/events/${event.eventId}/seating`)}
-                        className="flex-1 sm:flex-initial flex items-center justify-center gap-2 h-10 px-4 rounded-xl bg-[#1A1C1E] hover:bg-indigo-600 hover:border-indigo-500 text-xs font-bold text-slate-300 hover:text-white whitespace-nowrap transition-colors border border-white/10"
-                      >
-                        Manage Seating <ArrowRight className="w-4 h-4" />
-                      </button>
-                    </div>
-
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
           </div>

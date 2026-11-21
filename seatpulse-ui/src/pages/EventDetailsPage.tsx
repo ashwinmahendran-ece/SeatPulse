@@ -154,7 +154,7 @@ export default function EventDetailsPage() {
   });
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#07090E] font-sans text-white overflow-x-hidden selection:bg-[#E8D5B5]/30 selection:text-white pb-32">
+    <div className="flex flex-col min-h-screen bg-[#07090E] font-sans text-white overflow-x-clip selection:bg-[#E8D5B5]/30 selection:text-white pb-32">
 
       <div className="fixed top-0 left-0 right-0 z-50 p-4 lg:p-8 flex justify-between items-center pointer-events-none">
         <button onClick={() => navigate(-1)} className="pointer-events-auto flex items-center justify-center h-11 w-11 rounded-full bg-black/40 backdrop-blur-xl border border-white/10 text-white hover:bg-black/60 transition-colors shadow-lg">
@@ -166,18 +166,18 @@ export default function EventDetailsPage() {
         <img src={getEventImage(event?.eventCategory)} alt="Event Hero" className="absolute inset-0 w-full h-full object-cover object-center" />
         <div className="absolute inset-0 z-10 bg-gradient-to-t from-[#07090E] via-[#07090E]/60 to-transparent" />
 
-        <div className="absolute bottom-0 left-0 w-full px-5 lg:px-16 pb-8 z-30">
+        <div className="absolute bottom-0 left-0 w-full px-4 sm:px-5 lg:px-16 pb-6 sm:pb-8 z-30">
           <div className="max-w-[1440px] mx-auto">
             {event?.eventCategory && (
               <span className="inline-block px-3 py-1 mb-4 text-[10px] font-bold text-[#07090E] bg-[#E8D5B5] rounded-sm uppercase tracking-widest">{event.eventCategory}</span>
             )}
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.1] tracking-tight mb-4 drop-shadow-md">
+            <h1 className="font-display text-2xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.1] tracking-tight mb-4 drop-shadow-md">
               {event?.eventName || `Event #${eventId}`}
             </h1>
-            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-sm font-medium text-slate-300">
-              <div className="flex items-center gap-2"><Calendar className="w-4 h-4 text-[#E8D5B5]" /><span>{eventDate ? eventDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) : 'Date TBA'}</span></div>
-              <div className="flex items-center gap-2"><Clock className="w-4 h-4 text-[#E8D5B5]" /><span>{eventDate ? eventDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : 'Time TBA'}</span></div>
-              <div className="flex items-center gap-2"><MapPin className="w-4 h-4 text-[#E8D5B5]" /><span>{event?.venue || 'Main Stadium'}, {event?.location || 'City'}</span></div>
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2.5 text-xs sm:text-sm font-medium text-slate-300">
+              <div className="flex items-center gap-2"><Calendar className="w-4 h-4 text-[#E8D5B5] shrink-0" /><span>{eventDate ? eventDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }) : 'Date TBA'}</span></div>
+              <div className="flex items-center gap-2"><Clock className="w-4 h-4 text-[#E8D5B5] shrink-0" /><span>{eventDate ? eventDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : 'Time TBA'}</span></div>
+              <div className="flex items-center gap-2"><MapPin className="w-4 h-4 text-[#E8D5B5] shrink-0" /><span>{event?.venue || 'Main Stadium'}, {event?.location || 'City'}</span></div>
             </div>
           </div>
         </div>
@@ -196,13 +196,13 @@ export default function EventDetailsPage() {
           <span className="flex items-center gap-2"><div className="h-4 w-4 rounded-[4px] bg-slate-800/60 border border-slate-700/50"></div> Unavailable</span>
         </div>
 
-        <div className="flex-1 w-full pb-20 relative min-h-[400px]">
+        <div className="flex-1 w-full pb-20 relative min-h-[400px] overflow-x-auto custom-scrollbar">
           {isLoading ? (
             <div className="absolute inset-0 flex items-center justify-center">
               <Loader2 className="animate-spin h-8 w-8 text-[#E8D5B5]" />
             </div>
           ) : (
-            <div className="mx-auto flex flex-col items-center min-w-fit w-full">
+            <div className="w-max min-w-full mx-auto flex flex-col items-center px-3 sm:px-4">
 
               <div className="relative w-[240px] sm:w-[320px] mb-10 flex flex-col items-center">
                 <svg viewBox="0 0 400 30" className="w-full opacity-40">
@@ -211,7 +211,7 @@ export default function EventDetailsPage() {
                 <div className="mt-2 text-[10px] font-bold tracking-[0.4em] text-slate-500 uppercase">Stage</div>
               </div>
 
-              <div className="flex flex-col w-full max-w-4xl px-1 sm:px-4">
+              <div className="flex flex-col w-max mx-auto">
                 {groupedRows.map((group, gIdx) => (
                   <div key={gIdx} className="w-full mb-6 relative">
 
@@ -271,18 +271,18 @@ export default function EventDetailsPage() {
       </main>
 
       <div className={`fixed bottom-6 left-0 right-0 z-50 flex justify-center px-4 transition-all duration-500 ease-out ${selectedSeats.length > 0 ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0 pointer-events-none'}`}>
-        <div className="w-full max-w-md bg-[#1A1D24]/95 backdrop-blur-xl border border-white/10 rounded-full p-2 pl-6 flex items-center justify-between shadow-[0_20px_40px_rgba(0,0,0,0.8)]">
+        <div className="w-full max-w-md bg-[#1A1D24]/95 backdrop-blur-xl border border-white/10 rounded-full p-1.5 pl-4 sm:p-2 sm:pl-6 flex items-center justify-between gap-2 shadow-[0_20px_40px_rgba(0,0,0,0.8)]">
 
-          <div className="flex flex-col justify-center py-1">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">
+          <div className="flex flex-col justify-center py-1 min-w-0">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5 truncate">
               {selectedSeats.length} {selectedSeats.length === 1 ? 'Ticket' : 'Tickets'}
               {selectedCategories && (
-                <span className="text-[#E8D5B5] ml-1 opacity-90 truncate max-w-[140px] inline-block align-bottom">
+                <span className="text-[#E8D5B5] ml-1 opacity-90">
                   ({selectedCategories})
                 </span>
               )}
             </span>
-            <span className="font-display text-xl font-black text-white leading-none">
+            <span className="font-display text-lg sm:text-xl font-black text-white leading-none">
               ₹{totalAmount.toLocaleString('en-IN')}
             </span>
           </div>
@@ -290,7 +290,7 @@ export default function EventDetailsPage() {
           <button
             onClick={handleLockAndCheckout}
             disabled={isLocking}
-            className="flex h-12 items-center justify-center gap-2 rounded-full bg-[#E8D5B5] px-8 text-sm font-bold text-[#07090E] transition-all hover:bg-[#D6C09D] hover:scale-[1.02] active:scale-95 disabled:opacity-70 disabled:hover:scale-100"
+            className="shrink-0 whitespace-nowrap flex h-11 sm:h-12 items-center justify-center gap-2 rounded-full bg-white px-5 sm:px-8 text-xs sm:text-sm font-bold text-[#07090e] shadow-sm transition-all hover:bg-neutral-200 active:scale-[0.98] disabled:opacity-70"
           >
             {isLocking ? <><Loader2 className="animate-spin h-4 w-4" /> Securing</> : <>Get Tickets <ArrowRight size={16} /></>}
           </button>
